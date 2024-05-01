@@ -3,7 +3,7 @@
 #include <string>
 
 
-
+#define TEST
 
 int
 main(int argc, char* argv[])
