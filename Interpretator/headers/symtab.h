@@ -4,11 +4,12 @@
 #include<string>
 #include<unordered_map>
 #include<vector>
+#include "object.h"
 
 class symtab
 {
 private:
-    std::vector<std::unordered_map<std::string, void*>> map;
+    std::unordered_map<std::string, Object*> map;
     
     int levl = 0;
 
