@@ -4,110 +4,69 @@
 #include "symtab.h"
 #include <string>
 #include <stdexcept>
+#include <vector>
 
 struct Object {
-    std::string name{};
-    void* value{};
-    int cnt{};
-    Object(std::string n, void* v)
-      : name{n}
-      , value{v}
-    {}
+    std::string name;
+    void* value;
+    int cnt;
 
+    Object(std::string n, void* v)
+        : name{n}, value{v}, cnt{0} {}
     virtual std::string __str__() {
-        
-        if(name == "bool"){
-            if(*(bool*)value){
-                return "true";
-            }
-            return "false";
+        if (name == "bool") {
+            return *(static_cast<bool*>(value)) ? "true" : "false";
+        } else if (name == "double") {
+            return std::to_string(*(static_cast<double*>(value)));
         }
-        if(name == "double")
         return "Object";
     }
-
     virtual Object* __add__(Object* rptr) {
-        throw;
+        throw std::runtime_error("Addition not supported for this object");
     }
 
     virtual Object* __call__() {
-        throw std::invalid_argument(name + "not have an overloaded call operator");
+        throw std::invalid_argument(name + " does not have an overloaded call operator");
     }
 
     virtual ~Object() {}
 };
 
-class Int : Object{
+class Int : public Object {
 public:
     Int() 
-      : Object("int", new int{0})
-    {}
-
+        : Object("int", new int{0}) {}
     Int(Object* ptr)
-      : Object("int", new int{0})
-    {}
-
-    std::string __str__() {
-      return "";
+        : Object("int", new int{0}) {}
+    std::string __str__() override {
+        return std::to_string(*(static_cast<int*>(value)));
     }
 };
 
-
-/*
-   if (ptr->name == "int") {
-            *(int*)value = *(int*)ptr->value;
-        }
-        else if(ptr->name == "int") {
-            *(int*)value = *(double*)ptr->value;
-        }
-        else if (ptr->name == "bool"){
-            *(int*)value = *(bool*)ptr->value;
-        }
-        else if (ptr->name == "string") {
-            *(int*)value = std::stoi(*(std::string*)ptr->value);
-        }
-        else if (ptr->name == "double"){
-
-        }
-        else {
-          throw std::invalid_argument("No suche datatype");
-        }
-    
-*/
-
-/*
-struct String : Object {
+struct String : public Object {
     String() 
-      : Object("Tox", new std::string, 0)
-    {}
-
+        : Object("Tox", new std::string, 0) {}
     String(Object* ptr)
-      : Object("Amboxj", new std::string, 0)
-    {
-        *(string*)value = ptr->__str__();   
+        : Object("Amboxj", new std::string, 0) {
+        *(static_cast<std::string*>(value)) = ptr->__str__();   
     }
 
-    string __str__() {
-      return "";
+    std::string __str__() override {
+        return *(static_cast<std::string*>(value));
     }
 };
-*/
 
-/*
-struct Array : Object {
+struct Array : public Object {
     Array() 
-      : Object("Zangvac", new string, 0)
-    {}
-
+        : Object("Zangvac", new std::vector<Object*>, 0) {}
     Array(Object* ptr)
-      : Object("Zangvac", new string, 0)
-    {
-        throw;   
+        : Object("Zangvac", new std::vector<Object*>, 0) {
+        throw std::runtime_error("Array initialization from Object* not supported");
     }
 
-    string __str__() {
-      return "";
+    std::string __str__() override {
+        return "Array";
     }
 };
-*/
+
 #endif
