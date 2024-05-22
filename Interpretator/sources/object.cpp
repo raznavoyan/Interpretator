@@ -9,7 +9,7 @@
 
 //////// OBJECT ////////////////////////
 Object::Object(std::string n, void* v)
-    : name{n}, value{v}
+    : name{n}, value{v}, count{1}
 {}
 
 std::string Object::__str__() 
