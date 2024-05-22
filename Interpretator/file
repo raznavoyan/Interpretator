@@ -4,7 +4,7 @@ c = 1|
 if:a > c:{
     c = c + 1|
 }
-otherwise if:c == a:{
+otherwise if:c == a {
     c = "hello"|
 }
 
@@ -12,10 +12,10 @@ during : c == true {
     c = c - 1;    
 }
 
-loop: a = 5 -> 0{
+loop: a = 5 -> 10{
 
 }
 
-loop :d = 7 -> -1: -1 {
+loop :d = 7 -> -1: -2 {
 
 }
