@@ -172,7 +172,7 @@ Object* Interpreter::evaluateExpression(const std::vector<std::string>& tokens, 
     }
 }
 
-Object* Interpreter::getObject(const std::string& token) {
+/*Object* Interpreter::getObject(const std::string& token) {
     Object* obj = symbolTable.getVal(token);
     if (!obj) {
         std::cerr << "Error: Undefined variable " << token << std::endl;
@@ -206,4 +206,4 @@ void Interpreter::garbageCollector() {
             ++it;
         }
     }
-}
+}*/
