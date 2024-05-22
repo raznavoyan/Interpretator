@@ -38,22 +38,10 @@ struct Interpreter {
         return true;
     }
 
-    void garbageCollector() {
-        for (auto it = objs.begin(); it != objs.end();) {
-            if ((*it)->cnt <= 0) {
-                delete *it;
-                it = objs.erase(it);
-            } else {
-                ++it;
-            }
-        }
-    }
-
     void run() {
       for (auto& line : parsed_code) {
             auto cur = std::chrono::steady_clock::now();
             if (std::chrono::duration_cast<std::chrono::seconds>(cur - last).count() > 20) {
-                garbageCollector();
             last = cur;
           }
 
