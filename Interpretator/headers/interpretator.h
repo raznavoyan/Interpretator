@@ -27,7 +27,7 @@ private:
     //std::unordered_map<std::string, Object*> vars;
     //exsit in symtab
     std::chrono::steady_clock::time_point last;
-
+  
     void execute(const std::vector<std::string>& tokens);
     void executeAssignment(const std::vector<std::string>& tokens, size_t& index);
     void executeIf(const std::vector<std::string>& tokens, size_t& index);
@@ -40,6 +40,7 @@ private:
     //Object* getObject(const std::string& token);
     //Object* parseValue(const std::string& token);
     //bool validVariableName(const std::string& var);
+
 };
 
 #endif // INTERPRETER_H

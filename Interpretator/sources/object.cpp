@@ -9,7 +9,7 @@
 
 //////// OBJECT ////////////////////////
 Object::Object(std::string n, void* v)
-    : name{n}, value{v}, cnt{1}
+    : name{n}, value{v}, count{1}
 {}
 
 std::string Object::__str__() 
@@ -112,16 +112,6 @@ void Object::__mod_assign__(Object*)
     throw std::runtime_error("This operation is not supported for this objects");
 }
 
-void Object::__or_assign__(Object*)
-{
-    throw std::runtime_error("This operation is not supported for this objects");
-}
-
-void Object::__and_assign__(Object*)
-{
-    throw std::runtime_error("This operation is not supported for this objects");
-}
-
 void Object::__xor_assign__(Object*)
 {
     throw std::runtime_error("This operation is not supported for this objects");
@@ -133,11 +123,6 @@ void Object::__lshift_assign__(Object*)
 }
 
 void Object::__rshift_assign__(Object*)
-{
-    throw std::runtime_error("This operation is not supported for this objects");
-}
-
-void Object::__den_assign__(Object*)
 {
     throw std::runtime_error("This operation is not supported for this objects");
 }
@@ -172,6 +157,21 @@ bool Object::__not_equal__(Object*)
     throw std::runtime_error("This operation is not supported for this objects");
 }
 
+void Object::__pop__()
+{
+    throw std::runtime_error("This operation is not supported for this objects");
+}
+
+int Object::__size__()
+{
+    throw std::runtime_error("This operation is not supported for this objects");
+}
+
+Object Object::__at__(int)
+{
+    throw std::runtime_error("This operation is not supported for this objects");
+}
+
 Object::~Object()
 {}
 ///////////////////////////////////////
@@ -181,6 +181,15 @@ Object::~Object()
 Int::Int() 
     : Object("int", new int{0}) 
 {}
+
+Int::Int(int val) 
+    : Object("int", new int{val}) 
+{}
+
+Int::~Int()
+{
+    delete (static_cast<int*>(value));
+}
 
 Int::Int(Object* ptr)
     : Object("int", new int{0}) 
@@ -398,7 +407,7 @@ Object Int::__right_shift__(Object* other)
 
 void Int::__add_assign__(Object* other)
 {
-    if(other->name == "int" || other->name == "bool")
+    if(other->name == "int" || other->name == "bool" || other->name == "double")
     {
         *(static_cast<int*>(value)) += *(static_cast<int*>(other->value));
         return;
@@ -408,7 +417,7 @@ void Int::__add_assign__(Object* other)
 
 void Int::__sub_assign__(Object* other)
 {
-    if(other->name == "int" || other->name == "bool")
+    if(other->name == "int" || other->name == "bool" || other->name == "double")
     {
         *(static_cast<int*>(value)) -= *(static_cast<int*>(other->value));
         return;
@@ -418,7 +427,7 @@ void Int::__sub_assign__(Object* other)
 
 void Int::__div_assign__(Object* other)
 {
-    if(other->name == "int" || other->name == "bool")
+    if(other->name == "int" || other->name == "double")
     {
         *(static_cast<int*>(value)) /= *(static_cast<int*>(other->value));
         return;
@@ -428,9 +437,9 @@ void Int::__div_assign__(Object* other)
 
 void Int::__mul_assign__(Object* other)
 {
-    if(other->name == "int")
+    if(other->name == "int" || other->name == "double")
     {
-        *(static_cast<int*>(value)) %= *(static_cast<int*>(other->value));
+        *(static_cast<int*>(value)) *= *(static_cast<int*>(other->value));
         return;
     }
     throw std::runtime_error("This operation is not supported for this objects");
@@ -532,10 +541,21 @@ bool Int::__not_equal__(Object* other)
 /////////////////////////////////////////////
 
 
+
+
 /////////// DOUBLE ////////////////////////////
 Double::Double() 
-    : Object("double", new bool{}) 
+    : Object("double", new double{}) 
 {}
+
+Double::Double(double val) 
+    : Object("double", new double{val}) 
+{}
+
+Double::~Double()
+{
+    delete (static_cast<double*>(value));
+}
 
 Double::Double(Object* ptr)
     : Object("double", new bool{}) 
@@ -607,12 +627,118 @@ Object Double::__div__(Object* other)
     }
     throw std::invalid_argument("Conversion from this type to double is not supported.");
 }
+
+void Double::__add_assign__(Object* other)
+{
+    if(other->name == "int" || other->name == "double")
+    {
+        *(static_cast<double*>(value)) += *(static_cast<double*>(other->value));
+        return;
+    }
+    throw std::runtime_error("This operation is not supported for this objects");
+}
+
+void Double::__sub_assign__(Object* other)
+{
+    if(other->name == "int" || other->name == "double")
+    {
+        *(static_cast<double*>(value)) -= *(static_cast<double*>(other->value));
+        return;
+    }
+    throw std::runtime_error("This operation is not supported for this objects");
+}
+
+void Double::__div_assign__(Object* other)
+{
+    if(other->name == "int" || other->name == "double")
+    {
+        *(static_cast<double*>(value)) /= *(static_cast<double*>(other->value));
+        return;
+    }
+    throw std::runtime_error("This operation is not supported for this objects");
+}
+
+void Double::__mul_assign__(Object* other)
+{
+    if(other->name == "int" || other->name == "double")
+    {
+        *(static_cast<double*>(value)) *= *(static_cast<double*>(other->value));
+        return;
+    }
+    throw std::runtime_error("This operation is not supported for this objects");
+}
+
+bool Double::__more__(Object* other)
+{
+    if(other->name == "int" || other->name == "double")
+    {
+        return *(static_cast<double*>(value)) > *(static_cast<double*>(other->value));
+    } 
+    throw std::runtime_error("This operation is not supported for this objects");
+}
+
+bool Double::__less__(Object* other)
+{
+    if(other->name == "int" || other->name == "double")
+    {
+        return *(static_cast<double*>(value)) < *(static_cast<double*>(other->value));
+    } 
+    throw std::runtime_error("This operation is not supported for this objects");
+}
+
+bool Double::__more_equal__(Object* other)
+{
+    if(other->name == "int" || other->name == "double")
+    {
+        return *(static_cast<double*>(value)) >= *(static_cast<double*>(other->value));
+    } 
+    throw std::runtime_error("This operation is not supported for this objects");
+}
+
+bool Double::__less_equal__(Object* other)
+{
+    if(other->name == "int" || other->name == "double")
+    {
+        return *(static_cast<double*>(value)) <= *(static_cast<double*>(other->value));
+    } 
+    throw std::runtime_error("This operation is not supported for this objects");
+}
+
+bool Double::__equal__(Object* other)
+{
+    if(other->name == "int" || other->name == "double")
+    {
+        return *(static_cast<double*>(value)) == *(static_cast<double*>(other->value));
+    } 
+    throw std::runtime_error("This operation is not supported for this objects");
+}
+
+bool Double::__not_equal__(Object* other)
+{
+    if(other->name == "int" || other->name == "double")
+    {
+        return *(static_cast<double*>(value)) != *(static_cast<double*>(other->value));
+    } 
+    throw std::runtime_error("This operation is not supported for this objects");
+}
 ///////////////////////////////////////////////
+
+
+
 
 ///////////// BOOL /////////////////////////
 Bool::Bool() 
     : Object("bool", new bool{}) 
 {}
+
+Bool::Bool(bool val) 
+    : Object("bool", new bool{val}) 
+{}
+
+Bool::~Bool()
+{
+    delete (static_cast<bool*>(value));
+}
 
 Bool::Bool(Object* ptr)
     : Object("bool", new bool{}) 
@@ -661,12 +787,106 @@ Object Bool::__sub__(Object* other)
     throw std::invalid_argument("Conversion from this type to bool is not supported.");
 }
 
+Object Bool::__or__(Object* other)
+{
+    if(other->name == "int" || other->name == "bool")
+    {
+        bool res = *(static_cast<bool*>(value)) || *(static_cast<bool*>((*other).value));
+        Bool new_obj;
+        *static_cast<bool*>(new_obj.value) = res;
+        return new_obj;
+    }
+    throw std::invalid_argument("Conversion from this type to int is not supported.");
+}
+
+Object Bool::__and__(Object* other)
+{
+    if(other->name == "int" || other->name == "bool")
+    {
+        bool res = *(static_cast<bool*>(value)) && *(static_cast<bool*>((*other).value));
+        Bool new_obj;
+        *static_cast<bool*>(new_obj.value) = res;
+        return new_obj;
+    }
+    throw std::invalid_argument("Conversion from this type to int is not supported.");
+}
+
+Object Bool::__den__()
+{
+    bool res = !*(static_cast<bool*>(value));
+    Bool new_obj;
+    *static_cast<bool*>(new_obj.value) = res;
+    return new_obj;
+}
+
+bool Bool::__more__(Object* other)
+{
+    if(other->name == "int" || other->name == "bool")
+    {
+        return *(static_cast<int*>(value)) > *(static_cast<int*>(other->value));
+    } 
+    throw std::runtime_error("This operation is not supported for this objects");
+}
+
+bool Bool::__less__(Object* other)
+{
+    if(other->name == "int" || other->name == "bool")
+    {
+        return *(static_cast<int*>(value)) < *(static_cast<int*>(other->value));
+    } 
+    throw std::runtime_error("This operation is not supported for this objects");
+}
+
+bool Bool::__more_equal__(Object* other)
+{
+    if(other->name == "int" || other->name == "bool")
+    {
+        return *(static_cast<int*>(value)) >= *(static_cast<int*>(other->value));
+    } 
+    throw std::runtime_error("This operation is not supported for this objects");
+}
+
+bool Bool::__less_equal__(Object* other)
+{
+    if(other->name == "int" || other->name == "bool")
+    {
+        return *(static_cast<int*>(value)) <= *(static_cast<int*>(other->value));
+    } 
+    throw std::runtime_error("This operation is not supported for this objects");
+}
+
+bool Bool::__equal__(Object* other)
+{
+    if(other->name == "int" || other->name == "bool")
+    {
+        return *(static_cast<int*>(value)) == *(static_cast<int*>(other->value));
+    } 
+    throw std::runtime_error("This operation is not supported for this objects");
+}
+
+bool Bool::__not_equal__(Object* other)
+{
+    if(other->name == "int" || other->name == "bool")
+    {
+        return *(static_cast<int*>(value)) != *(static_cast<int*>(other->value));
+    } 
+    throw std::runtime_error("This operation is not supported for this objects");
+}
 /////////////////////////////////////////////
 
 ////////////////////// STRING /////////////
 String::String() 
     : Object("string", new std::string) 
 {}
+
+String::String(std::string val) 
+    : Object("string", new std::string{val}) 
+{}
+
+String::~String()
+{
+    delete (static_cast<std::string*>(value));
+}
 
 String::String(Object* ptr)
     : Object("string", new std::string) 
@@ -687,17 +907,167 @@ Object String::__add__(Object* other)
     return new_obj;
 }
 
+void String::__add_assign__(Object* other)
+{
+    *(static_cast<std::string*>(value)) += other->__str__();
+}
+
+bool String::__more__(Object* other)
+{
+    if(other->name == "string")
+    {
+        return *(static_cast<std::string*>(value)) > *(static_cast<std::string*>(other->value));
+    } 
+    throw std::runtime_error("This operation is not supported for this objects");
+}
+
+bool String::__less__(Object* other)
+{
+    if(other->name == "string")
+    {
+        return *(static_cast<std::string*>(value)) < *(static_cast<std::string*>(other->value));
+    } 
+    throw std::runtime_error("This operation is not supported for this objects");
+}
+
+bool String::__more_equal__(Object* other)
+{
+    if(other->name == "string")
+    {
+        return *(static_cast<std::string*>(value)) >= *(static_cast<std::string*>(other->value));
+    } 
+    throw std::runtime_error("This operation is not supported for this objects");
+}
+
+bool String::__less_equal__(Object* other)
+{
+    if(other->name == "string")
+    {
+        return *(static_cast<std::string*>(value)) <= *(static_cast<std::string*>(other->value));
+    } 
+    throw std::runtime_error("This operation is not supported for this objects");
+}
+
+bool String::__equal__(Object* other)
+{
+    if(other->name == "string")
+    {
+        return *(static_cast<std::string*>(value)) == *(static_cast<std::string*>(other->value));
+    } 
+    throw std::runtime_error("This operation is not supported for this objects");
+}
+
+bool String::__not_equal__(Object* other)
+{
+    if(other->name == "string")
+    {
+        return *(static_cast<std::string*>(value)) != *(static_cast<std::string*>(other->value));
+    } 
+    throw std::runtime_error("This operation is not supported for this objects");
+}
+
+void String::__pop__()
+{
+    (static_cast<std::string*>(value))->pop_back();
+}
+
+int String::__size__()
+{
+    (static_cast<std::string*>(value))->size();
+}
+
+Object String::__at__(int index)
+{
+    char ch = (static_cast<std::string*>(value))->at(index);
+    std::string new_string(1, ch);
+    String ans = new_string;
+    return ans;
+}
 /////////////////////////////////////////////////////
+
+
+
+
 
 ///////////// Array /////////////////////////////
 Array::Array() 
     : Object("array", new std::vector<Object*>) 
 {}
 
-Array::Array(Object* ptr)
-    : Object("array", new std::vector<Object*>) 
+Array::~Array() {
+    auto& elements = *static_cast<std::vector<Object*>*>(value);
+    for (auto obj : elements) {
+        delete obj;
+    }
+    delete static_cast<std::vector<Object*>*>(value);
+}
+
+Array::Array(std::initializer_list<Object*> init)
+    : Object("array", new std::vector<Object*>()) 
 {
-    throw std::runtime_error("Array initialization from Object* not supported");
+    auto& elements = *static_cast<std::vector<Object*>*>(value);
+    for (auto obj : init) {
+        if (obj) {
+            elements.push_back(new Object(*obj));
+        } else {
+            elements.push_back(nullptr);
+        }
+    }
+}
+
+Array::Array(const std::vector<Object*>& vec) 
+    : Object("array", new std::vector<Object*>()) 
+{
+    std::vector<Object*>* elements = static_cast<std::vector<Object*>*>(value);
+    for (Object* obj : vec) {
+        if (obj) {
+            elements->push_back(new Object(*obj));
+        } else {
+            elements->push_back(nullptr);
+        }
+    }
+}
+
+
+Array::Array(Object* ptr) 
+    : Object("array", nullptr)
+{
+    if(ptr->name == "array")
+    {
+        std::vector<Object*>* vec_ptr = new std::vector<Object*>(ptr->__size__(), nullptr);
+        for(int i = 0; i < ptr->__size__(); ++i)
+        {
+            if((ptr->__at__(i)).name == "int")
+            {
+                (*vec_ptr)[i] = new Int{*static_cast<int*>((ptr->__at__(i)).value)};
+            } else if((ptr->__at__(i)).name == "bool")
+            {
+                (*vec_ptr)[i] = new Bool{*static_cast<double*>((ptr->__at__(i)).value)};
+            } else if((ptr->__at__(i)).name == "double")
+            {
+                (*vec_ptr)[i] = new Double{*static_cast<bool*>((ptr->__at__(i)).value)};
+            } else if((ptr->__at__(i)).name == "string")
+            {
+                (*vec_ptr)[i] = new String{*static_cast<std::string*>((ptr->__at__(i)).value)};
+            } else if((ptr->__at__(i)).name == "array")
+            {
+                (*vec_ptr)[i] = new Array{static_cast<Object*>((ptr->__at__(i)).value)};
+            } else 
+            {
+                throw std::runtime_error("wrong argument");
+            }
+        }
+        value = reinterpret_cast<void*>(vec_ptr);
+        vec_ptr = nullptr;
+    } else if(ptr->name == "int" || ptr->name == "bool" || ptr->name == "double" || ptr->name == "string")
+    {
+        std::vector<Object*>* vec_ptr = new std::vector<Object*>(1, ptr);
+        value = reinterpret_cast<void*>(vec_ptr);
+        vec_ptr = nullptr;
+    } else
+    {
+        throw std::runtime_error("wrong argument");
+    }
 }
 
 std::string Array::__str__() 
@@ -717,6 +1087,193 @@ std::string Array::__str__()
         }
     }
     return res;
+}
+
+Object Array:: __add__(Object* other) 
+{
+    if(other->name == "array")
+    {
+        std::vector<Object*>* new_vector = new std::vector<Object*>;
+        std::vector<Object*>* this_vector = static_cast<std::vector<Object*>*>(value);
+        std::vector<Object*>* other_vector = static_cast<std::vector<Object*>*>(other->value);
+
+        new_vector->reserve(this_vector->size() + other_vector->size());
+        for (auto obj : *this_vector) {
+            if(obj->name == "int")
+            {
+                new_vector->push_back(new Int(obj));
+            } else if (obj->name == "bool")
+            {
+                new_vector->push_back(new Bool(obj));
+            } else if (obj->name == "double")
+            {
+                new_vector->push_back(new Double(obj));
+            } else if (obj->name == "string")
+            {
+                new_vector->push_back(new String(obj));
+            } else if (obj->name == "array")
+            {
+                new_vector->push_back(new Array(obj));
+            } else 
+            {
+                throw std::runtime_error("wrong argument");
+            }
+        }
+        for (auto obj : *other_vector) {
+            if(obj->name == "int")
+            {
+                new_vector->push_back(new Int(obj));
+            } else if (obj->name == "bool")
+            {
+                new_vector->push_back(new Bool(obj));
+            } else if (obj->name == "double")
+            {
+                new_vector->push_back(new Double(obj));
+            } else if (obj->name == "string")
+            {
+                new_vector->push_back(new String(obj));
+            } else if (obj->name == "array")
+            {
+                new_vector->push_back(new Array(obj));
+            } else 
+            {
+                throw std::runtime_error("wrong argument");
+            }
+        }
+        return Array(*new_vector);
+    }
+    if (other->name == "int" || other->name == "double" || other->name == "bool" || other->name == "string")
+    {
+        std::vector<Object*>* new_vector = new std::vector<Object*>;
+        std::vector<Object*>* this_vector = static_cast<std::vector<Object*>*>(value);
+
+        new_vector->reserve(this_vector->size() + 1);
+        for (auto obj : *this_vector) {
+            if(obj->name == "int")
+            {
+                new_vector->push_back(new Int(obj));
+            } else if (obj->name == "bool")
+            {
+                new_vector->push_back(new Bool(obj));
+            } else if (obj->name == "double")
+            {
+                new_vector->push_back(new Double(obj));
+            } else if (obj->name == "string")
+            {
+                new_vector->push_back(new String(obj));
+            } else if (obj->name == "array")
+            {
+                new_vector->push_back(new Array(obj));
+            } else 
+            {
+                throw std::runtime_error("wrong argument");
+            }
+        }
+        if(other->name == "int")
+        {
+            new_vector->push_back(new Int(other));
+        } else if (other->name == "bool")
+        {
+            new_vector->push_back(new Bool(other));
+        } else if (other->name == "double")
+        {
+            new_vector->push_back(new Double(other));
+        } else if (other->name == "string")
+        {
+            new_vector->push_back(new String(other));
+        } else if (other->name == "array")
+        {
+            new_vector->push_back(new Array(other));
+        } else 
+        {
+            throw std::runtime_error("wrong argument");
+        }
+        return Array(*new_vector);
+    }
+    throw std::runtime_error("wrong argument");
+}
+
+void Array:: __add_assign__(Object* other) 
+{
+    if(other->name == "array")
+    {
+        std::vector<Object*>* this_vector = static_cast<std::vector<Object*>*>(value);
+        std::vector<Object*>* other_vector = static_cast<std::vector<Object*>*>(other->value);
+
+        this_vector->reserve(this_vector->size() + other_vector->size());
+        for (auto obj : *other_vector) {
+            if(obj->name == "int")
+            {
+                this_vector->push_back(new Int(obj));
+            } else if (obj->name == "bool")
+            {
+                this_vector->push_back(new Bool(obj));
+            } else if (obj->name == "double")
+            {
+                this_vector->push_back(new Double(obj));
+            } else if (obj->name == "string")
+            {
+                this_vector->push_back(new String(obj));
+            } else if (obj->name == "array")
+            {
+                this_vector->push_back(new Array(obj));
+            } else 
+            {
+                throw std::runtime_error("wrong argument");
+            }
+        }
+    }
+    if (other->name == "int" || other->name == "double" || other->name == "bool" || other->name == "string")
+    {
+        std::vector<Object*>* this_vector = static_cast<std::vector<Object*>*>(value);
+
+        this_vector->reserve(this_vector->size() + 1);
+        if(other->name == "int")
+        {
+            this_vector->push_back(new Int(other));
+        } else if (other->name == "bool")
+        {
+            this_vector->push_back(new Bool(other));
+        } else if (other->name == "double")
+        {
+            this_vector->push_back(new Double(other));
+        } else if (other->name == "string")
+        {
+            this_vector->push_back(new String(other));
+        } else if (other->name == "array")
+        {
+            this_vector->push_back(new Array(other));
+        } else 
+        {
+            throw std::runtime_error("wrong argument");
+        }
+    }
+    throw std::runtime_error("wrong argument");
+}
+
+void Array:: __pop__() {
+    std::vector<Object*>* this_vector = static_cast<std::vector<Object*>*>(value);
+    if (this_vector->empty()) 
+    {
+        throw std::out_of_range("Cannot pop from an empty array");
+    }
+    delete this_vector->back();
+    this_vector->pop_back();
+}
+
+
+int Array::__size__()
+{
+    std::vector<Object*>* vec = static_cast<std::vector<Object*>*>(value);
+    int ans = vec->size();
+    vec = nullptr;
+}
+
+Object Array::__at__(int index)
+{
+    std::vector<Object*>* vec = static_cast<std::vector<Object*>*>(value);
+    Object ans = *(vec->at(index));
+    vec = nullptr;
 }
 //////////////////////////////////////////
 
