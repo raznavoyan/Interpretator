@@ -13,10 +13,26 @@ bool symtab::are(const std::string& name) {
   return false;
 }
 
-bool symtab::setVal(const std::string& name, Object* value) {
-  scopeStack.back()[name] = value;
-  return true;
+Object& symtab::setVal(const std::string& varName, std::string value) {
+  auto it = scopeStack.back().find(varname);
+  if (it != scopeStack.back().end()) {
+    // Variable already exists in the current scope
+    if (it->second->name() == value->name()) {
+      // Types are the same, so just update the value
+      it->second->setValue(value->getValue());
+      return *it->second;
+    } else {
+      // Types are different, so decrement the reference count of the existing object and create a new object with the new type
+      //\\//\\//\\//\\//it->second->decRefCount();
+      return *value;
+    }
+  } else {
+    // Variable does not exist in the current scope, so add it
+    scopeStack.back()[varName] = value;
+    return *value;
+  }
 }
+
 
 Object* symtab::getVal(const std::string& name) {
   for (auto it = scopeStack.rbegin(); it != scopeStack.rend(); ++it) {

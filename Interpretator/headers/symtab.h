@@ -14,7 +14,7 @@ private:
 public:
     symtab();
     bool are(const std::string& name);
-    bool setVal(const std::string& name, Object* value);
+    Object& setVal(const std::string& name, Object* value);
     Object* getVal(const std::string& name);
     void pushSpace();
     void popSpace();
