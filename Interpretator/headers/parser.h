@@ -14,14 +14,13 @@
 class parser {
 public:
     using toks = std::vector<std::string>;
-    char typeOf(std::string arg); //string->s,bool->b,...
-    toks tokenize(const std::string& input);
-    bool isCustomDelimiter(char c);
-    bool isAKeyword(const std::string& tok);
-    bool isAMath(const std::string& tok);
-    bool isVariableName(const std::string& name);
-    bool isNumber(const std::string& str);
-public:
+    static char typeOf(std::string arg); //string->s,bool->b,...
+    static toks tokenize(const std::string& input);
+    static bool isCustomDelimiter(char c);
+    static bool isAKeyword(const std::string& tok);
+    static bool isAMath(const std::string& tok);
+    static bool isVariableName(const std::string& name);
+    static bool isNumber(const std::string& str);
 };
 
 #endif
