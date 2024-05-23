@@ -2,8 +2,8 @@
 #include <iostream>
 #include <sstream>
 
-Interpreter::Interpreter() : 
-    last(std::chrono::steady_clock::now()) 
+Interpreter::Interpreter()
+    //: last(std::chrono::steady_clock::now()) 
 {
     symbolTable = symtab();
     codeParser = parser();
@@ -12,9 +12,10 @@ Interpreter::Interpreter() :
 
 Interpreter::~Interpreter() 
 {
-    for (auto& pair : symbolTable.getAll()) {
-        delete pair.second;
-    }
+    delete symbolTable;
+    // for (auto& pair : symbolTable.getAll()) {
+    //     delete pair.second;
+    // }
     std::cout << "Interpreter destroyed." << std::endl;
 }
 
