@@ -57,8 +57,8 @@ struct Object
     virtual bool __not_equal__(Object*);
 
     virtual void __pop__(); // for string and array push is the same as add(use add)
-    virtual int __size__();
-    virtual Object __at__(int);
+    virtual int __size__(); // for arrays and strings
+    virtual Object __at__(int); // for arrays and strings
 
     private:
     void clear();

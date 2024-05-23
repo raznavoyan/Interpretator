@@ -49,7 +49,9 @@ bool parser::isAKeyword(const std::string& tok) {
 
 bool parser::isAMath(const std::string& tok) {
     static const std::unordered_set<std::string> mathOps = {
-      "+", "-", "/", "!", "%", "*", "--", "==", "++", "->", ">", "<", "<=", ">=", "+=", "-=", "/=", "%="
+      "+", "-", "/", "!", "%", "*", "--", "==", "++", "->",
+      ">", "<", "<=", ">=", "+=", "-=", "/=", "%=", ">>", "<<",
+      "&&", "||", "|","&", ">>=", "<<=", "~", "^", "^=", "*=","!="
     };
     return mathOps.count(tok) > 0;
 }
