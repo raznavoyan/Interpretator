@@ -8,11 +8,13 @@
 
 
 //add copy assigments
-//add cast opertaions from derivred to Object
+//count initiialize with 0
+//unar -
 struct Object 
 {
     std::string name;
     void* value;
+    int count;
 
     Object(std::string n, void* v);
     virtual ~Object();
@@ -55,12 +57,6 @@ struct Object
     virtual void __pop__(); // for string and array push is the same as add(use add)
     virtual int __size__();
     virtual Object __at__(int);
-    /*
-    virtual Object* __call__() 
-    {
-        throw std::invalid_argument(name + " does not have an overloaded call operator");
-    }
-    */
 };
 
 struct Int : public Object 
