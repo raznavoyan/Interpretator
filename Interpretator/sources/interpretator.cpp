@@ -1,26 +1,39 @@
-#include "interpreter.h"
+#include "../headers/interpreter.h"
 #include <iostream>
 #include <sstream>
 
-Interpreter::Interpreter() : 
-    last(std::chrono::steady_clock::now()) 
-{}
-
-Interpreter::~Interpreter() {
-    for (auto obj : objs) {
-        delete obj;
-    }
+Interpreter::Interpreter()
+    //: last(std::chrono::steady_clock::now()) 
+{
+    symbolTable = symtab();
+    codeParser = parser();
+    std::cout << "Interpreter initialized." << std::endl;
 }
 
-void Interpreter::interpret(const std::string& code) {
-    parsed_code = codeParser.tokenize(code);
-    if (codeParser.isValid(parsed_code)) {
-        for (auto& line : parsed_code) {
-            execute(line);
-        }
-    } else {
-        std::cerr << "Error: Invalid code." << std::endl;
-    }
+Interpreter::~Interpreter() 
+{
+    delete symbolTable;
+    // for (auto& pair : symbolTable.getAll()) {
+    //     delete pair.second;
+    // }
+    std::cout << "Interpreter destroyed." << std::endl;
+}
+
+// void Interpreter::interpret(const std::string& code) {
+//     parsed_code = codeParser.tokenize(code);
+//     if (codeParser.isValid(parsed_code)) {
+//         for (const auto& line : parsed_code) {
+//             std::istringstream iss(line);
+//             std::vector<std::string> tokens;
+//             std::string token;
+//             while (iss >> token) {
+//                 tokens.push_back(token);
+//             }
+//             execute(tokens);
+//         }
+//     } else {
+//         std::cerr << "Error: Invalid code." << std::endl;
+//     }
 }
 
 void Interpreter::execute(const std::vector<std::string>& tokens) {
@@ -51,7 +64,7 @@ void Interpreter::executeAssignment(const std::vector<std::string>& tokens, size
 }
 
 void Interpreter::executeIf(const std::vector<std::string>& tokens, size_t& index) {
-    ++index;
+    ++index; 
     Object* condition = evaluateExpression(tokens, index);
     if (condition->__equal__(new Bool(true))) {
         executeBlock(tokens, index);
@@ -59,12 +72,12 @@ void Interpreter::executeIf(const std::vector<std::string>& tokens, size_t& inde
         while (tokens[index] != "}") {
             ++index;
         }
-        ++index;
+        ++index; 
     }
 }
 
 void Interpreter::executeOtherwiseIf(const std::vector<std::string>& tokens, size_t& index) {
-    ++index;
+    ++index; 
     if (tokens[index] == "if") {
         ++index;
         Object* condition = evaluateExpression(tokens, index);
@@ -74,7 +87,7 @@ void Interpreter::executeOtherwiseIf(const std::vector<std::string>& tokens, siz
             while (tokens[index] != "}") {
                 ++index;
             }
-            ++index;
+            ++index; 
         }
     }
 }
@@ -83,7 +96,7 @@ void Interpreter::executeDuring(const std::vector<std::string>& tokens, size_t& 
     ++index; 
     Object* condition = evaluateExpression(tokens, index);
     if (tokens[index] == "{") {
-        ++index; 
+        ++index;
         while (condition->__equal__(new Bool(true))) {
             size_t blockStart = index;
             executeBlock(tokens, index);
@@ -92,7 +105,7 @@ void Interpreter::executeDuring(const std::vector<std::string>& tokens, size_t& 
         while (tokens[index] != "}") {
             ++index;
         }
-        ++index;
+        ++index; 
     }
 }
 
@@ -102,10 +115,10 @@ void Interpreter::executeLoop(const std::vector<std::string>& tokens, size_t& in
     index += 2; 
     Object* start = evaluateExpression(tokens, index);
     Object* end = evaluateExpression(tokens, index);
-    Object* step = new Int(1);
+    Object* step = new Int(1);// hly vor mi haytarareq
 
     if (tokens[index] == ":") {
-        index += 1; 
+        index += 1;
         step = evaluateExpression(tokens, index);
     }
 
@@ -123,13 +136,13 @@ void Interpreter::executeLoop(const std::vector<std::string>& tokens, size_t& in
                 symbolTable.setNewVal(variableName, i);
                 size_t blockStart = index;
                 executeBlock(tokens, index);
-                index = blockStart;
+                index = blockStart; 
             }
         }
         while (tokens[index] != "}") {
             ++index;
         }
-        ++index;
+        ++index; 
     }
 }
 
@@ -144,14 +157,14 @@ void Interpreter::executeBlock(const std::vector<std::string>& tokens, size_t& i
             if (tokens[index] == "|") ++index;
             runLine(subTokens);
         }
-        ++index;
+        ++index; 
     }
 }
 
 void Interpreter::runLine(const std::vector<std::string>& tokens) {
     if (tokens.size() >= 3 && tokens[1] == "=") {
         if (validVariableName(tokens[0])) {
-            vars[tokens[0]] = evaluateExpression(tokens, 2);
+            symbolTable.setNewVal(tokens[0], evaluateExpression(tokens, 2));
         }
     } else {
         execute(tokens);
@@ -168,6 +181,7 @@ Object* Interpreter::evaluateExpression(const std::vector<std::string>& tokens, 
         ++index;
         return new Bool(false);
     } else {
+<<<<<<< HEAD
         return getObject(tokens[index++]);
     }
 }
@@ -189,21 +203,10 @@ Object* Interpreter::parseValue(const std::string& token) {
     } else if (token == "false") {
         return new Bool(false);
     } else {
-        return new String(new Object(token.c_str(), nullptr));
+        return symbolTable.getVal(tokens[index++]);
     }
 }
 
 bool Interpreter::validVariableName(const std::string& var) {
     return !var.empty() && isalpha(var[0]);
 }
-
-void Interpreter::garbageCollector() {
-    for (auto it = objs.begin(); it != objs.end();) {
-        if ((*it)->cnt <= 0) {
-            delete *it;
-            it = objs.erase(it);
-        } else {
-            ++it;
-        }
-    }
-}*/
