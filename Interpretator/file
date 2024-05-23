@@ -1,10 +1,10 @@
 a = 10|
 ba = "hello"|
 c = 1|
-if:a > c:{
+if : a > c : {
     c = c + 1|
 }
-otherwise if:c == a {
+otherwise if : c == a : {
     c = "hello"|
 }
 
@@ -16,7 +16,7 @@ loop: a = 5 -> 10{
 
 }
 
-loop :d = 7 -> -1: -2 {
+loop :d = 7 -> -1 , -2 : {
 
 }
 array = <>
