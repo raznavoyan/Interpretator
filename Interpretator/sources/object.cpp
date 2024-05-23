@@ -12,6 +12,99 @@ Object::Object(std::string n, void* v)
     : name{n}, value{v}, count{1}
 {}
 
+Object::Object(Object&& rhv)
+    : name{rhv.name}, value{rhv.value}, count{1}
+{
+    rhv.value = nullptr;
+}
+
+Object::Object(const Object& rhv)
+    : name{rhv.name}, value{nullptr}, count{1}
+{
+    if(rhv.name == "Int")
+    {
+        int* p = new int{*static_cast<int*>(rhv.value)};
+        value = reinterpret_cast<void*>(p);
+        p = nullptr;
+    } else if(rhv.name == "double")
+    {
+        double* p = new double{*static_cast<double*>(rhv.value)};
+        value = reinterpret_cast<void*>(p);
+        p = nullptr;
+    } else if(rhv.name == "bool")
+    {
+        bool* p = new bool{*static_cast<bool*>(rhv.value)};
+        value = reinterpret_cast<void*>(p);
+        p = nullptr;
+    } else if(rhv.name == "string")
+    {
+        std::string* p = new std::string{*static_cast<std::string*>(rhv.value)};
+        value = reinterpret_cast<void*>(p);
+        p = nullptr;
+    } else if(rhv.name == "array")
+    {
+        std::vector<Object*>* p = new std::vector<Object*>{*static_cast<std::vector<Object*>*>(rhv.value)};
+        value = reinterpret_cast<void*>(p);
+        p = nullptr;
+    } else
+    {
+        throw std::runtime_error("can't execute this opereation");
+    }
+}
+
+const Object& Object::operator=(const Object& rhv)
+{
+    if (this != &rhv)
+    {
+        clear();
+        name = rhv.name;
+        if (rhv.value)
+        {
+            if (name == "Int")
+                value = new int(*static_cast<int*>(rhv.value));
+            else if (name == "double")
+                value = new double(*static_cast<double*>(rhv.value));
+            else if (name == "bool")
+                value = new bool(*static_cast<bool*>(rhv.value));
+            else if (name == "string")
+                value = new std::string(*static_cast<std::string*>(rhv.value));
+            else if (name == "array")
+            {
+                auto& rhvVec = *static_cast<std::vector<Object*>*>(rhv.value);
+                auto newVec = new std::vector<Object*>();
+                for (auto& obj : rhvVec)
+                {
+                    newVec->push_back(obj->clone());
+                }
+                value = newVec;
+            }
+            else
+            {
+                throw std::runtime_error("Unsupported type");
+            } 
+        }
+    }
+    return *this;
+}
+
+const Object& Object::operator=(Object&& rhv)
+{
+    if (this != &rhv)
+    {
+        clear();
+
+        name = std::move(rhv.name);
+        value = rhv.value;
+        rhv.value = nullptr;
+    }
+    return *this;
+}
+
+Object* Object::clone() 
+{
+    throw std::runtime_error("can't exectute this operation");
+}
+
 std::string Object::__str__() 
 {
     return "Object";
@@ -40,6 +133,11 @@ Object Object::__mul__(Object*)
 Object Object::__div__(Object*)
 {
     throw std::runtime_error("This operation is not supported for this objects");
+}
+
+Object Object::__neg__()
+{
+    throw std::runtime_error("This operation is not supported for this object");
 }
 
 Object Object::__or__(Object*)
@@ -170,6 +268,37 @@ int Object::__size__()
 Object Object::__at__(int)
 {
     throw std::runtime_error("This operation is not supported for this objects");
+}
+
+void Object::clear()
+{
+    if (name == "array" && value)
+    {
+        auto& elements = *static_cast<std::vector<Object*>*>(value);
+        for (auto obj : elements)
+        {
+            delete obj;
+        }
+        delete static_cast<std::vector<Object*>*>(value);
+    }
+    else if (name == "Int")
+    {
+        delete static_cast<int*>(value);
+    }
+    else if (name == "double")
+    {
+        delete static_cast<double*>(value);
+    }
+    else if (name == "bool")
+    {
+        delete static_cast<bool*>(value);
+    }
+    else if (name == "string")
+    {
+        delete static_cast<std::string*>(value);
+    }
+   
+    value = nullptr;
 }
 
 Object::~Object()
@@ -303,6 +432,12 @@ Object Int::__div__(Object* other)
         return new_obj;
     }
     throw std::invalid_argument("Conversion from this type to int is not supported.");
+}
+
+Object Int::__neg__()
+{
+    Int ans = -*static_cast<int*>(value);
+    return ans;
 }
 
 Object Int::__or__(Object* other)
@@ -538,6 +673,11 @@ bool Int::__not_equal__(Object* other)
     } 
     throw std::runtime_error("This operation is not supported for this objects");
 }
+
+Object* Int::clone()
+{
+    return new Int(*static_cast<int*>(value));
+}
 /////////////////////////////////////////////
 
 
@@ -626,6 +766,12 @@ Object Double::__div__(Object* other)
         return new_obj;
     }
     throw std::invalid_argument("Conversion from this type to double is not supported.");
+}
+
+Object Double::__neg__()
+{
+    Double ans = -*static_cast<double*>(value);
+    return ans;
 }
 
 void Double::__add_assign__(Object* other)
@@ -720,6 +866,11 @@ bool Double::__not_equal__(Object* other)
         return *(static_cast<double*>(value)) != *(static_cast<double*>(other->value));
     } 
     throw std::runtime_error("This operation is not supported for this objects");
+}
+
+Object* Double::clone()
+{
+    return new Double(*static_cast<double*>(value));
 }
 ///////////////////////////////////////////////
 
@@ -872,7 +1023,14 @@ bool Bool::__not_equal__(Object* other)
     } 
     throw std::runtime_error("This operation is not supported for this objects");
 }
+
+Object* Bool::clone()
+{
+    return new Bool(*static_cast<bool*>(value));
+}
 /////////////////////////////////////////////
+
+
 
 ////////////////////// STRING /////////////
 String::String() 
@@ -973,7 +1131,7 @@ void String::__pop__()
 
 int String::__size__()
 {
-    (static_cast<std::string*>(value))->size();
+    return (static_cast<std::string*>(value))->size();
 }
 
 Object String::__at__(int index)
@@ -983,9 +1141,12 @@ Object String::__at__(int index)
     String ans = new_string;
     return ans;
 }
+
+Object* String::clone()
+{
+    return new String(*static_cast<std::string*>(value));
+}
 /////////////////////////////////////////////////////
-
-
 
 
 
@@ -1274,6 +1435,11 @@ Object Array::__at__(int index)
     std::vector<Object*>* vec = static_cast<std::vector<Object*>*>(value);
     Object ans = *(vec->at(index));
     vec = nullptr;
+}
+
+Object* Array::clone()
+{
+    return new Array(this);
 }
 //////////////////////////////////////////
 
