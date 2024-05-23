@@ -19,21 +19,21 @@ Interpreter::~Interpreter()
     std::cout << "Interpreter destroyed." << std::endl;
 }
 
-void Interpreter::interpret(const std::string& code) {
-    parsed_code = codeParser.tokenize(code);
-    if (codeParser.isValid(parsed_code)) {
-        for (const auto& line : parsed_code) {
-            std::istringstream iss(line);
-            std::vector<std::string> tokens;
-            std::string token;
-            while (iss >> token) {
-                tokens.push_back(token);
-            }
-            execute(tokens);
-        }
-    } else {
-        std::cerr << "Error: Invalid code." << std::endl;
-    }
+// void Interpreter::interpret(const std::string& code) {
+//     parsed_code = codeParser.tokenize(code);
+//     if (codeParser.isValid(parsed_code)) {
+//         for (const auto& line : parsed_code) {
+//             std::istringstream iss(line);
+//             std::vector<std::string> tokens;
+//             std::string token;
+//             while (iss >> token) {
+//                 tokens.push_back(token);
+//             }
+//             execute(tokens);
+//         }
+//     } else {
+//         std::cerr << "Error: Invalid code." << std::endl;
+//     }
 }
 
 void Interpreter::execute(const std::vector<std::string>& tokens) {
@@ -115,7 +115,7 @@ void Interpreter::executeLoop(const std::vector<std::string>& tokens, size_t& in
     index += 2; 
     Object* start = evaluateExpression(tokens, index);
     Object* end = evaluateExpression(tokens, index);
-    Object* step = new Int(1);
+    Object* step = new Int(1);// hly vor mi haytarareq
 
     if (tokens[index] == ":") {
         index += 1;
