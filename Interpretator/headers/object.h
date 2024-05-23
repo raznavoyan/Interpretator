@@ -6,10 +6,6 @@
 #include <initializer_list>
 #include <vector>
 
-
-//add copy assigments
-//count initiialize with 0
-//unar -
 struct Object 
 {
     std::string name;
@@ -17,7 +13,12 @@ struct Object
     int count;
 
     Object(std::string n, void* v);
+    Object(Object&&);
+    Object(const Object&);
     virtual ~Object();
+
+    const Object& operator=(const Object&);
+    const Object& operator=(Object&&);
 
     virtual std::string __str__();
 
@@ -26,6 +27,7 @@ struct Object
     virtual Object __mod__(Object*);
     virtual Object __mul__(Object*);
     virtual Object __div__(Object*);
+    virtual Object __neg__();
 
     virtual Object __or__(Object*);
     virtual Object __and__(Object*);
@@ -57,6 +59,10 @@ struct Object
     virtual void __pop__(); // for string and array push is the same as add(use add)
     virtual int __size__();
     virtual Object __at__(int);
+
+    private:
+    void clear();
+    virtual Object* clone();
 };
 
 struct Int : public Object 
@@ -72,6 +78,7 @@ struct Int : public Object
     Object __mod__(Object* other) override;
     Object __mul__(Object* other) override;
     Object __div__(Object* other) override;
+    Object __neg__() override;
 
     Object __or__(Object* other) override;
     Object __and__(Object* other) override;
@@ -99,6 +106,9 @@ struct Int : public Object
     bool __less_equal__(Object*) override;
     bool __equal__(Object*) override;
     bool __not_equal__(Object*) override;
+
+    private:
+    Object* clone() override;
 };
 
 struct Double : public Object 
@@ -113,6 +123,7 @@ struct Double : public Object
     Object __sub__(Object* other) override;
     Object __mul__(Object* other) override;
     Object __div__(Object* other) override;
+    Object __neg__() override;
 
     void __add_assign__(Object*) override;
     void __sub_assign__(Object*) override;
@@ -125,6 +136,9 @@ struct Double : public Object
     bool __less_equal__(Object*) override;
     bool __equal__(Object*) override;
     bool __not_equal__(Object*) override;
+
+    private:
+    Object* clone() override;
 };
 
 struct Bool : public Object {
@@ -147,6 +161,9 @@ struct Bool : public Object {
     bool __less_equal__(Object*) override;
     bool __equal__(Object*) override;
     bool __not_equal__(Object*) override;
+
+    private:
+    Object* clone() override;
 };
 
 struct String : public Object 
@@ -171,6 +188,9 @@ struct String : public Object
     void __pop__() override;
     int __size__() override;
     Object __at__(int) override;
+
+    private:
+    Object* clone() override;
 };
 
 struct Array : public Object 
@@ -189,6 +209,9 @@ struct Array : public Object
     void __pop__() override;
     int __size__() override;
     Object __at__(int) override;
+
+    private:
+    Object* clone() override;
 };
 
 #endif
