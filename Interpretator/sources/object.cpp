@@ -1203,10 +1203,10 @@ Array::Array(Object* ptr)
                 (*vec_ptr)[i] = new Int{*static_cast<int*>((ptr->__at__(i)).value)};
             } else if((ptr->__at__(i)).name == "bool")
             {
-                (*vec_ptr)[i] = new Bool{*static_cast<double*>((ptr->__at__(i)).value)};
+                (*vec_ptr)[i] = new Bool{*static_cast<bool*>((ptr->__at__(i)).value)};
             } else if((ptr->__at__(i)).name == "double")
             {
-                (*vec_ptr)[i] = new Double{*static_cast<bool*>((ptr->__at__(i)).value)};
+                (*vec_ptr)[i] = new Double{*static_cast<double*>((ptr->__at__(i)).value)};
             } else if((ptr->__at__(i)).name == "string")
             {
                 (*vec_ptr)[i] = new String{*static_cast<std::string*>((ptr->__at__(i)).value)};
@@ -1428,6 +1428,7 @@ int Array::__size__()
     std::vector<Object*>* vec = static_cast<std::vector<Object*>*>(value);
     int ans = vec->size();
     vec = nullptr;
+    return ans;
 }
 
 Object Array::__at__(int index)
@@ -1435,6 +1436,7 @@ Object Array::__at__(int index)
     std::vector<Object*>* vec = static_cast<std::vector<Object*>*>(value);
     Object ans = *(vec->at(index));
     vec = nullptr;
+    return ans;
 }
 
 Object* Array::clone()
