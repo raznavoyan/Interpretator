@@ -49,12 +49,12 @@ struct Object
     virtual void __lshift_assign__(Object*);
     virtual void __rshift_assign__(Object*);
 
-    virtual bool __more__(Object*);
-    virtual bool __less__(Object*);
-    virtual bool __more_equal__(Object*);
-    virtual bool __less_equal__(Object*);
-    virtual bool __equal__(Object*);
-    virtual bool __not_equal__(Object*);
+    virtual Object __more__(Object*);
+    virtual Object __less__(Object*);
+    virtual Object __more_equal__(Object*);
+    virtual Object __less_equal__(Object*);
+    virtual Object __equal__(Object*);
+    virtual Object __not_equal__(Object*);
 
     virtual void __pop__(); // for string and array push is the same as add(use add)
     virtual int __size__(); // for arrays and strings
@@ -100,12 +100,12 @@ struct Int : public Object
     void __lshift_assign__(Object*) override;
     void __rshift_assign__(Object*) override;
 
-    bool __more__(Object*) override;
-    bool __less__(Object*) override;
-    bool __more_equal__(Object*) override;
-    bool __less_equal__(Object*) override;
-    bool __equal__(Object*) override;
-    bool __not_equal__(Object*) override;
+    Object __more__(Object*) override;
+    Object __less__(Object*) override;
+    Object __more_equal__(Object*) override;
+    Object __less_equal__(Object*) override;
+    Object __equal__(Object*) override;
+    Object __not_equal__(Object*) override;
 
     private:
     Object* clone() override;
@@ -130,12 +130,12 @@ struct Double : public Object
     void __mul_assign__(Object*) override;
     void __div_assign__(Object*) override;
 
-    bool __more__(Object*) override;
-    bool __less__(Object*) override;
-    bool __more_equal__(Object*) override;
-    bool __less_equal__(Object*) override;
-    bool __equal__(Object*) override;
-    bool __not_equal__(Object*) override;
+    Object __more__(Object*) override;
+    Object __less__(Object*) override;
+    Object __more_equal__(Object*) override;
+    Object __less_equal__(Object*) override;
+    Object __equal__(Object*) override;
+    Object __not_equal__(Object*) override;
 
     private:
     Object* clone() override;
@@ -155,12 +155,12 @@ struct Bool : public Object {
     Object __and__(Object*) override;
     Object __den__() override;
 
-    bool __more__(Object*) override;
-    bool __less__(Object*) override;
-    bool __more_equal__(Object*) override;
-    bool __less_equal__(Object*) override;
-    bool __equal__(Object*) override;
-    bool __not_equal__(Object*) override;
+    Object __more__(Object*) override;
+    Object __less__(Object*) override;
+    Object __more_equal__(Object*) override;
+    Object __less_equal__(Object*) override;
+    Object __equal__(Object*) override;
+    Object __not_equal__(Object*) override;
 
     private:
     Object* clone() override;
@@ -178,12 +178,12 @@ struct String : public Object
 
     void __add_assign__(Object*) override;
 
-    bool __more__(Object*) override;
-    bool __less__(Object*) override;
-    bool __more_equal__(Object*) override;
-    bool __less_equal__(Object*) override;
-    bool __equal__(Object*) override;
-    bool __not_equal__(Object*) override;
+    Object __more__(Object*) override;
+    Object __less__(Object*) override;
+    Object __more_equal__(Object*) override;
+    Object __less_equal__(Object*) override;
+    Object __equal__(Object*) override;
+    Object __not_equal__(Object*) override;
 
     void __pop__() override;
     int __size__() override;

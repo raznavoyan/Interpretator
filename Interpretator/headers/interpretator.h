@@ -19,12 +19,15 @@ public:
 
 private:
     symtab symbolTable;
-    std::vector<std::string> parsed_code;
+    parser codeParser;
+    std::vector<std::string> code;
+
   
     void execute(const std::vector<std::string>& tokens);
     void executeAssignment(const std::vector<std::string>& tokens, size_t& index);
     void executeIf(const std::vector<std::string>& tokens, size_t& index);
     void executeOtherwiseIf(const std::vector<std::string>& tokens, size_t& index);
+    void executeOtherwise(const std::vector<std::string>& tokens, size_t& index);
     void executeDuring(const std::vector<std::string>& tokens, size_t& index);
     void executeLoop(const std::vector<std::string>& tokens, size_t& index);
     void executeBlock(const std::vector<std::string>& tokens, size_t& index);
