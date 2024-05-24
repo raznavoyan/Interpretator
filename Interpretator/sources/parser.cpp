@@ -1,5 +1,27 @@
 #include "parser.h"
 
+std::string parser::typeOf(std::string arg){
+    // Regular expressions for each type
+    std::regex int_regex(R"(^-?\d+$)");
+    std::regex bool_regex(R"(^true$|^false$)");
+    std::regex double_regex(R"(^-?\d*\.\d+$)");
+    std::regex string_regex(R"(^".*"$)");
+    std::regex array_regex(R"(^\[.*\]$)");
+
+    if (std::regex_match(arg, int_regex)) {
+        return "i";
+    } else if (std::regex_match(arg, bool_regex)) {
+        return "b";
+    } else if (std::regex_match(arg, double_regex)) {
+        return "d";
+    } else if (std::regex_match(arg, string_regex)) {
+        return "s";
+    } else if (std::regex_match(arg, array_regex)) {
+        return "a";
+    }
+    return "non type";
+}
+
 bool parser::isCustomDelimiter(char c) {
   static const std::unordered_set<char> delimiters = {
       '|', ':', ';', '{', '}', '=', '+',
