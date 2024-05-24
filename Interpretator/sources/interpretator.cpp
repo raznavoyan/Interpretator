@@ -185,7 +185,7 @@ Object* Interpreter::evaluateExpression(const std::vector<std::string>& tokens, 
     }
 }
 
-/*Object* Interpreter::getObject(const std::string& token) {
+Object* Interpreter::getObject(const std::string& token) {
     Object* obj = symbolTable.getVal(token);
     if (!obj) {
         std::cerr << "Error: Undefined variable " << token << std::endl;
@@ -193,7 +193,7 @@ Object* Interpreter::evaluateExpression(const std::vector<std::string>& tokens, 
     }
     return obj;
 }
-
+/*
 Object* Interpreter::parseValue(const std::string& token) {
     if (codeParser.isNumber(token)) {
         return new Int(std::stoi(token));
@@ -209,3 +209,4 @@ Object* Interpreter::parseValue(const std::string& token) {
 bool Interpreter::validVariableName(const std::string& var) {
     return !var.empty() && isalpha(var[0]);
 }
+*/
