@@ -1,21 +1,15 @@
-#include "../headers/interpreter.h"
+#include "interpreter.h"
 #include <iostream>
 #include <sstream>
 
-Interpreter::Interpreter()
-    //: last(std::chrono::steady_clock::now()) 
+Interpreter::Interpreter(parser::toks& code)
 {
-    symbolTable = symtab();
-    codeParser = parser();
     std::cout << "Interpreter initialized." << std::endl;
+    execute(code);
 }
 
 Interpreter::~Interpreter() 
 {
-    delete symbolTable;
-    // for (auto& pair : symbolTable.getAll()) {
-    //     delete pair.second;
-    // }
     std::cout << "Interpreter destroyed." << std::endl;
 }
 
@@ -34,26 +28,30 @@ Interpreter::~Interpreter()
 //     } else {
 //         std::cerr << "Error: Invalid code." << std::endl;
 //     }
-}
+//}
 
 void Interpreter::execute(const std::vector<std::string>& tokens) {
     size_t index = 0;
-    while (index < tokens.size()) {
-        const std::string& token = tokens[index];
-        if (token == "if") {
-            executeIf(tokens, index);
-        } else if (token == "otherwise") {
-            executeOtherwiseIf(tokens, index);
-        } else if (token == "during") {
-            executeDuring(tokens, index);
-        } else if (token == "loop") {
-            executeLoop(tokens, index);
-        } else if (token == "=") {
-            executeAssignment(tokens, index);
-        } else {
-            ++index;
-        }
+    while(index < tokens.size()){
+        
     }
+
+    // while (index < tokens.size()) {
+    //     const std::string& token = tokens[index];
+    //     if (token == "if") {
+    //         executeIf(tokens, index);
+    //     } else if (token == "otherwise") {
+    //         executeOtherwiseIf(tokens, index);
+    //     } else if (token == "during") {
+    //         executeDuring(tokens, index);
+    //     } else if (token == "loop") {
+    //         executeLoop(tokens, index);
+    //     } else if (token == "=") {
+    //         executeAssignment(tokens, index);
+    //     } else {
+    //         ++index;
+    //     }
+    // }
 }
 
 void Interpreter::executeAssignment(const std::vector<std::string>& tokens, size_t& index) {
@@ -64,7 +62,7 @@ void Interpreter::executeAssignment(const std::vector<std::string>& tokens, size
 }
 
 void Interpreter::executeIf(const std::vector<std::string>& tokens, size_t& index) {
-    ++index; 
+    ++index;
     Object* condition = evaluateExpression(tokens, index);
     if (condition->__equal__(new Bool(true))) {
         executeBlock(tokens, index);

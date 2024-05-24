@@ -14,4 +14,7 @@ include_directories(
 add_executable(Interpretor
     EDI.cpp
     object.cpp
+    interpretor.cpp
+    parser.cpp
+    symtab.cpp
 )
