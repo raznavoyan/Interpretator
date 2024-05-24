@@ -1,12 +1,12 @@
 
-#include "../headers/interpretator.h"
-#include "../headers/parser.h"
-#include "../headers/symtab.h"
+#include "interpretator.h"
+#include "parser.h"
+#include "symtab.h"
 
 #include <iostream>
 #include <sstream>
 
-Interpreter::Interpreter(parser::toks& code)
+Interpreter::Interpreter(std::vector<std::string> code)
 {
     std::cout << "Interpreter initialized." << std::endl;
     execute(code);
@@ -16,22 +16,6 @@ Interpreter::~Interpreter()
 {
     std::cout << "Interpreter destroyed." << std::endl;
 }
-
-// void Interpreter::interpret(const std::string& code) {
-//     parsed_code = codeParser.tokenize(code);
-//     if (codeParser.isValid(parsed_code)) {
-//         for (const auto& line : parsed_code) {
-//             std::istringstream iss(line);
-//             std::vector<std::string> tokens;
-//             std::string token;
-//             while (iss >> token) {
-//                 tokens.push_back(token);
-//             }
-//             execute(tokens);
-//         }
-//     } else {
-//         std::cerr << "Error: Invalid code." << std::endl;
-//     }
 
 void Interpreter::execute(const std::vector<std::string>& tokens) {
     size_t index = 0;
@@ -75,30 +59,13 @@ void Interpreter::execute(const std::vector<std::string>& tokens) {
         ++index;
 
     }
-
-    // while (index < tokens.size()) {
-    //     const std::string& token = tokens[index];
-    //     if (token == "if") {
-    //         executeIf(tokens, index);
-    //     } else if (token == "otherwise") {
-    //         executeOtherwiseIf(tokens, index);
-    //     } else if (token == "during") {
-    //         executeDuring(tokens, index);
-    //     } else if (token == "loop") {
-    //         executeLoop(tokens, index);
-    //     } else if (token == "=") {
-    //         executeAssignment(tokens, index);
-    //     } else {
-    //         ++index;
-    //     }
-    // }
 }
 
 void Interpreter::executeAssignment(const std::vector<std::string>& tokens, size_t& index) 
 {
     std::string variableName = tokens[index - 2];
     index += 1; 
-    Object* value = evaluateExpression(tokens, index);
+    Object* value = createObject(index);
     symbolTable.setVal(variableName, value);
 }
 
@@ -183,6 +150,7 @@ void Interpreter::executeDuring(const std::vector<std::string>& tokens, size_t& 
 
 void Interpreter::executeLoop(const std::vector<std::string>& tokens, size_t& index) 
 {
+    //Ex: loop : a = 5 -> 10{}
     if(tokens[index] != ":")
     {
         std::runtime_error("expected : after loop");
@@ -192,41 +160,64 @@ void Interpreter::executeLoop(const std::vector<std::string>& tokens, size_t& in
     {
         std::runtime_error("not a variable name");
     }
-    std::string variableName = tokens[index];
+    std::string startName = tokens[index];
     ++index;
     if(tokens[index] != "=")
     {
         std::runtime_error("expected =");
     }
-    ++index; 
-    executeAssignment(tokens, index);
+    ++index;
+    Object* start = nullptr;
+    if(parser::isNumber(tokens[index])){
+        start = createObject(index);
+        symbolTable.setVal(startName, start);
+    }else if (symbolTable.are(tokens[index])) {
+        *start = *symbolTable.getVal(tokens[index]);
+        symbolTable.setVal(startName, start);
+    }else{
+        std::runtime_error("expected: value");
+    }
+
 
     if(tokens[index] != "->")
     {
         throw std::runtime_error("expected ->");
     }    
     ++index;
-    Object* end = evaluateExpression(tokens, index);
-    Object* step = (tokens[index] == ",") ? evaluateExpression(tokens, index) : new Int(1);
+    Object* end = nullptr;
+    if(parser::isNumber(tokens[index])){
+        end = createObject(index);
+        symbolTable.setVal("end" + std::to_string(index), end);
+    }else if (symbolTable.are(tokens[index])) {
+        end = symbolTable.getVal(tokens[index]);
+    }else {
+        std::runtime_error("expected: value");
+    }
+    ++index;
+
+    Object* step = nullptr;
+    if(tokens[index++] == ","){
+        if(parser::isNumber(tokens[index])){
+            step = createObject(index);
+            symbolTable.setVal("step" + std::to_string(index), step);
+        }else if (symbolTable.are(tokens[index])) {
+            step = symbolTable.getVal(tokens[index]);
+        }else{
+            std::runtime_error("expected: value");
+        }
+    }else{
+        step = 
+        symbolTable.setVal("step" + std::to_string(index), step);
+    }
     while (tokens[index++] != "{");
 
     if (tokens[index] == "{") {
-        ++index; 
-        if (*static_cast<bool*>((step->__equal__(new Int(1))).value)) {
-            for (Object* i = start; i->__less_equal__(end); i = i->__add__(new Int(1))) {
-                symbolTable.setVal(variableName, i);
+        ++index;
+            for (Object* i = start; (i->__equal__(end).__str__()) == "true"; *i = i->__add__(step)) {
                 size_t blockStart = index;
                 executeBlock(tokens, index);
                 index = blockStart; 
             }
-        } else {
-            for (Object* i = start; i->__more_equal__(end); i = i->__sub__(new Int(1))) {
-                symbolTable.setVal(variableName, i);
-                size_t blockStart = index;
-                executeBlock(tokens, index);
-                index = blockStart; 
-            }
-        }
         while (tokens[index] != "}") {
             ++index;
         }
@@ -256,46 +247,110 @@ void Interpreter::runLine(const std::vector<std::string>& tokens)
 }
 */
 
-Object* Interpreter::evaluateExpression(const std::vector<std::string>& tokens, size_t& index)
-{
+Object* Interpreter::evaluateExpression(const std::vector<std::string>& tokens, size_t& index) {
+    // Handle base cases:
+    if (index >= tokens.size()) {
+        // Error: Unexpected end of expression
+        return nullptr;
+    }
+    Object* tmp = nullptr;
+    if(parser::typeOf(tokens[index]) != "undefine"){
+        tmp = createObject(index);
+        symbolTable.setVal(("tmp" + std::to_string(index)), tmp);
+    }else if (symbolTable.are(tokens[index])) {
+        tmp = symbolTable.getVal(tokens[index]);
+    }else if (parser::isBinaryOperator(tokens[index])) {
+        // Validate operand availability and types
+        if (index + 1 >= tokens.size()) {
+            // Error: Missing or invalid operand
+            return nullptr;
+        }
 
-    Object* tmp = new Object;
-
-
-
-
-
-
-
-
-
-
-    symbolTable.setVal("__tmp__", tmp);
+        Object* left = evaluateExpression(tokens, ++index); // Recursively evaluate left operand
+        if (!left) {
+            return nullptr;
+        }
+        
+        if (tokens[index - 1] == "+") {
+            *tmp = tmp->__add__(left);
+        } else if (tokens[index - 1] == "-") {
+            *tmp = tmp->__sub__(left);
+        } else if (tokens[index - 1] == "*") {
+            *tmp = tmp->__mul__(left);
+        } else if (tokens[index - 1] == "/") {
+            *tmp = tmp->__div__(left);
+        } else {
+            // Error: Unsupported binary operator
+            return nullptr;
+        }
+    }
+    if(tmp != nullptr)
+    symbolTable.setVal(("tmp" + std::to_string(index)), tmp);
     return tmp;
 }
-/*
-Object* Interpreter::getObject(const std::string& token) {
-    Object* obj = symbolTable.getVal(token);
-    if (!obj) {
-        std::cerr << "Error: Undefined variable " << token << std::endl;
-        exit(EXIT_FAILURE);
-    }
-    return obj;
-}
 
-Object* Interpreter::parseValue(const std::string& token) {
-    if (codeParser.isNumber(token)) {
-        return new Int(std::stoi(token));
-    } else if (token == "true") {
-        return new Bool(true);
-    } else if (token == "false") {
-        return new Bool(false);
-    } else {
-        return symbolTable.getVal(tokens[index++]);
+// Helper functions for evaluating expressions (implement these as needed):
+Object* Interpreter::createObject(size_t&  index) {
+    if (index >= code.size()) {
+        throw std::out_of_range("Index out of bounds in createObject");
     }
-}
 
-bool Interpreter::isVariableName(const std::string& var) {
-    return !var.empty() && isalpha(var[0]);
+    std::string value = code[index];
+    std::string valtype = parser::typeOf(value); // Assuming parser class provides type information
+
+    Object* tmp = nullptr;
+    char t = static_cast<char>(valtype[0]);
+    switch (t) {
+        case 'i': // INT
+            try {
+                tmp = new Int(std::stoi(value));
+            } catch (const std::invalid_argument& e) {
+                throw std::runtime_error("Invalid integer value: " + value);
+            }
+            break;
+        case 'd': // DOUBLE
+            try {
+                tmp = new Double(std::stod(value));
+            } catch (const std::invalid_argument& e) {
+                throw std::runtime_error("Invalid double value: " + value);
+            }
+            break;
+        case 'b': // BOOL
+            bool val = (value == "true" ? true : false);
+            tmp = new Bool(val);
+            break;
+        case 's': // STRING
+            tmp = new String(value);
+            break;
+        case 'a':
+            break;
+        default:
+            throw std::out_of_range("No such type of variable: " + value);
+         
+    }
+    if(t == 'a'){
+        // ARRAY
+            // Handle array creation using tokens from the code vector:
+            if (index + 1 >= code.size() || code[index + 1] != "(") {
+                throw std::runtime_error("Invalid array syntax: missing opening parenthesis");
+            }
+            
+            ++index;
+            std::vector<Object*> elements;
+
+            // Recursively parse array elements until closing parenthesis:
+            while (index < code.size() && code[index] != "]") {
+                elements.push_back(createObject(index));
+                ++index;
+            }
+
+            if (index >= code.size() || code[index] != "]") {
+                throw std::runtime_error("Invalid array syntax: missing closing parenthesis");
+            }
+            ++index;
+            tmp = new Array(elements);
+            return tmp;
+    }
+
+    return tmp;
 }
-*/

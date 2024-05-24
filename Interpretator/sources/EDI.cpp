@@ -38,7 +38,7 @@ main(int argc, char* argv[])
 
     parser pars;
     // Tokenize file contents based on custom delimiters and operators
-    toks tokens = pars.tokenize(file_contents);
+    std::vector<std::string> tokens = pars.tokenize(file_contents);
 
     // // Display tokens (for demonstration)
     // std::cout << "Tokens:" << std::endl;

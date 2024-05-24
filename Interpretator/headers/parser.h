@@ -21,6 +21,7 @@ public:
     static bool isAMath(const std::string& tok);
     static bool isVariableName(const std::string& name);
     static bool isNumber(const std::string& str);
+    static bool isBinaryOperator(const std::string& token);
 };
 
 #endif

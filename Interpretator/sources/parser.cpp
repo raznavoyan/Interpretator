@@ -19,7 +19,7 @@ std::string parser::typeOf(std::string arg){
     } else if (std::regex_match(arg, array_regex)) {
         return "a";
     }
-    return "non type";
+    return "undefine";
 }
 
 bool parser::isCustomDelimiter(char c) {
@@ -64,7 +64,7 @@ parser::toks parser::tokenize(const std::string& input) {
 
 bool parser::isAKeyword(const std::string& tok) {
   static const std::unordered_set<std::string> keywords = {
-      "if", "otherwise", "loop", "during"
+      "if", "otherwise", "loop", "during", "true", "false"
   };
   return keywords.count(tok) > 0;
 }
@@ -86,4 +86,24 @@ bool parser::isVariableName(const std::string& name) {
 bool parser::isNumber(const std::string& str) {
   std::regex number_regex(R"(\d+)");
   return std::regex_match(str, number_regex);
+}
+
+bool parser::isBinaryOperator(const std::string& token) {
+  // Common binary arithmetic operators
+  static const std::unordered_set<std::string> binaryOps = {
+    "+", "-", "*", "/", "%", "^"
+  };
+
+  // Common binary comparison operators
+  static const std::unordered_set<std::string> comparisonOps = {
+    "==", "!=", "<", ">", "<=", ">="
+  };
+
+  // Logical operators
+  static const std::unordered_set<std::string> logicalOps = {
+    "&&", "||"
+  };
+
+  // Check if the token is in any of the pre-defined sets
+  return binaryOps.count(token) || comparisonOps.count(token) || logicalOps.count(token);
 }

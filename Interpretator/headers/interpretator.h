@@ -12,17 +12,13 @@
 
 class Interpreter {
 public:
-    Interpreter(parser::toks code);
+    Interpreter(std::vector<std::string> code);
     ~Interpreter();
-
-    //void interpret(const std::string& code);
-
 private:
     symtab symbolTable;
     parser codeParser;
     std::vector<std::string> code;
-
-  
+    Object* createObject(size_t&  index);
     void execute(const std::vector<std::string>& tokens);
     void executeAssignment(const std::vector<std::string>& tokens, size_t& index);
     void executeIf(const std::vector<std::string>& tokens, size_t& index);
@@ -34,5 +30,7 @@ private:
     void runLine(const std::vector<std::string>& tokens);
     Object* evaluateExpression(const std::vector<std::string>& tokens, size_t& index);
 };
+
+
 
 #endif // INTERPRETER_H
