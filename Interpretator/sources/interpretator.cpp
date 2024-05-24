@@ -181,7 +181,6 @@ Object* Interpreter::evaluateExpression(const std::vector<std::string>& tokens, 
         ++index;
         return new Bool(false);
     } else {
-<<<<<<< HEAD
         return getObject(tokens[index++]);
     }
 }
