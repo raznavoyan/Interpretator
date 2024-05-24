@@ -49,7 +49,7 @@ main(int argc, char* argv[])
     symtab stb;
     
 
-    //Interpreter i(tokens);
+    Interpreter (tokens);
 
 
     std::cout << "End of program!" << std::endl;
