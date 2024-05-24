@@ -64,7 +64,7 @@ parser::toks parser::tokenize(const std::string& input) {
 
 bool parser::isAKeyword(const std::string& tok) {
   static const std::unordered_set<std::string> keywords = {
-      "if", "otherwise", "true", "false", "loop", "during", ".", "->"
+      "if", "otherwise", "loop", "during"
   };
   return keywords.count(tok) > 0;
 }
