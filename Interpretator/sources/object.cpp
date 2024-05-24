@@ -225,32 +225,32 @@ void Object::__rshift_assign__(Object*)
     throw std::runtime_error("This operation is not supported for this objects");
 }
 
-bool Object::__more__(Object*)
+Object Object::__more__(Object*)
 {
     throw std::runtime_error("This operation is not supported for this objects");
 }
 
-bool Object::__less__(Object*)
+Object Object::__less__(Object*)
 {
     throw std::runtime_error("This operation is not supported for this objects");
 }
 
-bool Object::__more_equal__(Object*)
+Object Object::__more_equal__(Object*)
 {
     throw std::runtime_error("This operation is not supported for this objects");
 }
 
-bool Object::__less_equal__(Object*)
+Object Object::__less_equal__(Object*)
 {
     throw std::runtime_error("This operation is not supported for this objects");
 }
 
-bool Object::__equal__(Object*)
+Object Object::__equal__(Object*)
 {
     throw std::runtime_error("This operation is not supported for this objects");
 }
 
-bool Object::__not_equal__(Object*)
+Object Object::__not_equal__(Object*)
 {
     throw std::runtime_error("This operation is not supported for this objects");
 }
@@ -620,56 +620,56 @@ void Int::__rshift_assign__(Object* other)
     throw std::runtime_error("This operation is not supported for this objects");
 }
 
-bool Int::__more__(Object* other)
+Object Int::__more__(Object* other)
 {
     if(other->name == "int" || other->name == "bool" || other->name == "double")
     {
-        return *(static_cast<int*>(value)) > *(static_cast<int*>(other->value));
+        return Bool(*(static_cast<int*>(value)) > *(static_cast<int*>(other->value)));
     } 
     throw std::runtime_error("This operation is not supported for this objects");
 }
 
-bool Int::__less__(Object* other)
+Object Int::__less__(Object* other)
 {
     if(other->name == "int" || other->name == "bool" || other->name == "double")
     {
-        return *(static_cast<int*>(value)) < *(static_cast<int*>(other->value));
+        return Bool(*(static_cast<int*>(value)) < *(static_cast<int*>(other->value)));
     } 
     throw std::runtime_error("This operation is not supported for this objects");
 }
 
-bool Int::__more_equal__(Object* other)
+Object Int::__more_equal__(Object* other)
 {
     if(other->name == "int" || other->name == "bool" || other->name == "double")
     {
-        return *(static_cast<int*>(value)) >= *(static_cast<int*>(other->value));
+        return Bool(*(static_cast<int*>(value)) >= *(static_cast<int*>(other->value)));
     } 
     throw std::runtime_error("This operation is not supported for this objects");
 }
 
-bool Int::__less_equal__(Object* other)
+Object Int::__less_equal__(Object* other)
 {
     if(other->name == "int" || other->name == "bool" || other->name == "double")
     {
-        return *(static_cast<int*>(value)) <= *(static_cast<int*>(other->value));
+        return Bool(*(static_cast<int*>(value)) <= *(static_cast<int*>(other->value)));
     } 
     throw std::runtime_error("This operation is not supported for this objects");
 }
 
-bool Int::__equal__(Object* other)
+Object Int::__equal__(Object* other)
 {
     if(other->name == "int" || other->name == "bool" || other->name == "double")
     {
-        return *(static_cast<int*>(value)) == *(static_cast<int*>(other->value));
+        return Bool(*(static_cast<int*>(value)) == *(static_cast<int*>(other->value)));
     } 
     throw std::runtime_error("This operation is not supported for this objects");
 }
 
-bool Int::__not_equal__(Object* other)
+Object Int::__not_equal__(Object* other)
 {
     if(other->name == "int" || other->name == "bool" || other->name == "double")
     {
-        return *(static_cast<int*>(value)) != *(static_cast<int*>(other->value));
+        return Bool(*(static_cast<int*>(value)) != *(static_cast<int*>(other->value)));
     } 
     throw std::runtime_error("This operation is not supported for this objects");
 }
@@ -814,56 +814,56 @@ void Double::__mul_assign__(Object* other)
     throw std::runtime_error("This operation is not supported for this objects");
 }
 
-bool Double::__more__(Object* other)
+Object Double::__more__(Object* other)
 {
     if(other->name == "int" || other->name == "double")
     {
-        return *(static_cast<double*>(value)) > *(static_cast<double*>(other->value));
+        return Bool(*(static_cast<double*>(value)) > *(static_cast<double*>(other->value)));
     } 
     throw std::runtime_error("This operation is not supported for this objects");
 }
 
-bool Double::__less__(Object* other)
+Object Double::__less__(Object* other)
 {
     if(other->name == "int" || other->name == "double")
     {
-        return *(static_cast<double*>(value)) < *(static_cast<double*>(other->value));
+        return Bool(*(static_cast<double*>(value)) < *(static_cast<double*>(other->value)));
     } 
     throw std::runtime_error("This operation is not supported for this objects");
 }
 
-bool Double::__more_equal__(Object* other)
+Object Double::__more_equal__(Object* other)
 {
     if(other->name == "int" || other->name == "double")
     {
-        return *(static_cast<double*>(value)) >= *(static_cast<double*>(other->value));
+        return Bool(*(static_cast<double*>(value)) >= *(static_cast<double*>(other->value)));
     } 
     throw std::runtime_error("This operation is not supported for this objects");
 }
 
-bool Double::__less_equal__(Object* other)
+Object Double::__less_equal__(Object* other)
 {
     if(other->name == "int" || other->name == "double")
     {
-        return *(static_cast<double*>(value)) <= *(static_cast<double*>(other->value));
+        return Bool(*(static_cast<double*>(value)) <= *(static_cast<double*>(other->value)));
     } 
     throw std::runtime_error("This operation is not supported for this objects");
 }
 
-bool Double::__equal__(Object* other)
+Object Double::__equal__(Object* other)
 {
     if(other->name == "int" || other->name == "double")
     {
-        return *(static_cast<double*>(value)) == *(static_cast<double*>(other->value));
+        return Bool(*(static_cast<double*>(value)) == *(static_cast<double*>(other->value)));
     } 
     throw std::runtime_error("This operation is not supported for this objects");
 }
 
-bool Double::__not_equal__(Object* other)
+Object Double::__not_equal__(Object* other)
 {
     if(other->name == "int" || other->name == "double")
     {
-        return *(static_cast<double*>(value)) != *(static_cast<double*>(other->value));
+        return Bool(*(static_cast<double*>(value)) != *(static_cast<double*>(other->value)));
     } 
     throw std::runtime_error("This operation is not supported for this objects");
 }
@@ -970,56 +970,56 @@ Object Bool::__den__()
     return new_obj;
 }
 
-bool Bool::__more__(Object* other)
+Object Bool::__more__(Object* other)
 {
     if(other->name == "int" || other->name == "bool")
     {
-        return *(static_cast<int*>(value)) > *(static_cast<int*>(other->value));
+        return Bool(*(static_cast<int*>(value)) > *(static_cast<int*>(other->value)));
     } 
     throw std::runtime_error("This operation is not supported for this objects");
 }
 
-bool Bool::__less__(Object* other)
+Object Bool::__less__(Object* other)
 {
     if(other->name == "int" || other->name == "bool")
     {
-        return *(static_cast<int*>(value)) < *(static_cast<int*>(other->value));
+        return Bool(*(static_cast<int*>(value)) < *(static_cast<int*>(other->value)));
     } 
     throw std::runtime_error("This operation is not supported for this objects");
 }
 
-bool Bool::__more_equal__(Object* other)
+Object Bool::__more_equal__(Object* other)
 {
     if(other->name == "int" || other->name == "bool")
     {
-        return *(static_cast<int*>(value)) >= *(static_cast<int*>(other->value));
+        return Bool(*(static_cast<int*>(value)) >= *(static_cast<int*>(other->value)));
     } 
     throw std::runtime_error("This operation is not supported for this objects");
 }
 
-bool Bool::__less_equal__(Object* other)
+Object Bool::__less_equal__(Object* other)
 {
     if(other->name == "int" || other->name == "bool")
     {
-        return *(static_cast<int*>(value)) <= *(static_cast<int*>(other->value));
+        return Bool(*(static_cast<int*>(value)) <= *(static_cast<int*>(other->value)));
     } 
     throw std::runtime_error("This operation is not supported for this objects");
 }
 
-bool Bool::__equal__(Object* other)
+Object Bool::__equal__(Object* other)
 {
     if(other->name == "int" || other->name == "bool")
     {
-        return *(static_cast<int*>(value)) == *(static_cast<int*>(other->value));
+        return Bool(*(static_cast<int*>(value)) == *(static_cast<int*>(other->value)));
     } 
     throw std::runtime_error("This operation is not supported for this objects");
 }
 
-bool Bool::__not_equal__(Object* other)
+Object Bool::__not_equal__(Object* other)
 {
     if(other->name == "int" || other->name == "bool")
     {
-        return *(static_cast<int*>(value)) != *(static_cast<int*>(other->value));
+        return Bool(*(static_cast<int*>(value)) != *(static_cast<int*>(other->value)));
     } 
     throw std::runtime_error("This operation is not supported for this objects");
 }
@@ -1070,56 +1070,56 @@ void String::__add_assign__(Object* other)
     *(static_cast<std::string*>(value)) += other->__str__();
 }
 
-bool String::__more__(Object* other)
+Object String::__more__(Object* other)
 {
     if(other->name == "string")
     {
-        return *(static_cast<std::string*>(value)) > *(static_cast<std::string*>(other->value));
+        return Bool(*(static_cast<std::string*>(value)) > *(static_cast<std::string*>(other->value)));
     } 
     throw std::runtime_error("This operation is not supported for this objects");
 }
 
-bool String::__less__(Object* other)
+Object String::__less__(Object* other)
 {
     if(other->name == "string")
     {
-        return *(static_cast<std::string*>(value)) < *(static_cast<std::string*>(other->value));
+        return Bool(*(static_cast<std::string*>(value)) < *(static_cast<std::string*>(other->value)));
     } 
     throw std::runtime_error("This operation is not supported for this objects");
 }
 
-bool String::__more_equal__(Object* other)
+Object String::__more_equal__(Object* other)
 {
     if(other->name == "string")
     {
-        return *(static_cast<std::string*>(value)) >= *(static_cast<std::string*>(other->value));
+        return Bool(*(static_cast<std::string*>(value)) >= *(static_cast<std::string*>(other->value)));
     } 
     throw std::runtime_error("This operation is not supported for this objects");
 }
 
-bool String::__less_equal__(Object* other)
+Object String::__less_equal__(Object* other)
 {
     if(other->name == "string")
     {
-        return *(static_cast<std::string*>(value)) <= *(static_cast<std::string*>(other->value));
+        return Bool(*(static_cast<std::string*>(value)) <= *(static_cast<std::string*>(other->value)));
     } 
     throw std::runtime_error("This operation is not supported for this objects");
 }
 
-bool String::__equal__(Object* other)
+Object String::__equal__(Object* other)
 {
     if(other->name == "string")
     {
-        return *(static_cast<std::string*>(value)) == *(static_cast<std::string*>(other->value));
+        return Bool(*(static_cast<std::string*>(value)) == *(static_cast<std::string*>(other->value)));
     } 
     throw std::runtime_error("This operation is not supported for this objects");
 }
 
-bool String::__not_equal__(Object* other)
+Object String::__not_equal__(Object* other)
 {
     if(other->name == "string")
     {
-        return *(static_cast<std::string*>(value)) != *(static_cast<std::string*>(other->value));
+        return Bool(*(static_cast<std::string*>(value)) != *(static_cast<std::string*>(other->value)));
     } 
     throw std::runtime_error("This operation is not supported for this objects");
 }
