@@ -290,9 +290,10 @@ Object* Interpreter::evaluateExpression(const std::vector<std::string>& tokens, 
 }
 
 // Helper functions for evaluating expressions (implement these as needed):
-Object* Interpreter::createObject(size_t&  index) {
+Object* Interpreter::createObject(size_t& index) {
     if (index >= code.size()) {
-        throw std::out_of_range("Index out of bounds in createObject");
+        return nullptr;
+        //throw std::out_of_range("Index out of bounds in createObject");
     }
 
     std::string value = code[index];
@@ -300,6 +301,7 @@ Object* Interpreter::createObject(size_t&  index) {
 
     Object* tmp = nullptr;
     char t = static_cast<char>(valtype[0]);
+    
     switch (t) {
         case 'i': // INT
             try {
@@ -316,8 +318,10 @@ Object* Interpreter::createObject(size_t&  index) {
             }
             break;
         case 'b': // BOOL
-            bool val = (value == "true" ? true : false);
-            tmp = new Bool(val);
+            {
+                bool val = (value == "true" ? true : false);
+                tmp = new Bool(val);
+            }
             break;
         case 's': // STRING
             tmp = new String(value);
@@ -326,31 +330,32 @@ Object* Interpreter::createObject(size_t&  index) {
             break;
         default:
             throw std::out_of_range("No such type of variable: " + value);
-         
     }
-    if(t == 'a'){
+
+    if (t == 'a') {
         // ARRAY
-            // Handle array creation using tokens from the code vector:
-            if (index + 1 >= code.size() || code[index + 1] != "(") {
-                throw std::runtime_error("Invalid array syntax: missing opening parenthesis");
-            }
-            
-            ++index;
-            std::vector<Object*> elements;
+        // Handle array creation using tokens from the code vector:
+        if (index + 1 >= code.size() || code[index + 1] != "(") {
+            throw std::runtime_error("Invalid array syntax: missing opening parenthesis");
+        }
 
-            // Recursively parse array elements until closing parenthesis:
-            while (index < code.size() && code[index] != "]") {
-                elements.push_back(createObject(index));
-                ++index;
-            }
+        ++index;
+        std::vector<Object*> elements;
 
-            if (index >= code.size() || code[index] != "]") {
-                throw std::runtime_error("Invalid array syntax: missing closing parenthesis");
-            }
+        // Recursively parse array elements until closing parenthesis:
+        while (index < code.size() && code[index] != "]") {
+            elements.push_back(createObject(index));
             ++index;
-            tmp = new Array(elements);
-            return tmp;
+        }
+
+        if (index >= code.size() || code[index] != "]") {
+            throw std::runtime_error("Invalid array syntax: missing closing parenthesis");
+        }
+        ++index;
+        tmp = new Array(elements);
     }
 
     return tmp;
 }
+
+

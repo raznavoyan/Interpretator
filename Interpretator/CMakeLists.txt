@@ -8,13 +8,12 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 include_directories(
     headers
-    sources
 )
 
 add_executable(Interpretor
-    EDI.cpp
-    object.cpp
-    interpretor.cpp
-    parser.cpp
-    symtab.cpp
+    sources/EDI.cpp
+    sources/object.cpp
+    sources/interpretator.cpp  # Corrected file name
+    sources/parser.cpp
+    sources/symtab.cpp
 )
