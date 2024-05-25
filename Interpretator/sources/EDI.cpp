@@ -9,6 +9,7 @@
 #include "object.h"
 #include "interpretator.h"
 #include "symtab.h"
+#include <unistd.h>
 
 using toks = std::vector<std::string>;
 
@@ -48,9 +49,9 @@ main(int argc, char* argv[])
         std::cerr << "Error: " << ex.what() << std::endl;
         return 1;
     }
-    for(auto& it : tokens){
-        std::cout << it << std::endl;
-    }
+    // for(auto& it : tokens){
+    //     std::cout << it << std::endl;
+    // }
     Interpreter runInterpretator(tokens);
 
 

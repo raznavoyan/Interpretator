@@ -139,6 +139,7 @@ bool parser::isVariableName(const std::string& name) {
 }
 
 bool parser::isNumber(const std::string& str) {
-  std::regex number_regex(R"(\d+)");
-  return std::regex_match(str, number_regex);
+  // std::regex number_regex(R"(\d+)");
+  // return std::regex_match(str, number_regex);
+  return true;
 }

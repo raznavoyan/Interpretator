@@ -2,7 +2,7 @@
 #include "interpretator.h"
 #include "parser.h"
 #include "symtab.h"
-
+#include <unistd.h>
 #include <iostream>
 #include <sstream>
 
@@ -27,6 +27,7 @@ void Interpreter::execute(const std::vector<std::string>& tokens) {
         }
         if(parser::isAKeyword(token))
         {
+            std::cout << token ;
             if (token == "if") {
                 index++;
                 executeIf(tokens, index);
@@ -37,6 +38,7 @@ void Interpreter::execute(const std::vector<std::string>& tokens) {
                 executeDuring(tokens, index);
             } else if (token == "loop") {
                 ++index;
+                std::cout << "\t called" << std::endl;
                 executeLoop(tokens, index);
             }else 
             {
@@ -155,17 +157,23 @@ void Interpreter::executeDuring(const std::vector<std::string>& tokens, size_t& 
 
 void Interpreter::executeLoop(const std::vector<std::string>& tokens, size_t& index) 
 {
-    //Ex: loop : a = 5 -> 10{}
+    std::cout << "loop started" << std::endl;
+   
 
+    //Ex: loop : a = 5 -> 10{}
+    symbolTable.pushSpace();
+    std::cout << "push space" << std::endl;
     if(tokens[index] != ":")
     {
         std::runtime_error("expected : after loop");
     }
+    
     ++index;
     if(!parser::isVariableName(tokens[index]))
     {
         std::runtime_error("not a variable name");
     }
+
     std::string startName = tokens[index];
     ++index;
     if(tokens[index] != "=")
@@ -175,7 +183,7 @@ void Interpreter::executeLoop(const std::vector<std::string>& tokens, size_t& in
     ++index;
     Object* start = nullptr;
     if(parser::isNumber(tokens[index])){
-        start = createObject(index);
+        start = createObject(tokens[index]);
         symbolTable.setVal(startName, start);
     }else if (symbolTable.are(tokens[index])) {
         *start = *symbolTable.getVal(tokens[index]);
@@ -183,28 +191,30 @@ void Interpreter::executeLoop(const std::vector<std::string>& tokens, size_t& in
     }else{
         std::runtime_error("expected: value");
     }
+    std::cout << "start: " << start << std::endl;
     ++index;
-    std::cout << tokens[index] << std::endl;
     if(tokens[index] != "->")
     {
         throw std::runtime_error("expected ->");
-    }    
+    }
     ++index;
+
     Object* end = nullptr;
     if(parser::isNumber(tokens[index])){
-        end = createObject(index);
+        end = createObject(tokens[index]);
         symbolTable.setVal("end" + std::to_string(index), end);
     }else if (symbolTable.are(tokens[index])) {
         end = symbolTable.getVal(tokens[index]);
     }else {
         std::runtime_error("expected: value");
     }
-    ++index;
+    std::cout << "end: " << end << std::endl;
 
+    ++index;
     Object* step = nullptr;
-    if(tokens[index++] == ","){
+    if(tokens[index] == ","){
         if(parser::isNumber(tokens[index])){
-            step = createObject(index);
+            step = createObject(tokens[index]);
             symbolTable.setVal("step" + std::to_string(index), step);
         }else if (symbolTable.are(tokens[index])) {
             step = symbolTable.getVal(tokens[index]);
@@ -212,21 +222,26 @@ void Interpreter::executeLoop(const std::vector<std::string>& tokens, size_t& in
             std::runtime_error("expected: value");
         }
     }else{
-        step = 
+        step = createObject("1");
         symbolTable.setVal("step" + std::to_string(index), step);
     }
-    while (tokens[index++] != "{");
-
+    std::cout << "start loop" << std::endl;
     if (tokens[index] == "{") {
         ++index;
-            for (Object* i = start; (i->__equal__(end).__str__()) == "true"; *i = i->__add__(step)) {
-                size_t blockStart = index;
+        symbolTable.pushSpace();
+        size_t blockStart = index;
+        std::cout << start->__str__() << '\t' << end->__str__() << std::endl;
+        std::cout << (start->__equal__(end)).__str__() << std::endl;
+        while ((start->__equal__(end)).__str__() == "true") {
                 ///////////////////////////////////////////
-                std::cout << "for" << std::endl;
+            std::cout << "for sycl" << std::endl;
                 //////////////////////////////////////////
-                executeBlock(tokens, index);
-                index = blockStart; 
-            }
+                //executeBlock(tokens, index); 
+            index = blockStart;
+            *start = start->__add__(step);
+        }
+        symbolTable.popSpace();
+
         while (tokens[index] != "}") {
 
                 ///////////////////////////////////////////
@@ -236,6 +251,7 @@ void Interpreter::executeLoop(const std::vector<std::string>& tokens, size_t& in
         }
         ++index; 
     }
+    symbolTable.popSpace();
 }
 
 void Interpreter::executeBlock(const std::vector<std::string>& tokens, size_t& index) 
@@ -371,4 +387,107 @@ Object* Interpreter::createObject(size_t& index) {
     return tmp;
 }
 
+Object* Interpreter::createObject(std::string value) {
+    std::string valtype = parser::typeOf(value); // Assuming parser class provides type information
+
+    Object* tmp = nullptr;
+    char t = static_cast<char>(valtype[0]);
+    
+    switch (t) {
+        case 'i': // INT
+            try {
+                tmp = new Int(std::stoi(value));
+                std::cout << "New Int: " << tmp << std::endl;
+            } catch (const std::invalid_argument& e) {
+                throw std::runtime_error("Invalid integer value: " + value);
+            }
+            break;
+        case 'd': // DOUBLE
+            try {
+                tmp = new Double(std::stod(value));
+            } catch (const std::invalid_argument& e) {
+                throw std::runtime_error("Invalid double value: " + value);
+            }
+            break;
+        case 'b': // BOOL
+            {
+                bool val = (value == "true" ? true : false);
+                tmp = new Bool(val);
+            }
+            break;
+        case 's': // STRING
+            tmp = new String(value);
+            break;
+        case 'a':
+            break;
+        default:
+            throw std::out_of_range("No such type of variable: " + value);
+    }
+
+    return tmp; 
+    //         throw std::runtime_error("Invalid array syntax: missing closing parenthesis");
+    //     }
+    //     ++index;
+    //     tmp = new Array(elements);
+    // }
+       // if (t == 'a') {
+    //     // ARRAY
+    //     // Handle array creation using tokens from the code vector:
+    //     if (index + 1 >= code.size() || code[index + 1] != "(") {
+    //         throw std::runtime_error("Invalid array syntax: missing opening parenthesis");
+    //     }
+
+    //     ++index;
+    //     std::vector<Object*> elements;
+
+    //     // Recursively parse array elements until closing parenthesis:
+    //     while (index < code.size() && code[index] != "]") {
+    //         elements.push_back(createObject(index));
+    //         ++index;
+    //     }
+
+    //     if (index >= code.size() || code[index] != "]") {
+    //         throw std::runtime_error("Invalid array syntax: missing closing parenthesis");
+    //     }
+    //     ++index;
+    //     tmp = new Array(elements);
+    //     // Recursively parse array elements until closing parenthesis:
+    //     while (index < code.size() && code[index] != "]") {
+    //         elements.push_back(createObject(index));
+    //         ++index;
+    //     }
+
+    //     if (index >= code.size() || code[index] != "]") {
+    //         throw std::runtime_error("Invalid array syntax: missing closing parenthesis");
+    //     }
+    //     ++index;
+    //     tmp = new Array(elements);
+    // }// ARRAY
+    //     // Handle array creation using tokens from the code vector:
+    //     if (index + 1 >= code.size() || code[index + 1] != "(") {
+    //         throw std::runtime_error("Invalid array syntax: missing opening parenthesis");
+    //     }
+
+    //     ++index;
+    //     std::vector<Object*> elements;
+
+    //     // Recursively parse array elements until closing parenthesis:
+    //     while (index < code.size() && code[index] != "]") {
+    //         elements.push_back(createObject(index));
+    //         ++index;
+    //     }
+
+    //     if (index >= code.size() || code[index] != "]") {
+    //         throw std::runtime_error("Invalid array syntax: missing closing parenthesis");
+    //     }
+    //     ++index;
+    //     tmp = new Array(elements);
+    //     // Recursively parse array elements until closing parenthesis:
+    //     while (index < code.size() && code[index] != "]") {
+    //         elements.push_back(createObject(index));
+    //         ++index;
+    //     }
+
+    //     if (index >= code.size() || code[index] != "]") {
+}
 
