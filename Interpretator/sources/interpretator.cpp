@@ -123,6 +123,8 @@ void Interpreter::executeOtherwise(const std::vector<std::string>& tokens, size_
 
 void Interpreter::executeDuring(const std::vector<std::string>& tokens, size_t& index) 
 {
+    //Ex: during : c == true {
+    
     if(tokens[index] != ":")
     {
         throw std::runtime_error("expected ':' after during");
@@ -130,13 +132,16 @@ void Interpreter::executeDuring(const std::vector<std::string>& tokens, size_t& 
     ++index;
     size_t conditionStart = index; 
     Object* condition = evaluateExpression(tokens, index);
+    while(tokens[index++] != ":");
+    // ++index;
+    std::cout << tokens[index] << std::endl;
+
     if (tokens[index] == "{") {
-        ++index;
         while (*static_cast<bool*>(condition->value)) {
-            Object* condition = evaluateExpression(tokens, conditionStart);
             size_t blockStart = index;
             executeBlock(tokens, index);
             index = blockStart; 
+            Object* condition = evaluateExpression(tokens, conditionStart);
         }
         while (tokens[index] != "}") {
             ++index;
@@ -151,6 +156,7 @@ void Interpreter::executeDuring(const std::vector<std::string>& tokens, size_t& 
 void Interpreter::executeLoop(const std::vector<std::string>& tokens, size_t& index) 
 {
     //Ex: loop : a = 5 -> 10{}
+
     if(tokens[index] != ":")
     {
         std::runtime_error("expected : after loop");
@@ -177,8 +183,8 @@ void Interpreter::executeLoop(const std::vector<std::string>& tokens, size_t& in
     }else{
         std::runtime_error("expected: value");
     }
-
-
+    ++index;
+    std::cout << tokens[index] << std::endl;
     if(tokens[index] != "->")
     {
         throw std::runtime_error("expected ->");
@@ -215,10 +221,17 @@ void Interpreter::executeLoop(const std::vector<std::string>& tokens, size_t& in
         ++index;
             for (Object* i = start; (i->__equal__(end).__str__()) == "true"; *i = i->__add__(step)) {
                 size_t blockStart = index;
+                ///////////////////////////////////////////
+                std::cout << "for" << std::endl;
+                //////////////////////////////////////////
                 executeBlock(tokens, index);
                 index = blockStart; 
             }
         while (tokens[index] != "}") {
+
+                ///////////////////////////////////////////
+                std::cout << "for" << std::endl;
+                //////////////////////////////////////////
             ++index;
         }
         ++index; 

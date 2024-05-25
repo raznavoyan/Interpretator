@@ -19,55 +19,110 @@ std::string parser::typeOf(std::string arg){
     } else if (std::regex_match(arg, array_regex)) {
         return "a";
     }
-    return "undefine";
-}
-
-bool parser::isCustomDelimiter(char c) {
-  static const std::unordered_set<char> delimiters = {
-      '|', ':', ';', '{', '}', '=', '+',
-      '-', '*', '/', '%', '!', '#', '^'
-  };
-  return delimiters.count(c) > 0;
-}
-
-parser::toks parser::tokenize(const std::string& input) {
-  toks tokens;
-  std::istringstream iss(input);
-  std::string line;
-  while (std::getline(iss, line)) {
-    size_t pos = 0;
-    while (pos < line.length()) {
-      if (isCustomDelimiter(line[pos])) {
-        // Check for multi-character operators like "==", "+=", "-="
-        if (pos + 1 < line.length() && isCustomDelimiter(line[pos + 1])) {
-          std::string op = line.substr(pos, 2);
-          tokens.push_back(op);
-          pos += 2; // Move past the operator
-        } else {
-          tokens.push_back(std::string(1, line[pos])); // Push single-character delimiter/operator
-          ++pos;
-        }
-      } else if (!isspace(line[pos])) {
-        // Read alphanumeric tokens or literals until next delimiter or whitespace
-        size_t start = pos;
-        while (pos < line.length() && !isCustomDelimiter(line[pos]) && !isspace(line[pos])) {
-          ++pos;
-        }
-        tokens.push_back(line.substr(start, pos - start));
-      } else {
-        ++pos;
-      }
-    }
-  }
-  return tokens;
+    return "non type";
 }
 
 bool parser::isAKeyword(const std::string& tok) {
-  static const std::unordered_set<std::string> keywords = {
-      "if", "otherwise", "loop", "during", "true", "false"
-  };
-  return keywords.count(tok) > 0;
+    static const std::unordered_set<std::string> keywords = {
+        "if", "otherwise", "loop", "during", "true", "false",
+        "disp", "function", "return"
+    };
+    return keywords.count(tok) > 0;
 }
+
+bool parser::isBinaryOperator(const std::string& token) {
+    static const std::unordered_set<std::string> binaryOps = {
+        "+", "-", "*", "/", "%", "^"
+    };
+
+    static const std::unordered_set<std::string> comparisonOps = {
+        "==", "!=", "<", ">", "<=", ">="
+    };
+
+    static const std::unordered_set<std::string> logicalOps = {
+        "&&", "||"
+    };
+
+    return binaryOps.count(token) || comparisonOps.count(token) || logicalOps.count(token);
+}
+
+bool parser::isCustomDelimiter(const std::string& c) {
+    static const std::unordered_set<std::string> delimiters = {
+        "|", ":", ";", "{", "}", "=", "+",
+        "-", "*", "/", "%", "!", "#", "^"
+    };
+    return delimiters.count(c) > 0;
+}
+
+std::vector<std::string> parser::tokenize(const std::string& filename) {
+    std::ifstream file(filename);
+    std::vector<std::string> tokens;
+    std::string line;
+
+    while (std::getline(file, line)) {
+        std::istringstream stream(line);
+        char c;
+
+        while (stream.get(c)) {
+            std::string currentToken;
+
+            // Handle string literals
+            if (c == '"') {
+                currentToken += c;
+                while (stream.get(c)) {
+                    currentToken += c;
+                    if (c == '"') break; // end of string literal
+                }
+                tokens.push_back(currentToken);
+            }
+            // Handle multi-character operators and delimiters
+            else if (parser::isAMath(std::string(1, c)) || parser::isCustomDelimiter(std::string(1, c))) {
+                currentToken += c;
+                if (stream.peek() != EOF) {
+                    char next = stream.peek();
+                    std::string potentialOperator = currentToken + next;
+                    if (parser::isAMath(potentialOperator)) {
+                        stream.get(c); // consume the next character
+                        currentToken += c;
+                    }
+                }
+                tokens.push_back(currentToken);
+            }
+            // Handle alphabetic tokens
+            else if (std::isalpha(c)) {
+                currentToken += c;
+                while (stream.get(c) && std::isalpha(c)) {
+                    currentToken += c;
+                }
+                stream.unget(); // put the non-alphabetic character back to the stream
+                tokens.push_back(currentToken);
+            }
+            // Handle numeric tokens
+            else if (std::isdigit(c)) {
+                currentToken += c;
+                while (stream.get(c) && std::isdigit(c)) {
+                    currentToken += c;
+                }
+                stream.unget(); // put the non-numeric character back to the stream
+                tokens.push_back(currentToken);
+            }
+            // Handle whitespace
+            else if (std::isspace(c)) {
+                continue; // skip whitespace
+            }
+            // Handle any other single character
+            else {
+                tokens.push_back(std::string(1, c));
+            }
+        }
+    }
+
+    file.close();
+   
+    return tokens;
+}
+
+
 
 bool parser::isAMath(const std::string& tok) {
     static const std::unordered_set<std::string> mathOps = {
@@ -86,24 +141,4 @@ bool parser::isVariableName(const std::string& name) {
 bool parser::isNumber(const std::string& str) {
   std::regex number_regex(R"(\d+)");
   return std::regex_match(str, number_regex);
-}
-
-bool parser::isBinaryOperator(const std::string& token) {
-  // Common binary arithmetic operators
-  static const std::unordered_set<std::string> binaryOps = {
-    "+", "-", "*", "/", "%", "^"
-  };
-
-  // Common binary comparison operators
-  static const std::unordered_set<std::string> comparisonOps = {
-    "==", "!=", "<", ">", "<=", ">="
-  };
-
-  // Logical operators
-  static const std::unordered_set<std::string> logicalOps = {
-    "&&", "||"
-  };
-
-  // Check if the token is in any of the pre-defined sets
-  return binaryOps.count(token) || comparisonOps.count(token) || logicalOps.count(token);
 }
