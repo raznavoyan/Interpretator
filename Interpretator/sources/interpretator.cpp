@@ -228,7 +228,6 @@ void Interpreter::executeLoop(const std::vector<std::string>& tokens, size_t& in
     std::cout << "start loop" << std::endl;
     if (tokens[index] == "{") {
         ++index;
-        symbolTable.pushSpace();
         size_t blockStart = index;
         std::cout << start->__str__() << '\t' << end->__str__() << std::endl;
         std::cout << (start->__equal__(end)).__str__() << std::endl;
@@ -236,11 +235,10 @@ void Interpreter::executeLoop(const std::vector<std::string>& tokens, size_t& in
                 ///////////////////////////////////////////
             std::cout << "for sycl" << std::endl;
                 //////////////////////////////////////////
-                //executeBlock(tokens, index); 
+                executeBlock(tokens, index); 
             index = blockStart;
             *start = start->__add__(step);
         }
-        symbolTable.popSpace();
 
         while (tokens[index] != "}") {
 
@@ -255,7 +253,8 @@ void Interpreter::executeLoop(const std::vector<std::string>& tokens, size_t& in
 }
 
 void Interpreter::executeBlock(const std::vector<std::string>& tokens, size_t& index) 
-{
+{   
+    symbolTable.pushSpace();
     if (tokens[index] == "{") {
         ++index;
         while (tokens[index] != "}") {
@@ -268,6 +267,7 @@ void Interpreter::executeBlock(const std::vector<std::string>& tokens, size_t& i
         }
         ++index; 
     }
+    symbolTable.popSpace();
 }
 /*
 void Interpreter::runLine(const std::vector<std::string>& tokens) 
@@ -300,18 +300,65 @@ Object* Interpreter::evaluateExpression(const std::vector<std::string>& tokens, 
             return nullptr;
         }
         
-        if (tokens[index - 1] == "+") {
-            *tmp = tmp->__add__(left);
-        } else if (tokens[index - 1] == "-") {
-            *tmp = tmp->__sub__(left);
-        } else if (tokens[index - 1] == "*") {
-            *tmp = tmp->__mul__(left);
-        } else if (tokens[index - 1] == "/") {
-            *tmp = tmp->__div__(left);
-        } else {
-            // Error: Unsupported binary operator
-            return nullptr;
-        }
+            if (tokens[index - 1] == "+") {
+        *tmp = tmp->__add__(left);
+    } else if (tokens[index - 1] == "-") {
+        *tmp = tmp->__sub__(left);
+    } else if (tokens[index - 1] == "*") {
+        *tmp = tmp->__mul__(left);
+    } else if (tokens[index - 1] == "/") {
+        *tmp = tmp->__div__(left);
+    } else if (tokens[index - 1] == "%") {
+        *tmp = tmp->__mod__(left);
+    } else if (tokens[index - 1] == "|") {
+        *tmp = tmp->__or__(left);
+    } else if (tokens[index - 1] == "&") {
+        *tmp = tmp->__and__(left);
+    } else if (tokens[index - 1] == "~") {
+        *tmp = tmp->__den__();
+    } else if (tokens[index - 1] == "||") {
+        *tmp = tmp->__or__(left);
+    } else if (tokens[index - 1] == "&&") {
+        *tmp = tmp->__and__(left);
+    } else if (tokens[index - 1] == "^") {
+        *tmp = tmp->__xor__(left);
+    } else if (tokens[index - 1] == "<<") {
+        *tmp = tmp->__left_shift__(left);
+    } else if (tokens[index - 1] == ">>") {
+        *tmp = tmp->__right_shift__(left);
+    } else if (tokens[index - 1] == "+=") {
+        tmp->__add_assign__(left);
+    } else if (tokens[index - 1] == "-=") {
+        tmp->__sub_assign__(left);
+    } else if (tokens[index - 1] == "*=") {
+        tmp->__mul_assign__(left);
+    } else if (tokens[index - 1] == "/=") {
+        tmp->__div_assign__(left);
+    } else if (tokens[index - 1] == "%=") {
+        tmp->__mod_assign__(left);
+    } else if (tokens[index - 1] == "^=") {
+        tmp->__xor_assign__(left);
+    } else if (tokens[index - 1] == "<<=") {
+        tmp->__lshift_assign__(left);
+    } else if (tokens[index - 1] == ">>=") {
+        tmp->__rshift_assign__(left);
+    } else if (tokens[index - 1] == ">") {
+        *tmp = tmp->__more__(left);
+    } else if (tokens[index - 1] == "<") {
+        *tmp = tmp->__less__(left);
+    } else if (tokens[index - 1] == ">=") {
+        *tmp = tmp->__more_equal__(left);
+    } else if (tokens[index - 1] == "<=") {
+        *tmp = tmp->__less_equal__(left);
+    } else if (tokens[index - 1] == "==") {
+        *tmp = tmp->__equal__(left);
+    } else if (tokens[index - 1] == "!=") {
+        *tmp = tmp->__not_equal__(left);
+    } else {
+        // Error: Unsupported binary operator
+        return nullptr;
+    }
+
     }
     if(tmp != nullptr)
     symbolTable.setVal(("tmp" + std::to_string(index)), tmp);
