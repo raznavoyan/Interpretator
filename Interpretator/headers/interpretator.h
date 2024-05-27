@@ -32,7 +32,7 @@ private:
     Object* evaluateExpression(const std::vector<std::string>& tokens, size_t& index);
 
 private:
-    size_t index = 0;
+    size_t index;
 };
 
 

@@ -5,7 +5,8 @@
 #include <iostream>
 #include <sstream>
 
-Interpreter::Interpreter(std::vector<std::string> code)
+Interpreter::Interpreter(std::vector<std::string> code) 
+    : index{0}
 {
     std::cout << "Interpreter initialized." << std::endl;
     execute(code);
