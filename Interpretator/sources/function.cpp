@@ -3,7 +3,9 @@
 
 #include "headers.h"
 
-Function::Function(std::vector<std::string> code){}
+Function::Function(std::vector<std::string> code)
+    : code(code) 
+{}
 
 
 Object* Function::call(Array *args){}
