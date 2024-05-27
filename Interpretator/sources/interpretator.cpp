@@ -25,12 +25,18 @@ void Interpreter::execute(const std::vector<std::string>& tokens) {
         }
         if(parser::isAKeyword(token))
         {
-            std::cout << token ;
+            std::cout << token;
             if (token == "if") {
-                this->index++;
+                ++this->index;
                 executeIf(tokens, this->index);
-            } else if (token == "otherwise") {
-                executeOtherwiseIf(tokens, this->index);
+                if (this->index < tokens.size() && tokens[this->index] == "otherwise if") {
+                    ++this->index;
+                    executeOtherwiseIf(tokens, this->index);
+                }
+                if (this->index < tokens.size() && tokens[this->index] == "otherwise") {
+                    ++this->index;
+                    executeOtherwise(tokens, this->index);
+                }
             } else if (token == "during") {
                 ++this->index;
                 executeDuring(tokens, this->index);

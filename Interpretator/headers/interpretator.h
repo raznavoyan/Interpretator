@@ -31,9 +31,8 @@ private:
     void runLine(const std::vector<std::string>& tokens);
     Object* evaluateExpression(const std::vector<std::string>& tokens, size_t& index);
 
-public:
+private:
     size_t index = 0;
-    
 };
 
 
