@@ -48,7 +48,7 @@ Object::Object(const Object& rhv)
         p = nullptr;
     } else
     {
-        throw std::runtime_error("can't execute this opereation");
+        throw std::runtime_error("can't execute this opereation in line " + __LINE__);
     }
 }
 
@@ -80,7 +80,7 @@ const Object& Object::operator=(const Object& rhv)
             }
             else
             {
-                throw std::runtime_error("Unsupported type");
+                throw std::runtime_error("Unsupported type in line " + __LINE__);
             } 
         }
     }
@@ -102,7 +102,7 @@ const Object& Object::operator=(Object&& rhv)
 
 Object* Object::clone() 
 {
-    throw std::runtime_error("can't exectute this operation");
+    throw std::runtime_error("can't exectute this operation in line"  + __LINE__);
 }
 
 std::string Object::__str__() 
@@ -110,164 +110,164 @@ std::string Object::__str__()
     return "Object";
 }
 
-Object Object::__add__(Object*)
+Object* Object::__add__(Object*)
 {
-    throw std::runtime_error("Addition not supported for this objects");
+    throw std::runtime_error("Addition not supported for this objects in line"  + __LINE__);
 }
 
-Object Object::__sub__(Object*)
+Object* Object::__sub__(Object*)
 {
-    throw std::runtime_error("Subtruction not supported for this objects");
+    throw std::runtime_error("Subtruction not supported for this objects in line  "  + __LINE__);
 }
 
-Object Object::__mod__(Object*)
+Object* Object::__mod__(Object*)
 {
-    throw std::runtime_error("This operation is not supported for this objects");
+    throw std::runtime_error("This operation is not supported for this objects in line "  + __LINE__);
 }
 
-Object Object::__mul__(Object*)
+Object* Object::__mul__(Object*)
 {
-    throw std::runtime_error("This operation is not supported for this objects");
+    throw std::runtime_error("This operation is not supported for this objects in line "  + __LINE__);
 }
 
-Object Object::__div__(Object*)
+Object* Object::__div__(Object*)
 {
-    throw std::runtime_error("This operation is not supported for this objects");
+    throw std::runtime_error("This operation is not supported for this objects " + __LINE__);
 }
 
-Object Object::__neg__()
+Object* Object::__neg__()
 {
-    throw std::runtime_error("This operation is not supported for this object");
+    throw std::runtime_error("This operation is not supported for this object " + __LINE__);
 }
 
-Object Object::__or__(Object*)
+Object* Object::__or__(Object*)
 {
-    throw std::runtime_error("This operation is not supported for this objects");
+    throw std::runtime_error("This operation is not supported for this objects  "  + __LINE__);
 }
 
-Object Object::__and__(Object*)
+Object* Object::__and__(Object*)
 {
-    throw std::runtime_error("This operation is not supported for this objects");
+    throw std::runtime_error("This operation is not supported for this objects " + __LINE__);
 }
 
-Object Object::__den__()
+Object* Object::__den__()
 {
-    throw std::runtime_error("This operation is not supported for this object");
+    throw std::runtime_error("This operation is not supported for this object " + __LINE__);
 }
 
-Object Object::__bit_and__(Object*)
+Object* Object::__bit_and__(Object*)
 {
-    throw std::runtime_error("This operation is not supported for this objects");
+    throw std::runtime_error("This operation is not supported for this objects "  + __LINE__);
 }
 
-Object Object::__bit_or__(Object*)
+Object* Object::__bit_or__(Object*)
 {
-    throw std::runtime_error("This operation is not supported for this objects");
+    throw std::runtime_error("This operation is not supported for this objects " + __LINE__);
 }
 
-Object Object::__bit_den__()
+Object* Object::__bit_den__()
 {
-    throw std::runtime_error("This operation is not supported for this objects");
+    throw std::runtime_error("This operation is not supported for this objects " + __LINE__);
 }
 
-Object Object::__xor__(Object*)
+Object* Object::__xor__(Object*)
 {
-    throw std::runtime_error("This operation is not supported for this objects");
+    throw std::runtime_error("This operation is not supported for this objects " + __LINE__);
 }
 
-Object Object::__left_shift__(Object*)
+Object* Object::__left_shift__(Object*)
 {
-    throw std::runtime_error("This operation is not supported for this objects");
+    throw std::runtime_error("This operation is not supported for this objects " + __LINE__);
 }
 
-Object Object::__right_shift__(Object*)
+Object* Object::__right_shift__(Object*)
 {
-    throw std::runtime_error("This operation is not supported for this objects");
+    throw std::runtime_error("This operation is not supported for this objects " + __LINE__);
 }
 
 void Object::__add_assign__(Object*)
 {
-    throw std::runtime_error("This operation is not supported for this objects");
+    throw std::runtime_error("This operation is not supported for this objects " + __LINE__);
 }
 
 void Object::__sub_assign__(Object*)
 {
-    throw std::runtime_error("This operation is not supported for this objects");
+    throw std::runtime_error("This operation is not supported for this objects " + __LINE__);
 }
 
 void Object::__div_assign__(Object*)
 {
-    throw std::runtime_error("This operation is not supported for this objects");
+    throw std::runtime_error("This operation is not supported for this objects " + __LINE__);
 }
 
 void Object::__mul_assign__(Object*)
 {
-    throw std::runtime_error("This operation is not supported for this objects");
+    throw std::runtime_error("This operation is not supported for this objects " + __LINE__);
 }
 
 void Object::__mod_assign__(Object*)
 {
-    throw std::runtime_error("This operation is not supported for this objects");
+    throw std::runtime_error("This operation is not supported for this objects " + __LINE__);
 }
 
 void Object::__xor_assign__(Object*)
 {
-    throw std::runtime_error("This operation is not supported for this objects");
+    throw std::runtime_error("This operation is not supported for this objects " + __LINE__);
 }
 
 void Object::__lshift_assign__(Object*)
 {
-    throw std::runtime_error("This operation is not supported for this objects");
+    throw std::runtime_error("This operation is not supported for this objects " + __LINE__);
 }
 
 void Object::__rshift_assign__(Object*)
 {
-    throw std::runtime_error("This operation is not supported for this objects");
+    throw std::runtime_error("This operation is not supported for this objects "  + __LINE__);
 }
 
-Object Object::__more__(Object*)
+Object* Object::__more__(Object*)
 {
-    throw std::runtime_error("This operation is not supported for this objects");
+    throw std::runtime_error("This operation is not supported for this objects "  + __LINE__);
 }
 
-Object Object::__less__(Object*)
+Object* Object::__less__(Object*)
 {
-    throw std::runtime_error("This operation is not supported for this objects");
+    throw std::runtime_error("This operation is not supported for this objects "  + __LINE__);
 }
 
-Object Object::__more_equal__(Object*)
+Object* Object::__more_equal__(Object*)
 {
-    throw std::runtime_error("This operation is not supported for this objects");
+    throw std::runtime_error("This operation is not supported for this objects "  + __LINE__);
 }
 
-Object Object::__less_equal__(Object*)
+Object* Object::__less_equal__(Object*)
 {
-    throw std::runtime_error("This operation is not supported for this objects");
+    throw std::runtime_error("This operation is not supported for this objects "  + __LINE__);
 }
 
-Object Object::__equal__(Object*)
+Object* Object::__equal__(Object*)
 {
-    throw std::runtime_error("This operation is not supported for this objects");
+    throw std::runtime_error("This operation is not supported for this objects "  + __LINE__);
 }
 
-Object Object::__not_equal__(Object*)
+Object* Object::__not_equal__(Object*)
 {
-    throw std::runtime_error("This operation is not supported for this objects");
+    throw std::runtime_error("This operation is not supported for this objects "  + __LINE__);
 }
 
 void Object::__pop__()
 {
-    throw std::runtime_error("This operation is not supported for this objects");
+    throw std::runtime_error("This operation is not supported for this objects "  + __LINE__);
 }
 
 int Object::__size__()
 {
-    throw std::runtime_error("This operation is not supported for this objects");
+    throw std::runtime_error("This operation is not supported for this objects "  + __LINE__);
 }
 
-Object Object::__at__(int)
+Object* Object::__at__(int)
 {
-    throw std::runtime_error("This operation is not supported for this objects");
+    throw std::runtime_error("This operation is not supported for this objects "  + __LINE__);
 }
 
 void Object::clear()
@@ -346,195 +346,195 @@ std::string Int::__str__()
     return std::to_string(*(static_cast<int*>(value)));
 }
 
-Object Int::__add__(Object* other)
+Object* Int::__add__(Object* other)
 {
     if(other->name == "int" || other->name == "bool")
     {
         int res = *(static_cast<int*>(value)) + *(static_cast<int*>((*other).value));
-        Int new_obj;
-        *static_cast<int*>(new_obj.value) = res;
+        Int* new_obj = new Int;
+        *static_cast<int*>(new_obj->value) = res;
         return new_obj;
     }
     if(other->name == "double")
     {
         double res = *(static_cast<int*>(value)) + *(static_cast<double*>((*other).value));
-        Double new_obj;
-        *static_cast<double*>(new_obj.value) = res;
+        Double* new_obj = new Double;
+        *static_cast<double*>(new_obj->value) = res;
         return new_obj;
     }
     throw std::invalid_argument("Conversion from this type to int is not supported.");
 }
 
-Object Int::__sub__(Object* other)
+Object* Int::__sub__(Object* other)
 {
     if(other->name == "int" || other->name == "bool")
     {
         int res = *(static_cast<int*>(value)) - *(static_cast<int*>((*other).value));
-        Int new_obj;
-        *static_cast<int*>(new_obj.value) = res;
+        Int* new_obj = new Int;
+        *static_cast<int*>(new_obj->value) = res;
         return new_obj;
     }
     if(other->name == "double")
     {
         double res = *(static_cast<int*>(value)) - *(static_cast<double*>((*other).value));
-        Double new_obj;
-        *static_cast<double*>(new_obj.value) = res;
+        Double* new_obj = new Double;
+        *static_cast<double*>(new_obj->value) = res;
         return new_obj;
     }
     throw std::invalid_argument("Conversion from this type to int is not supported.");
 }
 
-Object Int::__mod__(Object* other)
+Object* Int::__mod__(Object* other)
 {
     if(other->name == "int")
     {
         int res = *(static_cast<int*>(value)) % *(static_cast<int*>((*other).value));
-        Int new_obj;
-        *static_cast<int*>(new_obj.value) = res;
+        Int* new_obj = new Int;
+        *static_cast<int*>(new_obj->value) = res;
         return new_obj;
     }
     throw std::invalid_argument("Conversion from this type to int is not supported.");
 }
 
-Object Int::__mul__(Object* other)
+Object* Int::__mul__(Object* other)
 {
     if(other->name == "int" || other->name == "bool")
     {
         int res = *(static_cast<int*>(value)) * *(static_cast<int*>((*other).value));
-        Int new_obj;
-        *static_cast<int*>(new_obj.value) = res;
+        Int* new_obj = new Int;
+        *static_cast<int*>(new_obj->value) = res;
         return new_obj;
     }
     if(other->name == "double")
     {
         double res = *(static_cast<int*>(value)) * *(static_cast<double*>((*other).value));
-        Double new_obj;
-        *static_cast<double*>(new_obj.value) = res;
+        Double* new_obj = new Double;
+        *static_cast<double*>(new_obj->value) = res;
         return new_obj;
     }
     throw std::invalid_argument("Conversion from this type to int is not supported.");
 }
 
-Object Int::__div__(Object* other)
+Object* Int::__div__(Object* other)
 {
     if(other->name == "int" || other->name == "bool")
     {
         int res = *(static_cast<int*>(value)) / *(static_cast<int*>((*other).value));
-        Int new_obj;
-        *static_cast<int*>(new_obj.value) = res;
+        Int* new_obj = new Int;
+        *static_cast<int*>(new_obj->value) = res;
         return new_obj;
     }
     if(other->name == "double")
     {
         double res = *(static_cast<int*>(value)) / *(static_cast<double*>((*other).value));
-        Double new_obj;
-        *static_cast<double*>(new_obj.value) = res;
+        Double* new_obj = new Double;
+        *static_cast<double*>(new_obj->value) = res;
         return new_obj;
     }
     throw std::invalid_argument("Conversion from this type to int is not supported.");
 }
 
-Object Int::__neg__()
+Object* Int::__neg__()
 {
-    Int ans = -*static_cast<int*>(value);
-    return ans;
+    Int* new_obj = new Int(-*static_cast<int*>(value));
+    return new_obj;
 }
 
-Object Int::__or__(Object* other)
+Object* Int::__or__(Object* other)
 {
     if(other->name == "int" || other->name == "bool")
     {
         bool res = *(static_cast<int*>(value)) || *(static_cast<bool*>((*other).value));
-        Bool new_obj;
-        *static_cast<bool*>(new_obj.value) = res;
+        Bool* new_obj = new Bool;
+        *static_cast<bool*>(new_obj->value) = res;
         return new_obj;
     }
     throw std::invalid_argument("Conversion from this type to int is not supported.");
 }
 
-Object Int::__and__(Object* other)
+Object* Int::__and__(Object* other)
 {
     if(other->name == "int" || other->name == "bool")
     {
         bool res = *(static_cast<int*>(value)) && *(static_cast<bool*>((*other).value));
-        Bool new_obj;
-        *static_cast<bool*>(new_obj.value) = res;
+        Bool* new_obj = new Bool;
+        *static_cast<bool*>(new_obj->value) = res;
         return new_obj;
     }
     throw std::invalid_argument("Conversion from this type to int is not supported.");
 }
 
-Object Int::__den__()
+Object* Int::__den__()
 {
     bool res = !*(static_cast<bool*>(value));
-    Bool new_obj;
-    *static_cast<bool*>(new_obj.value) = res;
+    Bool* new_obj = new Bool;
+    *static_cast<bool*>(new_obj->value) = res;
     return new_obj;
 }
 
-Object Int::__bit_and__(Object* other)
+Object* Int::__bit_and__(Object* other)
 {
     if(other->name == "int")
     {
         int res = *(static_cast<int*>(value)) & *(static_cast<int*>((*other).value));
-        Int new_obj;
-        *static_cast<int*>(new_obj.value) = res;
+        Int* new_obj = new Int;
+        *static_cast<int*>(new_obj->value) = res;
         return new_obj;
     }
     throw std::invalid_argument("Conversion from this type to int is not supported.");
 }
 
-Object Int::__bit_or__(Object* other)
+Object* Int::__bit_or__(Object* other)
 {
     if(other->name == "int")
     {
         int res = *(static_cast<int*>(value)) | *(static_cast<int*>((*other).value));
-        Int new_obj;
-        *static_cast<int*>(new_obj.value) = res;
+        Int* new_obj = new Int;
+        *static_cast<int*>(new_obj->value) = res;
         return new_obj;
     }
     throw std::invalid_argument("Conversion from this type to int is not supported.");
 }
 
-Object Int::__bit_den__()
+Object* Int::__bit_den__()
 {
     int res = ~*(static_cast<bool*>(value));
-    Int new_obj;
-    *static_cast<int*>(new_obj.value) = res;
+    Int* new_obj = new Int;
+    *static_cast<int*>(new_obj->value) = res;
     return new_obj;
 }
 
-Object Int::__xor__(Object* other)
+Object* Int::__xor__(Object* other)
 {
     if(other->name == "int")
     {
         int res = *(static_cast<int*>(value)) ^ *(static_cast<int*>((*other).value));
-        Int new_obj;
-        *static_cast<int*>(new_obj.value) = res;
+        Int* new_obj = new Int;
+        *static_cast<int*>(new_obj->value) = res;
         return new_obj;
     }
     throw std::invalid_argument("Conversion from this type to int is not supported.");
 }
 
-Object Int::__left_shift__(Object* other)
+Object* Int::__left_shift__(Object* other)
 {
     if(other->name == "int" || other->name == "bool")
     {
         int res = *(static_cast<int*>(value)) << *(static_cast<int*>((*other).value));
-        Int new_obj;
-        *static_cast<int*>(new_obj.value) = res;
+        Int* new_obj = new Int;
+        *static_cast<int*>(new_obj->value) = res;
         return new_obj;
     }
     throw std::invalid_argument("Conversion from this type to int is not supported.");
 }
 
-Object Int::__right_shift__(Object* other)
+Object* Int::__right_shift__(Object* other)
 {
     if(other->name == "int" || other->name == "bool")
     {
         int res = *(static_cast<int*>(value)) >> *(static_cast<int*>((*other).value));
-        Int new_obj;
-        *static_cast<int*>(new_obj.value) = res;
+        Int* new_obj = new Int;
+        *static_cast<int*>(new_obj->value) = res;
         return new_obj;
     }
     throw std::invalid_argument("Conversion from this type to int is not supported.");
@@ -547,7 +547,7 @@ void Int::__add_assign__(Object* other)
         *(static_cast<int*>(value)) += *(static_cast<int*>(other->value));
         return;
     }
-    throw std::runtime_error("This operation is not supported for this objects");
+    throw std::runtime_error("This operation is not supported for this objects "  + __LINE__);
 }
 
 void Int::__sub_assign__(Object* other)
@@ -557,7 +557,7 @@ void Int::__sub_assign__(Object* other)
         *(static_cast<int*>(value)) -= *(static_cast<int*>(other->value));
         return;
     }
-    throw std::runtime_error("This operation is not supported for this objects");
+    throw std::runtime_error("This operation is not supported for this objects "  + __LINE__);
 }
 
 void Int::__div_assign__(Object* other)
@@ -567,7 +567,7 @@ void Int::__div_assign__(Object* other)
         *(static_cast<int*>(value)) /= *(static_cast<int*>(other->value));
         return;
     }
-    throw std::runtime_error("This operation is not supported for this objects");
+    throw std::runtime_error("This operation is not supported for this objects "  + __LINE__);
 }
 
 void Int::__mul_assign__(Object* other)
@@ -577,7 +577,7 @@ void Int::__mul_assign__(Object* other)
         *(static_cast<int*>(value)) *= *(static_cast<int*>(other->value));
         return;
     }
-    throw std::runtime_error("This operation is not supported for this objects");
+    throw std::runtime_error("This operation is not supported for this objects "  + __LINE__);
 }
 
 void Int::__mod_assign__(Object* other)
@@ -587,7 +587,7 @@ void Int::__mod_assign__(Object* other)
         *(static_cast<int*>(value)) %= *(static_cast<int*>(other->value));
         return;
     }
-    throw std::runtime_error("This operation is not supported for this objects");
+    throw std::runtime_error("This operation is not supported for this objects "  + __LINE__);
 }
 
 void Int::__xor_assign__(Object* other)
@@ -597,7 +597,7 @@ void Int::__xor_assign__(Object* other)
         *(static_cast<int*>(value)) ^= *(static_cast<int*>(other->value));
         return;
     }
-    throw std::runtime_error("This operation is not supported for this objects");
+    throw std::runtime_error("This operation is not supported for this objects "  + __LINE__);
 }
 
 void Int::__lshift_assign__(Object* other)
@@ -607,7 +607,7 @@ void Int::__lshift_assign__(Object* other)
         *(static_cast<int*>(value)) <<= *(static_cast<int*>(other->value));
         return;
     }
-    throw std::runtime_error("This operation is not supported for this objects");
+    throw std::runtime_error("This operation is not supported for this objects "  + __LINE__);
 }
 
 void Int::__rshift_assign__(Object* other)
@@ -617,61 +617,67 @@ void Int::__rshift_assign__(Object* other)
         *(static_cast<int*>(value)) >>= *(static_cast<int*>(other->value));
         return;
     }
-    throw std::runtime_error("This operation is not supported for this objects");
+    throw std::runtime_error("This operation is not supported for this objects "  + __LINE__);
 }
 
-Object Int::__more__(Object* other)
+Object* Int::__more__(Object* other)
 {
     if(other->name == "int" || other->name == "bool" || other->name == "double")
     {
-        return Bool(*(static_cast<int*>(value)) > *(static_cast<int*>(other->value)));
+        Bool* new_obj = new Bool(*(static_cast<int*>(value)) > *(static_cast<int*>(other->value)));
+        return new_obj;
     } 
-    throw std::runtime_error("This operation is not supported for this objects");
+    throw std::runtime_error("This operation is not supported for this objects "  + __LINE__);
 }
 
-Object Int::__less__(Object* other)
+Object* Int::__less__(Object* other)
 {
     if(other->name == "int" || other->name == "bool" || other->name == "double")
     {
-        return Bool(*(static_cast<int*>(value)) < *(static_cast<int*>(other->value)));
+        Bool* new_obj = new Bool(*(static_cast<int*>(value)) < *(static_cast<int*>(other->value)));
+        return new_obj;
     } 
-    throw std::runtime_error("This operation is not supported for this objects");
+    throw std::runtime_error("This operation is not supported for this objects "  + __LINE__);
 }
 
-Object Int::__more_equal__(Object* other)
+Object* Int::__more_equal__(Object* other)
 {
     if(other->name == "int" || other->name == "bool" || other->name == "double")
     {
-        return Bool(*(static_cast<int*>(value)) >= *(static_cast<int*>(other->value)));
+        Bool* new_obj = new Bool(*(static_cast<int*>(value)) >= *(static_cast<int*>(other->value)));
+        return new_obj;
     } 
-    throw std::runtime_error("This operation is not supported for this objects");
+    throw std::runtime_error("This operation is not supported for this objects "  + __LINE__);
 }
 
-Object Int::__less_equal__(Object* other)
+Object* Int::__less_equal__(Object* other)
 {
     if(other->name == "int" || other->name == "bool" || other->name == "double")
     {
-        return Bool(*(static_cast<int*>(value)) <= *(static_cast<int*>(other->value)));
+        Bool* new_obj = new Bool(*(static_cast<int*>(value)) <= *(static_cast<int*>(other->value)));
+        return new_obj;
     } 
-    throw std::runtime_error("This operation is not supported for this objects");
+    throw std::runtime_error("This operation is not supported for this objects "  + __LINE__);
 }
 
-Object Int::__equal__(Object* other)
+Object* Int::__equal__(Object* other)
 {
     if(other->name == "int" || other->name == "bool" || other->name == "double")
     {
-        return Bool(*(static_cast<int*>(value)) == *(static_cast<int*>(other->value)));
+        Bool* new_obj = new Bool(*(static_cast<int*>(value)) == *(static_cast<int*>(other->value)));
+        return new_obj;
     } 
-    throw std::runtime_error("This operation is not supported for this objects");
+    throw std::runtime_error("This operation is not supported for this objects "  + __LINE__);
 }
 
-Object Int::__not_equal__(Object* other)
+Object* Int::__not_equal__(Object* other)
 {
     if(other->name == "int" || other->name == "bool" || other->name == "double")
     {
-        return Bool(*(static_cast<int*>(value)) != *(static_cast<int*>(other->value)));
+        Bool* new_obj = new Bool(*(static_cast<int*>(value)) != *(static_cast<int*>(other->value)));
+        return new_obj;
     } 
-    throw std::runtime_error("This operation is not supported for this objects");
+    throw std::runtime_error("This operation is not supported for this objects "  + __LINE__);
 }
 
 Object* Int::clone()
@@ -720,58 +726,58 @@ std::string Double::__str__()
     return std::to_string(*(static_cast<double*>(value)));
 }
 
-Object Double::__add__(Object* other)
+Object* Double::__add__(Object* other)
 {
     if(other->name == "int" || other->name == "double")
     {
         int res = *(static_cast<double*>(value)) + *(static_cast<double*>((*other).value));
-        Double new_obj;
-        *static_cast<double*>(new_obj.value) = res;
+        Double* new_obj = new Double;
+        *static_cast<double*>(new_obj->value) = res;
         return new_obj;
     }
     throw std::invalid_argument("Conversion from this type to double is not supported.");
 }
 
-Object Double::__sub__(Object* other)
+Object* Double::__sub__(Object* other)
 {
     if(other->name == "int" || other->name == "double")
     {
         double res = *(static_cast<double*>(value)) - *(static_cast<double*>((*other).value));
-        Double new_obj;
-        *static_cast<double*>(new_obj.value) = res;
+        Double* new_obj = new Double;
+        *static_cast<double*>(new_obj->value) = res;
         return new_obj;
     }
     throw std::invalid_argument("Conversion from this type to double is not supported.");
 }
 
-Object Double::__mul__(Object* other)
+Object* Double::__mul__(Object* other)
 {
     if(other->name == "int" || other->name == "double")
     {
         double res = *(static_cast<double*>(value)) * *(static_cast<double*>((*other).value));
-        Double new_obj;
-        *static_cast<double*>(new_obj.value) = res;
+        Double* new_obj = new Double;
+        *static_cast<double*>(new_obj->value) = res;
         return new_obj;
     }
     throw std::invalid_argument("Conversion from this type to double is not supported.");
 }
 
-Object Double::__div__(Object* other)
+Object* Double::__div__(Object* other)
 {
     if(other->name == "int" || other->name == "double")
     {
         double res = *(static_cast<double*>(value)) * *(static_cast<double*>((*other).value));
-        Double new_obj;
-        *static_cast<double*>(new_obj.value) = res;
+        Double* new_obj = new Double;
+        *static_cast<double*>(new_obj->value) = res;
         return new_obj;
     }
     throw std::invalid_argument("Conversion from this type to double is not supported.");
 }
 
-Object Double::__neg__()
+Object* Double::__neg__()
 {
-    Double ans = -*static_cast<double*>(value);
-    return ans;
+    Double* new_obj = new Double(-*static_cast<double*>(value)) ;
+    return new_obj;
 }
 
 void Double::__add_assign__(Object* other)
@@ -781,7 +787,7 @@ void Double::__add_assign__(Object* other)
         *(static_cast<double*>(value)) += *(static_cast<double*>(other->value));
         return;
     }
-    throw std::runtime_error("This operation is not supported for this objects");
+    throw std::runtime_error("This operation is not supported for this objects "  + __LINE__);
 }
 
 void Double::__sub_assign__(Object* other)
@@ -791,7 +797,7 @@ void Double::__sub_assign__(Object* other)
         *(static_cast<double*>(value)) -= *(static_cast<double*>(other->value));
         return;
     }
-    throw std::runtime_error("This operation is not supported for this objects");
+    throw std::runtime_error("This operation is not supported for this objects "  + __LINE__);
 }
 
 void Double::__div_assign__(Object* other)
@@ -801,7 +807,7 @@ void Double::__div_assign__(Object* other)
         *(static_cast<double*>(value)) /= *(static_cast<double*>(other->value));
         return;
     }
-    throw std::runtime_error("This operation is not supported for this objects");
+    throw std::runtime_error("This operation is not supported for this objects "  + __LINE__);
 }
 
 void Double::__mul_assign__(Object* other)
@@ -811,61 +817,67 @@ void Double::__mul_assign__(Object* other)
         *(static_cast<double*>(value)) *= *(static_cast<double*>(other->value));
         return;
     }
-    throw std::runtime_error("This operation is not supported for this objects");
+    throw std::runtime_error("This operation is not supported for this objects "  + __LINE__);
 }
 
-Object Double::__more__(Object* other)
+Object* Double::__more__(Object* other)
 {
     if(other->name == "int" || other->name == "double")
     {
-        return Bool(*(static_cast<double*>(value)) > *(static_cast<double*>(other->value)));
+        Bool* new_obj = new Bool(*(static_cast<double*>(value)) > *(static_cast<double*>(other->value)));
+        return new_obj;
     } 
-    throw std::runtime_error("This operation is not supported for this objects");
+    throw std::runtime_error("This operation is not supported for this objects "  + __LINE__);
 }
 
-Object Double::__less__(Object* other)
+Object* Double::__less__(Object* other)
 {
     if(other->name == "int" || other->name == "double")
     {
-        return Bool(*(static_cast<double*>(value)) < *(static_cast<double*>(other->value)));
+        Bool* new_obj = new Bool(*(static_cast<double*>(value)) < *(static_cast<double*>(other->value)));
+        return new_obj;
     } 
-    throw std::runtime_error("This operation is not supported for this objects");
+    throw std::runtime_error("This operation is not supported for this objects "  + __LINE__);
 }
 
-Object Double::__more_equal__(Object* other)
+Object* Double::__more_equal__(Object* other)
 {
     if(other->name == "int" || other->name == "double")
     {
-        return Bool(*(static_cast<double*>(value)) >= *(static_cast<double*>(other->value)));
+        Bool* new_obj = new Bool(*(static_cast<double*>(value)) >= *(static_cast<double*>(other->value)));
+        return new_obj;
     } 
-    throw std::runtime_error("This operation is not supported for this objects");
+    throw std::runtime_error("This operation is not supported for this objects "  + __LINE__);
 }
 
-Object Double::__less_equal__(Object* other)
+Object* Double::__less_equal__(Object* other)
 {
     if(other->name == "int" || other->name == "double")
     {
-        return Bool(*(static_cast<double*>(value)) <= *(static_cast<double*>(other->value)));
+        Bool* new_obj = new Bool(*(static_cast<double*>(value)) <= *(static_cast<double*>(other->value)));
+        return new_obj;
     } 
-    throw std::runtime_error("This operation is not supported for this objects");
+    throw std::runtime_error("This operation is not supported for this objects "  + __LINE__);
 }
 
-Object Double::__equal__(Object* other)
+Object* Double::__equal__(Object* other)
 {
     if(other->name == "int" || other->name == "double")
     {
-        return Bool(*(static_cast<double*>(value)) == *(static_cast<double*>(other->value)));
+        Bool* new_obj = new Bool(*(static_cast<double*>(value)) == *(static_cast<double*>(other->value)));
+        return new_obj;
     } 
-    throw std::runtime_error("This operation is not supported for this objects");
+    throw std::runtime_error("This operation is not supported for this objects "  + __LINE__);
 }
 
-Object Double::__not_equal__(Object* other)
+Object* Double::__not_equal__(Object* other)
 {
     if(other->name == "int" || other->name == "double")
     {
-        return Bool(*(static_cast<double*>(value)) != *(static_cast<double*>(other->value)));
+        Bool*  new_obj = new Bool(*(static_cast<double*>(value)) != *(static_cast<double*>(other->value)));
+        return new_obj;
     } 
-    throw std::runtime_error("This operation is not supported for this objects");
+    throw std::runtime_error("This operation is not supported for this objects "  + __LINE__);
 }
 
 Object* Double::clone()
@@ -914,114 +926,120 @@ std::string Bool::__str__()
     return (*(static_cast<bool*>(value)) == true) ? "true" : "false";
 }
 
-Object Bool::__add__(Object* other)
+Object* Bool::__add__(Object* other)
 {
     if(other->name == "int" || other->name == "bool")
     {
         int res = *(static_cast<bool*>(value)) + *(static_cast<bool*>((*other).value));
-        Bool new_obj;
-        *static_cast<bool*>(new_obj.value) = res;
+        Bool* new_obj = new Bool;
+        *static_cast<bool*>(new_obj->value) = res;
         return new_obj;
     }
     throw std::invalid_argument("Conversion from this type to bool is not supported.");
 }
 
-Object Bool::__sub__(Object* other)
+Object* Bool::__sub__(Object* other)
 {
     if(other->name == "int" || other->name == "bool")
     {
         int res = *(static_cast<bool*>(value)) - *(static_cast<bool*>((*other).value));
-        Bool new_obj;
-        *static_cast<bool*>(new_obj.value) = res;
+        Bool* new_obj = new Bool;
+        *static_cast<bool*>(new_obj->value) = res;
         return new_obj;
     }
     throw std::invalid_argument("Conversion from this type to bool is not supported.");
 }
 
-Object Bool::__or__(Object* other)
+Object* Bool::__or__(Object* other)
 {
     if(other->name == "int" || other->name == "bool")
     {
         bool res = *(static_cast<bool*>(value)) || *(static_cast<bool*>((*other).value));
-        Bool new_obj;
-        *static_cast<bool*>(new_obj.value) = res;
+        Bool* new_obj = new Bool;
+        *static_cast<bool*>(new_obj->value) = res;
         return new_obj;
     }
     throw std::invalid_argument("Conversion from this type to int is not supported.");
 }
 
-Object Bool::__and__(Object* other)
+Object* Bool::__and__(Object* other)
 {
     if(other->name == "int" || other->name == "bool")
     {
         bool res = *(static_cast<bool*>(value)) && *(static_cast<bool*>((*other).value));
-        Bool new_obj;
-        *static_cast<bool*>(new_obj.value) = res;
+        Bool* new_obj = new Bool;
+        *static_cast<bool*>(new_obj->value) = res;
         return new_obj;
     }
     throw std::invalid_argument("Conversion from this type to int is not supported.");
 }
 
-Object Bool::__den__()
+Object* Bool::__den__()
 {
     bool res = !*(static_cast<bool*>(value));
-    Bool new_obj;
-    *static_cast<bool*>(new_obj.value) = res;
+    Bool* new_obj = new Bool;
+    *static_cast<bool*>(new_obj->value) = res;
     return new_obj;
 }
 
-Object Bool::__more__(Object* other)
+Object* Bool::__more__(Object* other)
 {
     if(other->name == "int" || other->name == "bool")
     {
-        return Bool(*(static_cast<int*>(value)) > *(static_cast<int*>(other->value)));
+        Bool* new_obj = new Bool(*(static_cast<int*>(value)) > *(static_cast<int*>(other->value)));
+        return new_obj;
     } 
-    throw std::runtime_error("This operation is not supported for this objects");
+    throw std::runtime_error("This operation is not supported for this objects "  + __LINE__);
 }
 
-Object Bool::__less__(Object* other)
+Object* Bool::__less__(Object* other)
 {
     if(other->name == "int" || other->name == "bool")
     {
-        return Bool(*(static_cast<int*>(value)) < *(static_cast<int*>(other->value)));
+        Bool* new_obj = new Bool(*(static_cast<int*>(value)) < *(static_cast<int*>(other->value)));
+        return new_obj;
     } 
-    throw std::runtime_error("This operation is not supported for this objects");
+    throw std::runtime_error("This operation is not supported for this objects "  + __LINE__);
 }
 
-Object Bool::__more_equal__(Object* other)
+Object* Bool::__more_equal__(Object* other)
 {
     if(other->name == "int" || other->name == "bool")
     {
-        return Bool(*(static_cast<int*>(value)) >= *(static_cast<int*>(other->value)));
+        Bool* new_obj = new Bool(*(static_cast<int*>(value)) >= *(static_cast<int*>(other->value)));
+        return new_obj;
     } 
-    throw std::runtime_error("This operation is not supported for this objects");
+    throw std::runtime_error("This operation is not supported for this objects "  + __LINE__);
 }
 
-Object Bool::__less_equal__(Object* other)
+Object* Bool::__less_equal__(Object* other)
 {
     if(other->name == "int" || other->name == "bool")
     {
-        return Bool(*(static_cast<int*>(value)) <= *(static_cast<int*>(other->value)));
+        Bool* new_obj = new Bool(*(static_cast<int*>(value)) <= *(static_cast<int*>(other->value)));
+        return new_obj;
     } 
-    throw std::runtime_error("This operation is not supported for this objects");
+    throw std::runtime_error("This operation is not supported for this objects "  + __LINE__);
 }
 
-Object Bool::__equal__(Object* other)
+Object* Bool::__equal__(Object* other)
 {
     if(other->name == "int" || other->name == "bool")
     {
-        return Bool(*(static_cast<int*>(value)) == *(static_cast<int*>(other->value)));
+        Bool* new_obj = new Bool(*(static_cast<int*>(value)) == *(static_cast<int*>(other->value)));
+        return new_obj;
     } 
-    throw std::runtime_error("This operation is not supported for this objects");
+    throw std::runtime_error("This operation is not supported for this objects "  + __LINE__);
 }
 
-Object Bool::__not_equal__(Object* other)
+Object* Bool::__not_equal__(Object* other)
 {
     if(other->name == "int" || other->name == "bool")
     {
-        return Bool(*(static_cast<int*>(value)) != *(static_cast<int*>(other->value)));
+        Bool* new_obj = new Bool(*(static_cast<int*>(value)) != *(static_cast<int*>(other->value)));
+        return new_obj;
     } 
-    throw std::runtime_error("This operation is not supported for this objects");
+    throw std::runtime_error("This operation is not supported for this objects "  + __LINE__);
 }
 
 Object* Bool::clone()
@@ -1057,11 +1075,10 @@ std::string String::__str__()
     return *(static_cast<std::string*>(value));
 }
 
-Object String::__add__(Object* other)
+Object* String::__add__(Object* other)
 {
     std::string res = __str__() + other->__str__();
-    String new_obj;
-    *static_cast<std::string*>(new_obj.value) = res;
+    String* new_obj = new String(res);
     return new_obj;
 }
 
@@ -1070,58 +1087,64 @@ void String::__add_assign__(Object* other)
     *(static_cast<std::string*>(value)) += other->__str__();
 }
 
-Object String::__more__(Object* other)
+Object* String::__more__(Object* other)
 {
     if(other->name == "string")
     {
-        return Bool(*(static_cast<std::string*>(value)) > *(static_cast<std::string*>(other->value)));
+        Bool* new_obj = new Bool(*(static_cast<std::string*>(value)) > *(static_cast<std::string*>(other->value)));
+        return new_obj;
     } 
-    throw std::runtime_error("This operation is not supported for this objects");
+    throw std::runtime_error("This operation is not supported for this objects "  + __LINE__);
 }
 
-Object String::__less__(Object* other)
+Object* String::__less__(Object* other)
 {
     if(other->name == "string")
     {
-        return Bool(*(static_cast<std::string*>(value)) < *(static_cast<std::string*>(other->value)));
+        Bool* new_obj = new Bool(*(static_cast<std::string*>(value)) < *(static_cast<std::string*>(other->value)));
+        return new_obj;
     } 
-    throw std::runtime_error("This operation is not supported for this objects");
+    throw std::runtime_error("This operation is not supported for this objects "  + __LINE__);
 }
 
-Object String::__more_equal__(Object* other)
+Object* String::__more_equal__(Object* other)
 {
     if(other->name == "string")
     {
-        return Bool(*(static_cast<std::string*>(value)) >= *(static_cast<std::string*>(other->value)));
+        Bool* new_obj = new Bool(*(static_cast<std::string*>(value)) >= *(static_cast<std::string*>(other->value)));
+        return new_obj;
     } 
-    throw std::runtime_error("This operation is not supported for this objects");
+    throw std::runtime_error("This operation is not supported for this objects "  + __LINE__);
 }
 
-Object String::__less_equal__(Object* other)
+Object* String::__less_equal__(Object* other)
 {
     if(other->name == "string")
     {
-        return Bool(*(static_cast<std::string*>(value)) <= *(static_cast<std::string*>(other->value)));
+        Bool* new_obj = new Bool(*(static_cast<std::string*>(value)) <= *(static_cast<std::string*>(other->value)));
+        return new_obj;
     } 
-    throw std::runtime_error("This operation is not supported for this objects");
+    throw std::runtime_error("This operation is not supported for this objects "  + __LINE__);
 }
 
-Object String::__equal__(Object* other)
+Object* String::__equal__(Object* other)
 {
     if(other->name == "string")
     {
-        return Bool(*(static_cast<std::string*>(value)) == *(static_cast<std::string*>(other->value)));
+        Bool* new_obj = new Bool(*(static_cast<std::string*>(value)) == *(static_cast<std::string*>(other->value)));
+        return new_obj;
     } 
-    throw std::runtime_error("This operation is not supported for this objects");
+    throw std::runtime_error("This operation is not supported for this objects "  + __LINE__);
 }
 
-Object String::__not_equal__(Object* other)
+Object* String::__not_equal__(Object* other)
 {
     if(other->name == "string")
     {
-        return Bool(*(static_cast<std::string*>(value)) != *(static_cast<std::string*>(other->value)));
+        Bool* new_obj = new Bool(*(static_cast<std::string*>(value)) != *(static_cast<std::string*>(other->value)));
+        return new_obj;
     } 
-    throw std::runtime_error("This operation is not supported for this objects");
+    throw std::runtime_error("This operation is not supported for this objects "  + __LINE__);
 }
 
 void String::__pop__()
@@ -1134,11 +1157,11 @@ int String::__size__()
     return (static_cast<std::string*>(value))->size();
 }
 
-Object String::__at__(int index)
+Object* String::__at__(int index)
 {
     char ch = (static_cast<std::string*>(value))->at(index);
     std::string new_string(1, ch);
-    String ans = new_string;
+    String* ans = new String(new_string);
     return ans;
 }
 
@@ -1198,21 +1221,21 @@ Array::Array(Object* ptr)
         std::vector<Object*>* vec_ptr = new std::vector<Object*>(ptr->__size__(), nullptr);
         for(int i = 0; i < ptr->__size__(); ++i)
         {
-            if((ptr->__at__(i)).name == "int")
+            if((ptr->__at__(i))->name == "int")
             {
-                (*vec_ptr)[i] = new Int{*static_cast<int*>((ptr->__at__(i)).value)};
-            } else if((ptr->__at__(i)).name == "bool")
+                (*vec_ptr)[i] = new Int{*static_cast<int*>((ptr->__at__(i))->value)};
+            } else if((ptr->__at__(i))->name == "bool")
             {
-                (*vec_ptr)[i] = new Bool{*static_cast<bool*>((ptr->__at__(i)).value)};
-            } else if((ptr->__at__(i)).name == "double")
+                (*vec_ptr)[i] = new Bool{*static_cast<bool*>((ptr->__at__(i))->value)};
+            } else if((ptr->__at__(i))->name == "double")
             {
-                (*vec_ptr)[i] = new Double{*static_cast<double*>((ptr->__at__(i)).value)};
-            } else if((ptr->__at__(i)).name == "string")
+                (*vec_ptr)[i] = new Double{*static_cast<double*>((ptr->__at__(i))->value)};
+            } else if((ptr->__at__(i))->name == "string")
             {
-                (*vec_ptr)[i] = new String{*static_cast<std::string*>((ptr->__at__(i)).value)};
-            } else if((ptr->__at__(i)).name == "array")
+                (*vec_ptr)[i] = new String{*static_cast<std::string*>((ptr->__at__(i))->value)};
+            } else if((ptr->__at__(i))->name == "array")
             {
-                (*vec_ptr)[i] = new Array{static_cast<Object*>((ptr->__at__(i)).value)};
+                (*vec_ptr)[i] = new Array{static_cast<Object*>((ptr->__at__(i))->value)};
             } else 
             {
                 throw std::runtime_error("wrong argument");
@@ -1250,7 +1273,7 @@ std::string Array::__str__()
     return res;
 }
 
-Object Array:: __add__(Object* other) 
+Object* Array:: __add__(Object* other) 
 {
     if(other->name == "array")
     {
@@ -1301,7 +1324,8 @@ Object Array:: __add__(Object* other)
                 throw std::runtime_error("wrong argument");
             }
         }
-        return Array(*new_vector);
+        Array* new_obj = new Array(*new_vector);
+        return new_obj;
     }
     if (other->name == "int" || other->name == "double" || other->name == "bool" || other->name == "string")
     {
@@ -1349,7 +1373,8 @@ Object Array:: __add__(Object* other)
         {
             throw std::runtime_error("wrong argument");
         }
-        return Array(*new_vector);
+        Array* new_obj = new Array(*new_vector);
+        return new_obj;
     }
     throw std::runtime_error("wrong argument");
 }
@@ -1431,12 +1456,31 @@ int Array::__size__()
     return ans;
 }
 
-Object Array::__at__(int index)
+Object* Array::__at__(int index)
 {
     std::vector<Object*>* vec = static_cast<std::vector<Object*>*>(value);
-    Object ans = *(vec->at(index));
-    vec = nullptr;
-    return ans;
+    Object* obs = vec->at(index);
+    if(obs->name == "int")
+    {
+        Int* ans = new Int(*static_cast<int*>(obs->value));
+        return ans;
+    } else if(obs->name == "double")
+    {
+        Double* ans = new Double(*static_cast<double*>(obs->value));
+        return ans;
+    } else if(obs->name == "bool")
+    {
+        Bool* ans = new Bool(*static_cast<bool*>(obs->value));
+        return ans;
+    } else if(obs->name == "string")
+    {
+        String* ans = new String(*static_cast<std::string*>(obs->value));
+        return ans;
+    } else if(obs->name == "array")
+    {
+        Array* ans = new Array(*static_cast<std::vector<Object*>*>(obs->value));
+        return ans;
+    }
 }
 
 Object* Array::clone()
