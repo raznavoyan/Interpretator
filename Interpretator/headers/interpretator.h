@@ -19,7 +19,7 @@ private:
     parser codeParser;
     std::vector<std::string> code;
     Object* createObject(size_t&  index);
-    Object* createObject(std::string index);
+    Object* createObject(std::string value);
     void execute(const std::vector<std::string>& tokens);
     void executeAssignment(const std::vector<std::string>& tokens, size_t& index);
     void executeIf(const std::vector<std::string>& tokens, size_t& index);
