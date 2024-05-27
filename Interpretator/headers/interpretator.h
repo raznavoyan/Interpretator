@@ -30,6 +30,9 @@ private:
     void executeBlock(const std::vector<std::string>& tokens, size_t& index);
     void runLine(const std::vector<std::string>& tokens);
     Object* evaluateExpression(const std::vector<std::string>& tokens, size_t& index);
+
+public:
+    size_t index = 0;
     
 };
 
