@@ -17,19 +17,22 @@ Interpreter::~Interpreter()
     std::cout << "Interpreter destroyed." << std::endl;
 }
 
-void Interpreter::execute(const std::vector<std::string>& tokens) {
+void Interpreter::execute(std::vector<std::string>& tokens) {
     while (this->index < tokens.size()) {
         const std::string& token = tokens[this->index];
-        if(token == "|")
-        {
+
+        if (token == "|") {
             ++this->index;
+            continue;
         }
-        if(parser::isAKeyword(token))
-        {
-            std::cout << token;
-            if (token == "if") {
+
+        if (parser::isAKeyword(token)) {
+            if (token == "def") {
+                defineFunction(tokens, this->index);
+            } else if (token == "if") {
                 ++this->index;
                 executeIf(tokens, this->index);
+                
                 if (this->index < tokens.size() && tokens[this->index] == "otherwise if") {
                     ++this->index;
                     executeOtherwiseIf(tokens, this->index);
@@ -45,26 +48,25 @@ void Interpreter::execute(const std::vector<std::string>& tokens) {
                 ++this->index;
                 std::cout << "\t called" << std::endl;
                 executeLoop(tokens, this->index);
-            }else 
-            {
-                throw std::runtime_error("wrong operation");
+            } else {
+                throw std::runtime_error("Unknown operation");
             }
-        }else // if it is not a keyword it should be a variable's name
-        {
-            if(parser::isVariableName(token))
-            {
-                if(tokens[this->index + 1] != "=")
-                {
+        } else {  // if it is not a keyword it should be a variable's name
+            if (parser::isVariableName(token)) {
+                if (tokens[this->index + 1] != "=") {
                     throw std::runtime_error("wrong operation");
                 }
                 executeAssignment(tokens, this->index);
-            } else 
-            {
-                throw std::runtime_error("wrong operation");
+            } else {
+                if (functionTable.find(token) != functionTable.end()) {
+                    callFunction(token);
+                } else {
+                    throw std::runtime_error("wrong operation");
+                }
             }
         }
-        ++this->index;
 
+        ++this->index;
     }
 }
 
@@ -477,6 +479,7 @@ Object* Interpreter::createObject(std::string value) {
     }
 
     return tmp; 
+
     //         throw std::runtime_error("Invalid array syntax: missing closing parenthesis");
     //     }
     //     ++this->index;
@@ -541,5 +544,52 @@ Object* Interpreter::createObject(std::string value) {
     //     }
 
     //     if (this->index >= code.size() || code[this->index] != "]") {
+}
+
+
+void Interpreter::defineFunction(const std::vector<std::string>& tokens, size_t& index) {
+    if (tokens[index] != "def") {
+        throw std::runtime_error("Expected 'def' for function definition");
+    }
+    ++index;
+
+    if (index >= tokens.size() || !parser::isVariableName(tokens[index])) {
+        throw std::runtime_error("Expected function name");
+    }
+
+    std::string functionName = tokens[index];
+    ++index;
+
+    if (index >= tokens.size() || tokens[index] != "()") {
+        throw std::runtime_error("Expected '()' after function name");
+    }
+    ++index;
+
+    if (index >= tokens.size() || tokens[index] != "{") {
+        throw std::runtime_error("Expected '{' to start function body");
+    }
+    ++index;
+
+    std::vector<std::string> body;
+    while (index < tokens.size() && tokens[index] != "}") {
+        body.push_back(tokens[index]);
+        ++index;
+    }
+
+    if (index >= tokens.size() || tokens[index] != "}") {
+        throw std::runtime_error("Expected '}' to end function body");
+    }
+    ++index;
+
+    functionTable[functionName] = Function(body);
+}
+
+void Interpreter::callFunction(const std::string& functionName) {
+    if (functionTable.find(functionName) == functionTable.end()) {
+        throw std::runtime_error("Function '" + functionName + "' not defined");
+    }
+
+    Function& function = functionTable[functionName];
+    execute(function.code);
 }
 
