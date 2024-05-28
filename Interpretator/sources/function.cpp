@@ -3,14 +3,16 @@
 
 #include "headers.h"
 
-function::function(std::vector<std::string> code){}
+Function::Function(std::vector<std::string> code)
+    : code(code) 
+{}
 
 
-Object* function::call(Array *args){}
+Object* Function::call(Array *args){}
 
 
 
-function::~function(){}
+Function::~Function(){}
 
 
 #endif

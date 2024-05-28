@@ -4,6 +4,7 @@
 #include "object.h"
 #include "parser.h"
 #include "symtab.h"
+#include "function.h"
 #include <string>
 #include <vector>
 #include <unordered_map>
@@ -17,10 +18,12 @@ public:
 private:
     symtab symbolTable;
     parser codeParser;
+    size_t index;
+    std::unordered_map<std::string, Function> functionTable;
     std::vector<std::string> code;
     Object* createObject(size_t&  index);
-    Object* createObject(std::string index);
-    void execute(const std::vector<std::string>& tokens);
+    Object* createObject(std::string value);
+    void execute(std::vector<std::string>& tokens);
     void executeAssignment(const std::vector<std::string>& tokens, size_t& index);
     void executeIf(const std::vector<std::string>& tokens, size_t& index);
     void executeOtherwiseIf(const std::vector<std::string>& tokens, size_t& index);
@@ -29,8 +32,9 @@ private:
     void executeLoop(const std::vector<std::string>& tokens, size_t& index);
     void executeBlock(const std::vector<std::string>& tokens, size_t& index);
     void runLine(const std::vector<std::string>& tokens);
+    void defineFunction(const std::vector<std::string>& tokens, size_t& index);
+    void callFunction(const std::string& functionName);
     Object* evaluateExpression(const std::vector<std::string>& tokens, size_t& index);
-    
 };
 
 

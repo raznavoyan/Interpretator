@@ -3,14 +3,15 @@
 
 #include "headers.h"
 
-class function
+class Function
 {
 private:
     std::vector<std::string> argTypes;
-    std::vector<std::string> code;   
+    std::vector<std::string> code; 
+
 public:
-    function(std::vector<std::string> code);
-    ~function();
+    Function(std::vector<std::string> code);
+    ~Function();
     Object* call(Array* args);
 };
 

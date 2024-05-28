@@ -1,4 +1,3 @@
-
 #include "interpretator.h"
 #include "parser.h"
 #include "symtab.h"
@@ -6,7 +5,8 @@
 #include <iostream>
 #include <sstream>
 
-Interpreter::Interpreter(std::vector<std::string> code)
+Interpreter::Interpreter(std::vector<std::string> code) 
+    : index{0}
 {
     std::cout << "Interpreter initialized." << std::endl;
     execute(code);
@@ -17,49 +17,56 @@ Interpreter::~Interpreter()
     std::cout << "Interpreter destroyed." << std::endl;
 }
 
-void Interpreter::execute(const std::vector<std::string>& tokens) {
-    size_t index = 0;
-    while (index < tokens.size()) {
-        const std::string& token = tokens[index];
-        if(token == "|")
-        {
-            ++index;
+void Interpreter::execute(std::vector<std::string>& tokens) {
+    while (this->index < tokens.size()) {
+        const std::string& token = tokens[this->index];
+
+        if (token == "|") {
+            ++this->index;
+            continue;
         }
-        if(parser::isAKeyword(token))
-        {
-            std::cout << token ;
-            if (token == "if") {
-                index++;
-                executeIf(tokens, index);
-            } else if (token == "otherwise") {
-                executeOtherwiseIf(tokens, index);
+
+        if (parser::isAKeyword(token)) {
+            if (token == "def") {
+                defineFunction(tokens, this->index);
+            } else if (token == "if") {
+                ++this->index;
+                executeIf(tokens, this->index);
+                
+                if (this->index < tokens.size() && tokens[this->index] == "otherwise if") {
+                    ++this->index;
+                    executeOtherwiseIf(tokens, this->index);
+                }
+                if (this->index < tokens.size() && tokens[this->index] == "otherwise") {
+                    ++this->index;
+                    executeOtherwise(tokens, this->index);
+                }
             } else if (token == "during") {
-                ++index;
-                executeDuring(tokens, index);
+                ++this->index;
+                executeDuring(tokens, this->index);
             } else if (token == "loop") {
-                ++index;
+                ++this->index;
                 std::cout << "\t called" << std::endl;
-                executeLoop(tokens, index);
-            }else 
-            {
-                throw std::runtime_error("wrong operation");
+                executeLoop(tokens, this->index);
+            } else {
+                throw std::runtime_error("Unknown operation");
             }
-        }else // if it is not a keyword it should be a variable's name
-        {
-            if(parser::isVariableName(token))
-            {
-                if(tokens[index + 1] != "=")
-                {
+        } else {  // if it is not a keyword it should be a variable's name
+            if (parser::isVariableName(token)) {
+                if (tokens[this->index + 1] != "=") {
                     throw std::runtime_error("wrong operation");
                 }
-                executeAssignment(tokens, index);
-            } else 
-            {
-                throw std::runtime_error("wrong operation");
+                executeAssignment(tokens, this->index);
+            } else {
+                if (functionTable.find(token) != functionTable.end()) {
+                    callFunction(token);
+                } else {
+                    throw std::runtime_error("wrong operation");
+                }
             }
         }
-        ++index;
 
+        ++this->index;
     }
 }
 
@@ -300,66 +307,66 @@ Object* Interpreter::evaluateExpression(const std::vector<std::string>& tokens, 
             return nullptr;
         }
         
-            if (tokens[index - 1] == "+") {
-        *tmp = tmp->__add__(left);
-    } else if (tokens[index - 1] == "-") {
-        *tmp = tmp->__sub__(left);
-    } else if (tokens[index - 1] == "*") {
-        *tmp = tmp->__mul__(left);
-    } else if (tokens[index - 1] == "/") {
-        *tmp = tmp->__div__(left);
-    } else if (tokens[index - 1] == "%") {
-        *tmp = tmp->__mod__(left);
-    } else if (tokens[index - 1] == "|") {
-        *tmp = tmp->__or__(left);
-    } else if (tokens[index - 1] == "&") {
-        *tmp = tmp->__and__(left);
-    } else if (tokens[index - 1] == "~") {
-        *tmp = tmp->__den__();
-    } else if (tokens[index - 1] == "||") {
-        *tmp = tmp->__or__(left);
-    } else if (tokens[index - 1] == "&&") {
-        *tmp = tmp->__and__(left);
-    } else if (tokens[index - 1] == "^") {
-        *tmp = tmp->__xor__(left);
-    } else if (tokens[index - 1] == "<<") {
-        *tmp = tmp->__left_shift__(left);
-    } else if (tokens[index - 1] == ">>") {
-        *tmp = tmp->__right_shift__(left);
-    } else if (tokens[index - 1] == "+=") {
-        tmp->__add_assign__(left);
-    } else if (tokens[index - 1] == "-=") {
-        tmp->__sub_assign__(left);
-    } else if (tokens[index - 1] == "*=") {
-        tmp->__mul_assign__(left);
-    } else if (tokens[index - 1] == "/=") {
-        tmp->__div_assign__(left);
-    } else if (tokens[index - 1] == "%=") {
-        tmp->__mod_assign__(left);
-    } else if (tokens[index - 1] == "^=") {
-        tmp->__xor_assign__(left);
-    } else if (tokens[index - 1] == "<<=") {
-        tmp->__lshift_assign__(left);
-    } else if (tokens[index - 1] == ">>=") {
-        tmp->__rshift_assign__(left);
-    } else if (tokens[index - 1] == ">") {
-        *tmp = tmp->__more__(left);
-    } else if (tokens[index - 1] == "<") {
-        *tmp = tmp->__less__(left);
-    } else if (tokens[index - 1] == ">=") {
-        *tmp = tmp->__more_equal__(left);
-    } else if (tokens[index - 1] == "<=") {
-        *tmp = tmp->__less_equal__(left);
-    } else if (tokens[index - 1] == "==") {
-        *tmp = tmp->__equal__(left);
-    } else if (tokens[index - 1] == "!=") {
-        *tmp = tmp->__not_equal__(left);
-    } else {
-        // Error: Unsupported binary operator
-        return nullptr;
+        if (tokens[index - 1] == "+") {
+            *tmp = tmp->__add__(left);
+        } else if (tokens[index - 1] == "-") {
+            *tmp = tmp->__sub__(left);
+        } else if (tokens[index - 1] == "*") {
+            *tmp = tmp->__mul__(left);
+        } else if (tokens[index - 1] == "/") {
+            *tmp = tmp->__div__(left);
+        } else if (tokens[index - 1] == "%") {
+            *tmp = tmp->__mod__(left);
+        } else if (tokens[index - 1] == "|") {
+            *tmp = tmp->__or__(left);
+        } else if (tokens[index - 1] == "&") {
+            *tmp = tmp->__and__(left);
+        } else if (tokens[index - 1] == "~") {
+            *tmp = tmp->__den__();
+        } else if (tokens[index - 1] == "||") {
+            *tmp = tmp->__or__(left);
+        } else if (tokens[index - 1] == "&&") {
+            *tmp = tmp->__and__(left);
+        } else if (tokens[index - 1] == "^") {
+            *tmp = tmp->__xor__(left);
+        } else if (tokens[index - 1] == "<<") {
+            *tmp = tmp->__left_shift__(left);
+        } else if (tokens[index - 1] == ">>") {
+            *tmp = tmp->__right_shift__(left);
+        } else if (tokens[index - 1] == "+=") {
+            tmp->__add_assign__(left);
+        } else if (tokens[index - 1] == "-=") {
+            tmp->__sub_assign__(left);
+        } else if (tokens[index - 1] == "*=") {
+            tmp->__mul_assign__(left);
+        } else if (tokens[index - 1] == "/=") {
+            tmp->__div_assign__(left);
+        } else if (tokens[index - 1] == "%=") {
+            tmp->__mod_assign__(left);
+        } else if (tokens[index - 1] == "^=") {
+            tmp->__xor_assign__(left);
+        } else if (tokens[index - 1] == "<<=") {
+            tmp->__lshift_assign__(left);
+        } else if (tokens[index - 1] == ">>=") {
+            tmp->__rshift_assign__(left);
+        } else if (tokens[index - 1] == ">") {
+            *tmp = tmp->__more__(left);
+        } else if (tokens[index - 1] == "<") {
+            *tmp = tmp->__less__(left);
+        } else if (tokens[index - 1] == ">=") {
+            *tmp = tmp->__more_equal__(left);
+        } else if (tokens[index - 1] == "<=") {
+            *tmp = tmp->__less_equal__(left);
+        } else if (tokens[index - 1] == "==") {
+            *tmp = tmp->__equal__(left);
+        } else if (tokens[index - 1] == "!=") {
+            *tmp = tmp->__not_equal__(left);
+        } else {
+            // Error: Unsupported binary operator
+            return nullptr;
+        }
     }
 
-    }
     if(tmp != nullptr)
     symbolTable.setVal(("tmp" + std::to_string(index)), tmp);
     return tmp;
@@ -472,69 +479,117 @@ Object* Interpreter::createObject(std::string value) {
     }
 
     return tmp; 
+
     //         throw std::runtime_error("Invalid array syntax: missing closing parenthesis");
     //     }
-    //     ++index;
+    //     ++this->index;
     //     tmp = new Array(elements);
     // }
        // if (t == 'a') {
     //     // ARRAY
     //     // Handle array creation using tokens from the code vector:
-    //     if (index + 1 >= code.size() || code[index + 1] != "(") {
+    //     if (this->index + 1 >= code.size() || code[this->index + 1] != "(") {
     //         throw std::runtime_error("Invalid array syntax: missing opening parenthesis");
     //     }
 
-    //     ++index;
+    //     ++this->index;
     //     std::vector<Object*> elements;
 
     //     // Recursively parse array elements until closing parenthesis:
-    //     while (index < code.size() && code[index] != "]") {
-    //         elements.push_back(createObject(index));
-    //         ++index;
+    //     while (this->index < code.size() && code[this->index] != "]") {
+    //         elements.push_back(createObject(this->index));
+    //         ++this->index;
     //     }
 
-    //     if (index >= code.size() || code[index] != "]") {
+    //     if (this->index >= code.size() || code[this->index] != "]") {
     //         throw std::runtime_error("Invalid array syntax: missing closing parenthesis");
     //     }
-    //     ++index;
+    //     ++this->index;
     //     tmp = new Array(elements);
     //     // Recursively parse array elements until closing parenthesis:
-    //     while (index < code.size() && code[index] != "]") {
-    //         elements.push_back(createObject(index));
-    //         ++index;
+    //     while (this->index < code.size() && code[this->index] != "]") {
+    //         elements.push_back(createObject(this->index));
+    //         ++this->index;
     //     }
 
-    //     if (index >= code.size() || code[index] != "]") {
+    //     if (this->index >= code.size() || code[this->index] != "]") {
     //         throw std::runtime_error("Invalid array syntax: missing closing parenthesis");
     //     }
-    //     ++index;
+    //     ++this->index;
     //     tmp = new Array(elements);
     // }// ARRAY
     //     // Handle array creation using tokens from the code vector:
-    //     if (index + 1 >= code.size() || code[index + 1] != "(") {
+    //     if (this->index + 1 >= code.size() || code[this->index + 1] != "(") {
     //         throw std::runtime_error("Invalid array syntax: missing opening parenthesis");
     //     }
 
-    //     ++index;
+    //     ++this->index;
     //     std::vector<Object*> elements;
 
     //     // Recursively parse array elements until closing parenthesis:
-    //     while (index < code.size() && code[index] != "]") {
-    //         elements.push_back(createObject(index));
-    //         ++index;
+    //     while (this->index < code.size() && code[this->index] != "]") {
+    //         elements.push_back(createObject(this->index));
+    //         ++this->index;
     //     }
 
-    //     if (index >= code.size() || code[index] != "]") {
+    //     if (this->index >= code.size() || code[this->index] != "]") {
     //         throw std::runtime_error("Invalid array syntax: missing closing parenthesis");
     //     }
-    //     ++index;
+    //     ++this->index;
     //     tmp = new Array(elements);
     //     // Recursively parse array elements until closing parenthesis:
-    //     while (index < code.size() && code[index] != "]") {
-    //         elements.push_back(createObject(index));
-    //         ++index;
+    //     while (this->index < code.size() && code[this->index] != "]") {
+    //         elements.push_back(createObject(this->index));
+    //         ++this->index;
     //     }
 
-    //     if (index >= code.size() || code[index] != "]") {
+    //     if (this->index >= code.size() || code[this->index] != "]") {
+}
+
+
+void Interpreter::defineFunction(const std::vector<std::string>& tokens, size_t& index) {
+    if (tokens[index] != "def") {
+        throw std::runtime_error("Expected 'def' for function definition");
+    }
+    ++index;
+
+    if (index >= tokens.size() || !parser::isVariableName(tokens[index])) {
+        throw std::runtime_error("Expected function name");
+    }
+
+    std::string functionName = tokens[index];
+    ++index;
+
+    if (index >= tokens.size() || tokens[index] != "()") {
+        throw std::runtime_error("Expected '()' after function name");
+    }
+    ++index;
+
+    if (index >= tokens.size() || tokens[index] != "{") {
+        throw std::runtime_error("Expected '{' to start function body");
+    }
+    ++index;
+
+    std::vector<std::string> body;
+    while (index < tokens.size() && tokens[index] != "}") {
+        body.push_back(tokens[index]);
+        ++index;
+    }
+
+    if (index >= tokens.size() || tokens[index] != "}") {
+        throw std::runtime_error("Expected '}' to end function body");
+    }
+    ++index;
+
+    functionTable[functionName] = Function(body);
+}
+
+void Interpreter::callFunction(const std::string& functionName) {
+    if (functionTable.find(functionName) == functionTable.end()) {
+        throw std::runtime_error("Function '" + functionName + "' not defined");
+    }
+
+    Function& function = functionTable[functionName];
+    execute(function.code);
 }
 
