@@ -12,11 +12,13 @@
 
 class Interpreter {
 public:
-    Interpreter(std::vector<std::string> code);
+    Interpreter(std::vector<std::string> code, std::vector<std::string>* parametrs = nullptr, Object* arguments = nullptr);
     ~Interpreter();
-private:
+
+    Object* ret;
     symtab symbolTable;
     parser codeParser;
+    
     std::vector<std::string> code;
     Object* createObject(size_t&  index);
     Object* createObject(std::string index);
