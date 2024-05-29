@@ -60,9 +60,22 @@ struct Object
     virtual int __size__(); // for arrays and strings
     virtual Object* __at__(int); // for arrays and strings
 
+    virtual Object* __call__(Object*); // for function
+
     private:
     void clear();
     virtual Object* clone();
+};
+
+struct Function : public Object
+{
+    std::vector<std::string>* arg_names;
+
+    public:
+    Function(std::vector<std::string>*, std::vector<std::string>*);
+
+    std::string __str__() override;
+    Object* __call__(Object*) override;
 };
 
 struct Int : public Object 

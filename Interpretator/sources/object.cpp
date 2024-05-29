@@ -1,7 +1,8 @@
 #ifndef __OBJECT_CPP_
 #define __OBJECT_CPP_
 
-
+#include "../headers/interpretator.h"
+#include "../headers/symtab.h"
 #include "../headers/object.h"
 #include <string>
 #include <stdexcept>
@@ -270,6 +271,11 @@ Object* Object::__at__(int)
     throw std::runtime_error("This operation is not supported for this objects "  + __LINE__);
 }
 
+Object* Object::__call__(Object*)
+{
+    throw std::runtime_error("This operation is not supported for this objects "  + __LINE__);
+}
+
 void Object::clear()
 {
     if (name == "array" && value)
@@ -306,6 +312,29 @@ Object::~Object()
 ///////////////////////////////////////
 
 
+/////////////Function////////////////
+Function::Function(std::vector<std::string>* code, std::vector<std::string>* args)
+    :Object("function", code), arg_names{args}
+{}
+
+std::string Function::__str__()
+{
+    return "Function";
+}
+
+Object* Function::__call__(Object* args)
+{
+    if(args->__size__() != arg_names->size())
+    {
+        std::runtime_error("the number of the arguments isn't right " + __LINE__);
+    }
+
+    Interpreter inter(*static_cast<std::vector<std::string>*>(value), arg_names, args);
+    return inter.ret;
+}
+//////////////////////////////////////
+
+
 ////////////////// INT /////////////////
 Int::Int() 
     : Object("int", new int{0}) 
@@ -337,7 +366,7 @@ Int::Int(Object* ptr)
         *(static_cast<int*>(value)) = *(static_cast<double*>(ptr->value));
     } else 
     {
-        throw std::invalid_argument("Conversion from this type to int is not supported.");
+        throw std::invalid_argument("Conversion from this type to int is not supported. " + __LINE__);
     }
 }
 
@@ -362,7 +391,7 @@ Object* Int::__add__(Object* other)
         *static_cast<double*>(new_obj->value) = res;
         return new_obj;
     }
-    throw std::invalid_argument("Conversion from this type to int is not supported.");
+    throw std::invalid_argument("Conversion from this type to int is not supported. " + __LINE__);
 }
 
 Object* Int::__sub__(Object* other)
@@ -381,7 +410,7 @@ Object* Int::__sub__(Object* other)
         *static_cast<double*>(new_obj->value) = res;
         return new_obj;
     }
-    throw std::invalid_argument("Conversion from this type to int is not supported.");
+    throw std::invalid_argument("Conversion from this type to int is not supported. " + __LINE__);
 }
 
 Object* Int::__mod__(Object* other)
@@ -393,7 +422,7 @@ Object* Int::__mod__(Object* other)
         *static_cast<int*>(new_obj->value) = res;
         return new_obj;
     }
-    throw std::invalid_argument("Conversion from this type to int is not supported.");
+    throw std::invalid_argument("Conversion from this type to int is not supported. " + __LINE__);
 }
 
 Object* Int::__mul__(Object* other)
@@ -412,7 +441,7 @@ Object* Int::__mul__(Object* other)
         *static_cast<double*>(new_obj->value) = res;
         return new_obj;
     }
-    throw std::invalid_argument("Conversion from this type to int is not supported.");
+    throw std::invalid_argument("Conversion from this type to int is not supported. " + __LINE__);
 }
 
 Object* Int::__div__(Object* other)
@@ -431,7 +460,7 @@ Object* Int::__div__(Object* other)
         *static_cast<double*>(new_obj->value) = res;
         return new_obj;
     }
-    throw std::invalid_argument("Conversion from this type to int is not supported.");
+    throw std::invalid_argument("Conversion from this type to int is not supported. " + __LINE__);
 }
 
 Object* Int::__neg__()
@@ -449,7 +478,7 @@ Object* Int::__or__(Object* other)
         *static_cast<bool*>(new_obj->value) = res;
         return new_obj;
     }
-    throw std::invalid_argument("Conversion from this type to int is not supported.");
+    throw std::invalid_argument("Conversion from this type to int is not supported. " + __LINE__);
 }
 
 Object* Int::__and__(Object* other)
@@ -461,7 +490,7 @@ Object* Int::__and__(Object* other)
         *static_cast<bool*>(new_obj->value) = res;
         return new_obj;
     }
-    throw std::invalid_argument("Conversion from this type to int is not supported.");
+    throw std::invalid_argument("Conversion from this type to int is not supported. " + __LINE__);
 }
 
 Object* Int::__den__()
@@ -481,7 +510,7 @@ Object* Int::__bit_and__(Object* other)
         *static_cast<int*>(new_obj->value) = res;
         return new_obj;
     }
-    throw std::invalid_argument("Conversion from this type to int is not supported.");
+    throw std::invalid_argument("Conversion from this type to int is not supported. " + __LINE__);
 }
 
 Object* Int::__bit_or__(Object* other)
@@ -493,7 +522,7 @@ Object* Int::__bit_or__(Object* other)
         *static_cast<int*>(new_obj->value) = res;
         return new_obj;
     }
-    throw std::invalid_argument("Conversion from this type to int is not supported.");
+    throw std::invalid_argument("Conversion from this type to int is not supported. " + __LINE__);
 }
 
 Object* Int::__bit_den__()
@@ -513,7 +542,7 @@ Object* Int::__xor__(Object* other)
         *static_cast<int*>(new_obj->value) = res;
         return new_obj;
     }
-    throw std::invalid_argument("Conversion from this type to int is not supported.");
+    throw std::invalid_argument("Conversion from this type to int is not supported. " + __LINE__);
 }
 
 Object* Int::__left_shift__(Object* other)
@@ -525,7 +554,7 @@ Object* Int::__left_shift__(Object* other)
         *static_cast<int*>(new_obj->value) = res;
         return new_obj;
     }
-    throw std::invalid_argument("Conversion from this type to int is not supported.");
+    throw std::invalid_argument("Conversion from this type to int is not supported. " + __LINE__);
 }
 
 Object* Int::__right_shift__(Object* other)
@@ -537,7 +566,7 @@ Object* Int::__right_shift__(Object* other)
         *static_cast<int*>(new_obj->value) = res;
         return new_obj;
     }
-    throw std::invalid_argument("Conversion from this type to int is not supported.");
+    throw std::invalid_argument("Conversion from this type to int is not supported. " + __LINE__);
 }
 
 void Int::__add_assign__(Object* other)
@@ -717,7 +746,7 @@ Double::Double(Object* ptr)
         *(static_cast<double*>(value)) = std::stod(*(static_cast<std::string*>(ptr->value)));
     } else 
     {
-        throw std::invalid_argument("Conversion from this type to double is not supported.");
+        throw std::invalid_argument("Conversion from this type to double is not supported. " + __LINE__);
     }  
 }
 
@@ -735,7 +764,7 @@ Object* Double::__add__(Object* other)
         *static_cast<double*>(new_obj->value) = res;
         return new_obj;
     }
-    throw std::invalid_argument("Conversion from this type to double is not supported.");
+    throw std::invalid_argument("Conversion from this type to double is not supported. " + __LINE__);
 }
 
 Object* Double::__sub__(Object* other)
@@ -747,7 +776,7 @@ Object* Double::__sub__(Object* other)
         *static_cast<double*>(new_obj->value) = res;
         return new_obj;
     }
-    throw std::invalid_argument("Conversion from this type to double is not supported.");
+    throw std::invalid_argument("Conversion from this type to double is not supported. " + __LINE__);
 }
 
 Object* Double::__mul__(Object* other)
@@ -759,7 +788,7 @@ Object* Double::__mul__(Object* other)
         *static_cast<double*>(new_obj->value) = res;
         return new_obj;
     }
-    throw std::invalid_argument("Conversion from this type to double is not supported.");
+    throw std::invalid_argument("Conversion from this type to double is not supported. " + __LINE__);
 }
 
 Object* Double::__div__(Object* other)
@@ -771,7 +800,7 @@ Object* Double::__div__(Object* other)
         *static_cast<double*>(new_obj->value) = res;
         return new_obj;
     }
-    throw std::invalid_argument("Conversion from this type to double is not supported.");
+    throw std::invalid_argument("Conversion from this type to double is not supported. " + __LINE__);
 }
 
 Object* Double::__neg__()
@@ -917,7 +946,7 @@ Bool::Bool(Object* ptr)
         *(static_cast<bool*>(value)) = (*(static_cast<std::string*>(ptr->value)) == "true") ? true : false;
     } else 
     {
-        throw std::invalid_argument("Conversion from this type to bool is not supported.");
+        throw std::invalid_argument("Conversion from this type to bool is not supported. " + __LINE__);
     }  
 }
 
@@ -935,7 +964,7 @@ Object* Bool::__add__(Object* other)
         *static_cast<bool*>(new_obj->value) = res;
         return new_obj;
     }
-    throw std::invalid_argument("Conversion from this type to bool is not supported.");
+    throw std::invalid_argument("Conversion from this type to bool is not supported. " + __LINE__);
 }
 
 Object* Bool::__sub__(Object* other)
@@ -947,7 +976,7 @@ Object* Bool::__sub__(Object* other)
         *static_cast<bool*>(new_obj->value) = res;
         return new_obj;
     }
-    throw std::invalid_argument("Conversion from this type to bool is not supported.");
+    throw std::invalid_argument("Conversion from this type to bool is not supported. " + __LINE__);
 }
 
 Object* Bool::__or__(Object* other)
@@ -959,7 +988,7 @@ Object* Bool::__or__(Object* other)
         *static_cast<bool*>(new_obj->value) = res;
         return new_obj;
     }
-    throw std::invalid_argument("Conversion from this type to int is not supported.");
+    throw std::invalid_argument("Conversion from this type to int is not supported. " + __LINE__);
 }
 
 Object* Bool::__and__(Object* other)
@@ -971,7 +1000,7 @@ Object* Bool::__and__(Object* other)
         *static_cast<bool*>(new_obj->value) = res;
         return new_obj;
     }
-    throw std::invalid_argument("Conversion from this type to int is not supported.");
+    throw std::invalid_argument("Conversion from this type to int is not supported. " + __LINE__);
 }
 
 Object* Bool::__den__()

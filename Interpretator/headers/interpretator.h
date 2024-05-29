@@ -13,13 +13,13 @@
 
 class Interpreter {
 public:
-    Interpreter(std::vector<std::string> code);
+    Interpreter(std::vector<std::string> code, std::vector<std::string>* parametrs = nullptr, Object* arguments = nullptr);
     ~Interpreter();
-private:
+
+    Object* ret;
     symtab symbolTable;
     parser codeParser;
-    size_t index;
-    std::unordered_map<std::string, Function> functionTable;
+  
     std::vector<std::string> code;
     Object* createObject(size_t&  index);
     Object* createObject(std::string value);
