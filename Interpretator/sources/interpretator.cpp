@@ -5,10 +5,20 @@
 #include <iostream>
 #include <sstream>
 
-Interpreter::Interpreter(std::vector<std::string> code) 
-    : index{0}
+
+Interpreter::Interpreter(std::vector<std::string> code, std::vector<std::string>* parameters, Object* arguments)
+    :ret{new Object("Null_object", nullptr)}
+
 {
+
     std::cout << "Interpreter initialized." << std::endl;
+    if(parameters)
+    {
+        for(int i = 0; i < parameters->size(); ++i)
+        {
+            symbolTable.setVal(parameters->at(i), arguments->__at__(i));
+        }
+    }
     execute(code);
 }
 
