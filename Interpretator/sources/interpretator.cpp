@@ -237,14 +237,14 @@ void Interpreter::executeLoop(const std::vector<std::string>& tokens, size_t& in
         ++index;
         size_t blockStart = index;
         std::cout << start->__str__() << '\t' << end->__str__() << std::endl;
-        std::cout << (start->__equal__(end)).__str__() << std::endl;
-        while ((start->__equal__(end)).__str__() == "true") {
+        std::cout << (start->__equal__(end))->__str__() << std::endl;
+        while ((start->__equal__(end))->__str__() == "true") {
                 ///////////////////////////////////////////
             std::cout << "for sycl" << std::endl;
                 //////////////////////////////////////////
                 executeBlock(tokens, index); 
             index = blockStart;
-            *start = start->__add__(step);
+            start = start->__add__(step);
         }
 
         while (tokens[index] != "}") {
@@ -290,9 +290,14 @@ Object* Interpreter::evaluateExpression(const std::vector<std::string>& tokens, 
         return nullptr;
     }
     Object* tmp = nullptr;
-    if(parser::typeOf(tokens[index]) != "undefine"){
-        tmp = createObject(index);
-        symbolTable.setVal(("tmp" + std::to_string(index)), tmp);
+    std::string typeOfForst = parser::typeOf(tokens[index]);
+    if(typeOfForst != "undefine"){
+        if(typeOfForst == "function"){
+            
+        }else{
+            tmp = createObject(index);
+            symbolTable.setVal(("tmp" + std::to_string(index)), tmp);
+        }
     }else if (symbolTable.are(tokens[index])) {
         tmp = symbolTable.getVal(tokens[index]);
     }else if (parser::isBinaryOperator(tokens[index])) {
@@ -308,31 +313,31 @@ Object* Interpreter::evaluateExpression(const std::vector<std::string>& tokens, 
         }
         
         if (tokens[index - 1] == "+") {
-            *tmp = tmp->__add__(left);
+            tmp = tmp->__add__(left);
         } else if (tokens[index - 1] == "-") {
-            *tmp = tmp->__sub__(left);
+            tmp = tmp->__sub__(left);
         } else if (tokens[index - 1] == "*") {
-            *tmp = tmp->__mul__(left);
+            tmp = tmp->__mul__(left);
         } else if (tokens[index - 1] == "/") {
-            *tmp = tmp->__div__(left);
+            tmp = tmp->__div__(left);
         } else if (tokens[index - 1] == "%") {
-            *tmp = tmp->__mod__(left);
+            tmp = tmp->__mod__(left);
         } else if (tokens[index - 1] == "|") {
-            *tmp = tmp->__or__(left);
+            tmp = tmp->__or__(left);
         } else if (tokens[index - 1] == "&") {
-            *tmp = tmp->__and__(left);
+            tmp = tmp->__and__(left);
         } else if (tokens[index - 1] == "~") {
-            *tmp = tmp->__den__();
+            tmp = tmp->__den__();
         } else if (tokens[index - 1] == "||") {
-            *tmp = tmp->__or__(left);
+            tmp = tmp->__or__(left);
         } else if (tokens[index - 1] == "&&") {
-            *tmp = tmp->__and__(left);
+            tmp = tmp->__and__(left);
         } else if (tokens[index - 1] == "^") {
-            *tmp = tmp->__xor__(left);
+            tmp = tmp->__xor__(left);
         } else if (tokens[index - 1] == "<<") {
-            *tmp = tmp->__left_shift__(left);
+            tmp = tmp->__left_shift__(left);
         } else if (tokens[index - 1] == ">>") {
-            *tmp = tmp->__right_shift__(left);
+            tmp = tmp->__right_shift__(left);
         } else if (tokens[index - 1] == "+=") {
             tmp->__add_assign__(left);
         } else if (tokens[index - 1] == "-=") {
@@ -350,17 +355,17 @@ Object* Interpreter::evaluateExpression(const std::vector<std::string>& tokens, 
         } else if (tokens[index - 1] == ">>=") {
             tmp->__rshift_assign__(left);
         } else if (tokens[index - 1] == ">") {
-            *tmp = tmp->__more__(left);
+            tmp = tmp->__more__(left);
         } else if (tokens[index - 1] == "<") {
-            *tmp = tmp->__less__(left);
+            tmp = tmp->__less__(left);
         } else if (tokens[index - 1] == ">=") {
-            *tmp = tmp->__more_equal__(left);
+            tmp = tmp->__more_equal__(left);
         } else if (tokens[index - 1] == "<=") {
-            *tmp = tmp->__less_equal__(left);
+            tmp = tmp->__less_equal__(left);
         } else if (tokens[index - 1] == "==") {
-            *tmp = tmp->__equal__(left);
+            tmp = tmp->__equal__(left);
         } else if (tokens[index - 1] == "!=") {
-            *tmp = tmp->__not_equal__(left);
+            tmp = tmp->__not_equal__(left);
         } else {
             // Error: Unsupported binary operator
             return nullptr;
@@ -479,71 +484,6 @@ Object* Interpreter::createObject(std::string value) {
     }
 
     return tmp; 
-
-    //         throw std::runtime_error("Invalid array syntax: missing closing parenthesis");
-    //     }
-    //     ++this->index;
-    //     tmp = new Array(elements);
-    // }
-       // if (t == 'a') {
-    //     // ARRAY
-    //     // Handle array creation using tokens from the code vector:
-    //     if (this->index + 1 >= code.size() || code[this->index + 1] != "(") {
-    //         throw std::runtime_error("Invalid array syntax: missing opening parenthesis");
-    //     }
-
-    //     ++this->index;
-    //     std::vector<Object*> elements;
-
-    //     // Recursively parse array elements until closing parenthesis:
-    //     while (this->index < code.size() && code[this->index] != "]") {
-    //         elements.push_back(createObject(this->index));
-    //         ++this->index;
-    //     }
-
-    //     if (this->index >= code.size() || code[this->index] != "]") {
-    //         throw std::runtime_error("Invalid array syntax: missing closing parenthesis");
-    //     }
-    //     ++this->index;
-    //     tmp = new Array(elements);
-    //     // Recursively parse array elements until closing parenthesis:
-    //     while (this->index < code.size() && code[this->index] != "]") {
-    //         elements.push_back(createObject(this->index));
-    //         ++this->index;
-    //     }
-
-    //     if (this->index >= code.size() || code[this->index] != "]") {
-    //         throw std::runtime_error("Invalid array syntax: missing closing parenthesis");
-    //     }
-    //     ++this->index;
-    //     tmp = new Array(elements);
-    // }// ARRAY
-    //     // Handle array creation using tokens from the code vector:
-    //     if (this->index + 1 >= code.size() || code[this->index + 1] != "(") {
-    //         throw std::runtime_error("Invalid array syntax: missing opening parenthesis");
-    //     }
-
-    //     ++this->index;
-    //     std::vector<Object*> elements;
-
-    //     // Recursively parse array elements until closing parenthesis:
-    //     while (this->index < code.size() && code[this->index] != "]") {
-    //         elements.push_back(createObject(this->index));
-    //         ++this->index;
-    //     }
-
-    //     if (this->index >= code.size() || code[this->index] != "]") {
-    //         throw std::runtime_error("Invalid array syntax: missing closing parenthesis");
-    //     }
-    //     ++this->index;
-    //     tmp = new Array(elements);
-    //     // Recursively parse array elements until closing parenthesis:
-    //     while (this->index < code.size() && code[this->index] != "]") {
-    //         elements.push_back(createObject(this->index));
-    //         ++this->index;
-    //     }
-
-    //     if (this->index >= code.size() || code[this->index] != "]") {
 }
 
 
@@ -581,7 +521,7 @@ void Interpreter::defineFunction(const std::vector<std::string>& tokens, size_t&
     }
     ++index;
 
-    functionTable[functionName] = Function(body);
+    //functionTable[functionName] = Function(body);
 }
 
 void Interpreter::callFunction(const std::string& functionName) {
@@ -590,6 +530,6 @@ void Interpreter::callFunction(const std::string& functionName) {
     }
 
     Function& function = functionTable[functionName];
-    execute(function.code);
+    // execute()
 }
 

@@ -2,6 +2,7 @@
 #define __FUNCTION__CPP__
 
 #include "headers.h"
+#include "object.h"
 
 Function::Function(std::vector<std::string> code)
     : code(code) 

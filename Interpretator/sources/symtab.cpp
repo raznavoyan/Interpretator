@@ -46,58 +46,6 @@ Object* symtab::setVal(const std::string& varName, Object* value) {
     return currentScope[varName];
 }
 
-// Object* symtab::makeObject(const std::string& valName, std::string value){
-//     std::string valtype = parser::typeOf(value);
-//     if(tmp != nullptr){
-//         if(tmp->name != valtype){
-//             delete tmp;
-//             tmp = nullptr;
-//             char t = valtype[0];
-//             switch (t)
-//             {
-//             case 'i'://INT
-//                 tmp = new Int(std::stoi(value));
-//                 break;
-//             case 'd'://DOUBLE
-//                 tmp = new Double(std::stod(value));
-//                 break;
-//             case 'b'://BOOL
-//                 bool val = (value == "true" ? true : false);
-//                 tmp = new Bool(val);
-//                 break;
-//             case 's'://String
-//                 tmp = new String(value);
-//                 break;
-//             // case 'a'://Array
-//             //     tmp = new Int();
-//             //     break;
-            
-//             default:
-//                 throw std::out_of_range("No such type of variable\n");
-//                 break;
-//             }
-//         }
-//     }
-
-//     //Object* obj = new Object(value);  // Assuming Object can be constructed from std::string
-//     return ;//setVal(name, obj);
-// }
-
-// Object* symtab::setArr(const std::string& name, std::vector<std::string> vec){
-    
-// }
-
-// Object* symtab::setVal(const std::string& name, std::string value) {
-//     Object* tmp = nullptr;
-//     for (auto it = scopeStack.rbegin(); it != scopeStack.rend(); ++it) {
-//         auto found = it->find(name);
-//         if (found != it->end()) {
-//             tmp = found->second;
-//             break;
-//         }
-//     }
-// }
-
 Object* symtab::getVal(const std::string& name) {
     for (auto it = scopeStack.rbegin(); it != scopeStack.rend(); ++it) {
         auto found = it->find(name);
@@ -125,3 +73,22 @@ void symtab::popSpace() {
         --level;
     }
 }
+
+void symtab::setFunction(std::string name, int start, int end){
+    auto it = functions.find(name);
+    if(it != functions.end()){
+        it->second = point(start, end);
+    }
+
+    functions[name] = point(start,end);
+}
+
+point* symtab::getFunction(std::string name){
+    auto it = functions.find(name);
+    if(it != functions.end()){
+        return &it->second;
+    }
+    return nullptr;
+}
+
+
