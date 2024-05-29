@@ -25,7 +25,7 @@ std::string parser::typeOf(std::string arg){
 bool parser::isAKeyword(const std::string& tok) {
     static const std::unordered_set<std::string> keywords = {
         "if", "otherwise", "loop", "during", "true", "false",
-        "disp", "function", "return"
+        "disp", "def", "return"
     };
     return keywords.count(tok) > 0;
 }

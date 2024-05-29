@@ -2,15 +2,16 @@
 #define __FUNCTION__H__
 
 #include "headers.h"
+#include "object.h"
 
-class function
-{
+class Function{
 private:
     std::vector<std::string> argTypes;
-    std::vector<std::string> code;   
+    std::vector<std::string> code; 
+
 public:
-    function(std::vector<std::string> code);
-    ~function();
+    Function(int start, int end);
+    ~Function();
     Object* call(Array* args);
 };
 

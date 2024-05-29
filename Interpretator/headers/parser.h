@@ -14,7 +14,7 @@
 class parser {
 public:
     using toks = std::vector<std::string>;
-    static std::string typeOf(std::string arg); //string->s,bool->b,...
+    static std::string typeOf(std::string arg);
     static toks tokenize(const std::string& input);
     static bool isCustomDelimiter(const std::string& c);
     static bool isAKeyword(const std::string& tok);
