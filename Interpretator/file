@@ -1,11 +1,12 @@
 
 
+
 a = 1|
-c = 4 + 5 * (10-2*3)|
+c = 4 + 5 * (10 - 2 * 3)|
 
 if : a > c : {
     c = c + 1|
-}  otherwise if : a < c {
+} otherwise if : a < c : {
     a = a - 1|
 } otherwise {
     a = c * 2|
@@ -15,7 +16,7 @@ if : a > c : {
 print(a)|
 print(c)|
 
-def printVar (a) {
+def printVar(a) {
     print(a)|
 }
 
@@ -25,10 +26,9 @@ printVar(b)|
 c = true|
 d = 3.2|
 
+array = [c, b, a, d]|
 
-array = [c, b, a, d>]
-
-loop : i = 0 -> 4{
+loop : i = 0 -> 4 {
     if : i % 2 == 0 : {
         print(array[i])|
     }
@@ -36,7 +36,7 @@ loop : i = 0 -> 4{
 
 h = 2|
 
-loop : j = 7 -> -1: -2 {
+loop : j = 7 -> -1 : -2 {
     if : j % 2 == 1 : {
         h *= j|
     } otherwise {
@@ -47,7 +47,7 @@ loop : j = 7 -> -1: -2 {
 f = 5|
 
 during : f == true {
-    f -= 1;    
+    f -= 1|    
 }
 
 j = "world"|
@@ -56,15 +56,15 @@ jk = 2|
 l = 4|
 
 if : j != b : {
-    sh << 2|
+    sh <<= 2|
     if : sh & jk : {
         print("and")|
         jk += sh|
-    } otherwise : sh | jk : {
+    } otherwise if : sh | jk : {
         print("or")|
     }
 } otherwise if : ((sh >= jk) && (sh <= l)) {
-    sh >> 2|
+    sh >>= 2|
     if : ((sh == jk) || (sh == l)) : {
         sh >>= 1|
     } otherwise {
