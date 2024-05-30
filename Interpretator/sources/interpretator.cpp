@@ -669,7 +669,7 @@ void Interpreter::defineFunction(const std::vector<std::string>& tokens, size_t&
     std::string functionName = tokens[index];
     ++index;
 
-    if (index >= tokens.size() || tokens[index] != "()") {
+    if (index >= tokens.size() || tokens[index] != "(") {
         throw std::runtime_error("Expected '()' after function name");
     }
     ++index;
