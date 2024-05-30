@@ -8,9 +8,7 @@
 
 Interpreter::Interpreter(std::vector<std::string> code, std::vector<std::string>* parameters, Object* arguments)
     :ret{new Object("Null_object", nullptr)}
-
 {
-
     std::cout << "Interpreter initialized." << std::endl;
     if(parameters)
     {
@@ -30,7 +28,7 @@ Interpreter::~Interpreter()
 void Interpreter::execute(std::vector<std::string>& tokens) {
     while (this->index < tokens.size()) {
         const std::string& token = tokens[this->index];
-
+        std::cout << token << std::endl;
         if (token == "|") {
             ++this->index;
             continue;
@@ -58,34 +56,114 @@ void Interpreter::execute(std::vector<std::string>& tokens) {
                 ++this->index;
                 std::cout << "\t called" << std::endl;
                 executeLoop(tokens, this->index);
-            } else {
+            } else if (token == "disp"){
+                print(evaluateExpression(tokens,index));
+            }else{
                 throw std::runtime_error("Unknown operation");
             }
-        } else {  // if it is not a keyword it should be a variable's name
-            if (parser::isVariableName(token)) {
-                if (tokens[this->index + 1] != "=") {
-                    throw std::runtime_error("wrong operation");
-                }
-                executeAssignment(tokens, this->index);
-            } else {
-                if (functionTable.find(token) != functionTable.end()) {
-                    callFunction(token);
-                } else {
-                    throw std::runtime_error("wrong operation");
-                }
+        } else if(functionTable.count(token)){
+            callFunction(tokens, index);
+        }else if (parser::isVariableName(token)) {
+            if (parser::isAssignment(tokens[this->index + 1])) {
+                throw std::runtime_error("wrong operation expected assignment");
             }
+            executeAssignment(tokens, this->index);
+        } else {
+            throw std::runtime_error("wrong operation no such function");
         }
-
         ++this->index;
     }
 }
 
 void Interpreter::executeAssignment(const std::vector<std::string>& tokens, size_t& index) 
 {
-    std::string variableName = tokens[index - 2];
-    index += 1; 
-    Object* value = createObject(index);
-    symbolTable.setVal(variableName, value);
+    std::cout << "executeAssignment called" << std::endl;
+    std::string variableName = tokens[index];
+    //index += 2; 
+    //Object* value = evaluateExpression(tokens, index);
+
+    ++index;
+    if(tokens[index] == "=")
+    {
+        ++index;
+        Object* value = evaluateExpression(tokens, index);
+        symbolTable.setVal(variableName, value);
+    } else {
+        if(tokens[index] == "+=")
+        {
+            if(!symbolTable.are(variableName))
+            {
+                throw std::runtime_error("INTERPRETATOR:: no such variable " + __LINE__);
+            }
+            ++index;
+            Object* value = evaluateExpression(tokens, index);
+            symbolTable.getVal(variableName)->__add_assign__(value);
+        } else if(tokens[index] == "-=")
+        {
+            if(!symbolTable.are(variableName))
+            {
+                throw std::runtime_error("INTERPRETATOR:: no such variable " + __LINE__);
+            }
+            ++index;
+            Object* value = evaluateExpression(tokens, index);
+            symbolTable.getVal(variableName)->__sub_assign__(value);
+        } else if(tokens[index] == "*=")
+        {
+            if(!symbolTable.are(variableName))
+            {
+                throw std::runtime_error("INTERPRETATOR:: no such variable " + __LINE__);
+            }
+            ++index;
+            Object* value = evaluateExpression(tokens, index);
+            symbolTable.getVal(variableName)->__mul_assign__(value);
+        } else if(tokens[index] == "/=")
+        {
+            if(!symbolTable.are(variableName))
+            {
+                throw std::runtime_error("INTERPRETATOR:: no such variable " + __LINE__);
+            }
+            ++index;
+            Object* value = evaluateExpression(tokens, index);
+            symbolTable.getVal(variableName)->__div_assign__(value);
+        } else if(tokens[index] == ">>=")
+        {
+            if(!symbolTable.are(variableName))
+            {
+                throw std::runtime_error("INTERPRETATOR:: no such variable " + __LINE__);
+            }
+            ++index;
+            Object* value = evaluateExpression(tokens, index);
+            symbolTable.getVal(variableName)->__rshift_assign__(value);
+        } else if(tokens[index] == "<<=")
+        {
+            if(!symbolTable.are(variableName))
+            {
+                throw std::runtime_error("INTERPRETATOR:: no such variable " + __LINE__);
+            }
+            ++index;
+            Object* value = evaluateExpression(tokens, index);
+            symbolTable.getVal(variableName)->__lshift_assign__(value);
+        } else if(tokens[index] == "%=")
+        {
+            if(!symbolTable.are(variableName))
+            {
+                throw std::runtime_error("INTERPRETATOR:: no such variable " + __LINE__);
+            }
+            ++index;
+            Object* value = evaluateExpression(tokens, index);
+            symbolTable.getVal(variableName)->__mod_assign__(value);
+        } else if(tokens[index] == "^=")
+        {
+            if(!symbolTable.are(variableName))
+            {
+                throw std::runtime_error("INTERPRETATOR:: no such variable " + __LINE__);
+            }
+            ++index;
+            Object* value = evaluateExpression(tokens, index);
+            symbolTable.getVal(variableName)->__xor_assign__(value);
+        }
+    }
+    std::cout << "executeAssignment ended" << std::endl;
 }
 
 void Interpreter::executeIf(const std::vector<std::string>& tokens, size_t& index) 
@@ -248,9 +326,9 @@ void Interpreter::executeLoop(const std::vector<std::string>& tokens, size_t& in
         size_t blockStart = index;
         std::cout << start->__str__() << '\t' << end->__str__() << std::endl;
         std::cout << (start->__equal__(end))->__str__() << std::endl;
-        while ((start->__equal__(end))->__str__() == "true") {
+        while ((start->__equal__(end))->__str__() == "false") {
                 ///////////////////////////////////////////
-            std::cout << "for sycl" << std::endl;
+            std::cout << "for sycl:\t" << startName << '\t' << start->__str__() << std::endl;
                 //////////////////////////////////////////
                 executeBlock(tokens, index); 
             index = blockStart;
@@ -260,13 +338,13 @@ void Interpreter::executeLoop(const std::vector<std::string>& tokens, size_t& in
         while (tokens[index] != "}") {
 
                 ///////////////////////////////////////////
-                std::cout << "for" << std::endl;
                 //////////////////////////////////////////
             ++index;
         }
-        ++index; 
+        // ++index; 
     }
     symbolTable.popSpace();
+    std::cout << "for ended successfully" << std::endl;
 }
 
 void Interpreter::executeBlock(const std::vector<std::string>& tokens, size_t& index) 
@@ -293,99 +371,180 @@ void Interpreter::runLine(const std::vector<std::string>& tokens)
 }
 */
 
+bool isOperator(char c) {
+    return c == '+' || c == '-' || c == '*' || c == '/';
+}
+
+int precedence(char op) {
+    if (op == '+' || op == '-')
+        return 1;
+    if (op == '*' || op == '/')
+        return 2;
+    return 0;
+}
+
+
+void Interpreter::addBrecets(parser::toks& expression){
+    std::cout << "addBrecets" << std::endl;
+    std::vector<std::string> result;
+    std::stack<char> operators;
+
+    for (const std::string& token : expression) {
+        if (token.size() == 1 && isOperator(token[0])) {
+            while (!operators.empty() && precedence(operators.top()) >= precedence(token[0]) && operators.top() != '(') {
+                result.push_back(std::string(1, operators.top()));
+                operators.pop();
+            }
+            operators.push(token[0]);
+        } else if (token == "(") {
+            operators.push('(');
+        } else if (token == ")") {
+            while (!operators.empty() && operators.top() != '(') {
+                result.push_back(std::string(1, operators.top()));
+                operators.pop();
+            }
+            operators.pop(); // Remove the '('
+        } else { // Operand
+            result.push_back(token);
+        }
+    }
+
+    while (!operators.empty()) {
+        result.push_back(std::string(1, operators.top()));
+        operators.pop();
+    }
+
+    expression = result;
+    std::cout << std::endl;
+}
+
+Object* Interpreter::evaluateSubExpression(parser::toks& expression){
+    std::cout << "evaluateSubExpression called" << std::endl; 
+    if (expression.empty()) {
+        // Error: Unexpected end of expression
+        return nullptr;
+    }
+
+    Object* tmp = nullptr;
+    while (!expression.empty()) {
+        // Handle unary operators
+        if (expression[0] == "-") {
+            // Negation
+            expression.erase(expression.begin());
+            tmp = evaluateSubExpression(expression);
+            if (tmp) {
+                tmp = tmp->__neg__();
+            }
+        } else if (expression[0] == "~") {
+            // Bitwise complement
+            expression.erase(expression.begin());
+            tmp = evaluateSubExpression(expression);
+            if (tmp) {
+                tmp = tmp->__complement__();
+            }
+        } else if (expression[0] == "!") {
+            // Logical negation
+            expression.erase(expression.begin());
+            tmp = evaluateSubExpression(expression);
+            if (tmp) {
+                tmp = tmp->__logical_not__();
+            }
+        } else {
+            // Handle binary operators
+            std::string op = expression[0];
+            expression.erase(expression.begin());
+
+            Object* left = evaluateSubExpression(expression);
+            if (!left) {
+                return nullptr;
+            }
+
+            // Perform binary operation based on the operator
+            if (expression[1] == "+") {
+                tmp = tmp->__add__(left);
+            } else if (expression[index - 1] == "-") {
+                tmp = tmp->__sub__(left);
+            } else if (expression[index - 1] == "*") {
+                tmp = tmp->__mul__(left);
+            } else if (expression[index - 1] == "/") {
+                tmp = tmp->__div__(left);
+            } else if (expression[index - 1] == "%") {
+                tmp = tmp->__mod__(left);
+            } else if (expression[index - 1] == "|") {
+                tmp = tmp->__or__(left);
+            } else if (expression[index - 1] == "&") {
+                tmp = tmp->__and__(left);
+            } else if (expression[index - 1] == "~") {
+                tmp = tmp->__complement__();
+            } else if (expression[index - 1] == "||") {
+                tmp = tmp->__or__(left);
+            } else if (expression[index - 1] == "&&") {
+                tmp = tmp->__and__(left);
+            } else if (expression[index - 1] == "^") {
+                tmp = tmp->__xor__(left);
+            } else if (expression[index - 1] == "<<") {
+                tmp = tmp->__left_shift__(left);
+            } else if (expression[index - 1] == ">>") {
+                tmp = tmp->__right_shift__(left);
+            } else if (expression[index - 1] == ">") {
+                tmp = tmp->__more__(left);
+            } else if (expression[index - 1] == "<") {
+                tmp = tmp->__less__(left);
+            } else if (expression[index - 1] == ">=") {
+                tmp = tmp->__more_equal__(left);
+            } else if (expression[index - 1] == "<=") {
+                tmp = tmp->__less_equal__(left);
+            } else if (expression[index - 1] == "==") {
+                tmp = tmp->__equal__(left);
+            } else if (expression[index - 1] == "!=") {
+                tmp = tmp->__not_equal__(left);
+            } else {
+                // Error: Unsupported binary operator
+                std::cerr << "Error: Unsupported operator '" << op << "'" << std::endl;
+                return nullptr;
+            }
+            // Ensure to handle errors for unsupported operators
+            /*
+            else {
+                std::cerr << "Error: Unsupported operator '" << op << "'" << std::endl;
+                return nullptr;
+            }
+            */
+        }
+    }
+
+    std::cout << "evaluateSubExpression ended" << std::endl; 
+    return tmp;
+}
+
+
+// newArray funcion-i hamar petqa vor evaluateExpression-y minchev storaket exaci value-n veradarcni
 Object* Interpreter::evaluateExpression(const std::vector<std::string>& tokens, size_t& index) {
+    std::cout << "evaluateExpression started" << std::endl;
     // Handle base cases:
     if (index >= tokens.size()) {
         // Error: Unexpected end of expression
         return nullptr;
     }
-    Object* tmp = nullptr;
-    std::string typeOfForst = parser::typeOf(tokens[index]);
-    if(typeOfForst != "undefine"){
-        if(typeOfForst == "function"){
-            
-        }else{
-            tmp = createObject(index);
-            symbolTable.setVal(("tmp" + std::to_string(index)), tmp);
-        }
-    }else if (symbolTable.are(tokens[index])) {
-        tmp = symbolTable.getVal(tokens[index]);
-    }else if (parser::isBinaryOperator(tokens[index])) {
-        // Validate operand availability and types
-        if (index + 1 >= tokens.size()) {
-            // Error: Missing or invalid operand
-            return nullptr;
-        }
-
-        Object* left = evaluateExpression(tokens, ++index); // Recursively evaluate left operand
-        if (!left) {
-            return nullptr;
-        }
-        
-        if (tokens[index - 1] == "+") {
-            tmp = tmp->__add__(left);
-        } else if (tokens[index - 1] == "-") {
-            tmp = tmp->__sub__(left);
-        } else if (tokens[index - 1] == "*") {
-            tmp = tmp->__mul__(left);
-        } else if (tokens[index - 1] == "/") {
-            tmp = tmp->__div__(left);
-        } else if (tokens[index - 1] == "%") {
-            tmp = tmp->__mod__(left);
-        } else if (tokens[index - 1] == "|") {
-            tmp = tmp->__or__(left);
-        } else if (tokens[index - 1] == "&") {
-            tmp = tmp->__and__(left);
-        } else if (tokens[index - 1] == "~") {
-            tmp = tmp->__den__();
-        } else if (tokens[index - 1] == "||") {
-            tmp = tmp->__or__(left);
-        } else if (tokens[index - 1] == "&&") {
-            tmp = tmp->__and__(left);
-        } else if (tokens[index - 1] == "^") {
-            tmp = tmp->__xor__(left);
-        } else if (tokens[index - 1] == "<<") {
-            tmp = tmp->__left_shift__(left);
-        } else if (tokens[index - 1] == ">>") {
-            tmp = tmp->__right_shift__(left);
-        } else if (tokens[index - 1] == "+=") {
-            tmp->__add_assign__(left);
-        } else if (tokens[index - 1] == "-=") {
-            tmp->__sub_assign__(left);
-        } else if (tokens[index - 1] == "*=") {
-            tmp->__mul_assign__(left);
-        } else if (tokens[index - 1] == "/=") {
-            tmp->__div_assign__(left);
-        } else if (tokens[index - 1] == "%=") {
-            tmp->__mod_assign__(left);
-        } else if (tokens[index - 1] == "^=") {
-            tmp->__xor_assign__(left);
-        } else if (tokens[index - 1] == "<<=") {
-            tmp->__lshift_assign__(left);
-        } else if (tokens[index - 1] == ">>=") {
-            tmp->__rshift_assign__(left);
-        } else if (tokens[index - 1] == ">") {
-            tmp = tmp->__more__(left);
-        } else if (tokens[index - 1] == "<") {
-            tmp = tmp->__less__(left);
-        } else if (tokens[index - 1] == ">=") {
-            tmp = tmp->__more_equal__(left);
-        } else if (tokens[index - 1] == "<=") {
-            tmp = tmp->__less_equal__(left);
-        } else if (tokens[index - 1] == "==") {
-            tmp = tmp->__equal__(left);
-        } else if (tokens[index - 1] == "!=") {
-            tmp = tmp->__not_equal__(left);
-        } else {
-            // Error: Unsupported binary operator
-            return nullptr;
-        }
-    }
-
+    parser::toks expretion;
+    while(index < tokens.size() && tokens[index] != "|"){expretion.push_back(tokens[index]);++index;}
+    ++index;
+    addBrecets(expretion);
+    for(auto& it : expretion){std::cout << it;}
+    std::cout << std::endl;
+    Object* tmp = evaluateSubExpression(expretion);
+    // Check if the token represents a known type
+    
+    // Store the result in the symbol table
     if(tmp != nullptr)
-    symbolTable.setVal(("tmp" + std::to_string(index)), tmp);
+        symbolTable.setVal(("tmp" + std::to_string(index)), tmp);
+
+    do{++index;}while(tokens[index] != "|");
+
+    std::cout << "evaluateExpression ended" << std::endl;
     return tmp;
 }
+
 
 // Helper functions for evaluating expressions (implement these as needed):
 Object* Interpreter::createObject(size_t& index) {
@@ -534,12 +693,43 @@ void Interpreter::defineFunction(const std::vector<std::string>& tokens, size_t&
     //functionTable[functionName] = Function(body);
 }
 
-void Interpreter::callFunction(const std::string& functionName) {
-    if (functionTable.find(functionName) == functionTable.end()) {
-        throw std::runtime_error("Function '" + functionName + "' not defined");
+void Interpreter::callFunction(const std::vector<std::string>& tokens, size_t& index) 
+{
+    std::cout << "callFunction called" << std::endl;
+    std::string functionName = tokens[index];
+    ++index;
+    //Object* value = evaluateExpression(tokens, index);
+    if(tokens[index]!= "(")
+    {
+        throw std::runtime_error("expected ( after function name " + __LINE__);
     }
-
-    Function& function = functionTable[functionName];
-    // execute()
+    ++index;
+    Array* arguments = newArray(tokens, index);
+    functionTable[functionName]->__call__(arguments);
 }
 
+void Interpreter::print(Object *arg)
+{
+    std::cout << "print is called" << std::endl;
+    std::cout << arg->__str__() << std::endl;
+}
+
+Array* Interpreter::newArray(const std::vector<std::string>& tokens, size_t& index)
+{
+    Array* obj = new Array;
+    while(tokens[index] != ")")
+    {
+        Object* tmp = evaluateExpression(tokens, index);
+        obj->__add_assign__(tmp);
+        ++index;
+        if(tokens[index] != "," && tokens[index] != ")")
+        {
+            throw std::runtime_error("expected , or ) after an argument " + __LINE__);
+        }
+        if(tokens[index] == ",")
+        {
+            ++index;
+        }
+    }
+    return obj;
+}

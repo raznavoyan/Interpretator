@@ -31,12 +31,12 @@ struct Object
 
     virtual Object* __or__(Object*);
     virtual Object* __and__(Object*);
-    virtual Object* __den__(); // jxtum !
+    virtual Object* __logical_not__(); // jxtum !
 
     virtual Object* __bit_or__(Object*);
     virtual Object* __bit_and__(Object*);
     virtual Object* __xor__(Object*);
-    virtual Object* __bit_den__();
+    virtual Object* __complement__();
     virtual Object* __left_shift__(Object*);
     virtual Object* __right_shift__(Object*);
 
@@ -95,12 +95,12 @@ struct Int : public Object
 
     Object* __or__(Object* other) override;
     Object* __and__(Object* other) override;
-    Object* __den__() override;
+    Object* __logical_not__() override;
 
     Object* __bit_or__(Object* other) override;
     Object* __bit_and__(Object* other) override;
     Object* __xor__(Object* other) override;
-    Object* __bit_den__() override;
+    Object* __complement__() override;
     Object* __left_shift__(Object* other) override;
     Object* __right_shift__(Object* other) override;
 
@@ -166,7 +166,7 @@ struct Bool : public Object {
 
     Object* __or__(Object*) override;
     Object* __and__(Object*) override;
-    Object* __den__() override;
+    Object* __logical_not__() override;
 
     Object* __more__(Object*) override;
     Object* __less__(Object*) override;
