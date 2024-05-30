@@ -301,7 +301,7 @@ void Interpreter::addBrecets(parser::toks& expr){
 
 }
 
-Object *Interpreter::evaluateSubExpression(parser::toks& expretion){
+Object* Interpreter::evaluateSubExpression(parser::toks& expretion){
     if (0 > expretion.size()) {
         // Error: Unexpected end of expression
         return nullptr;
