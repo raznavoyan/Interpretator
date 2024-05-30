@@ -105,7 +105,7 @@ void Interpreter::executeIf(const std::vector<std::string>& tokens, size_t& inde
         while (index < tokens.size()) {
             if (tokens[index] == "otherwise if") {
                 ++index;
-                executeOtherwiseIf(tokens, index);
+                executeIf(tokens, index);
                 return;
             } else if (tokens[index] == "otherwise") {
                 ++index;
@@ -113,34 +113,6 @@ void Interpreter::executeIf(const std::vector<std::string>& tokens, size_t& inde
                 return;
             } else {
                 ++index;
-            }
-        }
-    }
-}
-
-void Interpreter::executeOtherwiseIf(const std::vector<std::string>& tokens, size_t& index) 
-{
-    if (tokens[index] != ":") {
-        throw std::runtime_error("expected : after otherwise if");
-    }
-    ++index;
-
-    Object* condition = evaluateExpression(tokens, index);
-    if (*static_cast<bool*>(condition->value)) {
-        executeBlock(tokens, index);
-    } else {
-        while (tokens[index] != "}" && index < tokens.size()) {
-            ++index;
-        }
-        ++index;
-
-        if (index < tokens.size()) {
-            if (tokens[index] == "otherwise if") {
-                ++index;
-                executeOtherwiseIf(tokens, index);
-            } else if (tokens[index] == "otherwise") {
-                ++index;
-                executeOtherwise(tokens, index);
             }
         }
     }
