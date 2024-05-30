@@ -85,8 +85,8 @@ void Interpreter::execute(std::vector<std::string>& tokens) {
 void Interpreter::executeAssignment(const std::vector<std::string>& tokens, size_t& index) 
 {
     std::cout << "executeAssignment colled" << std::endl;
-    std::string variableName = tokens[index - 2];
-    index += 1; 
+    std::string variableName = tokens[index];
+    index += 2; 
     Object* value = evaluateExpression(tokens, index);
     symbolTable.setVal(variableName, value);
     std::cout << "executeAssignment ended" << std::endl;
@@ -297,11 +297,55 @@ void Interpreter::runLine(const std::vector<std::string>& tokens)
 }
 */
 
-void Interpreter::addBrecets(parser::toks& expr){
+bool isOperator(char c) {
+    return c == '+' || c == '-' || c == '*' || c == '/';
+}
 
+int precedence(char op) {
+    if (op == '+' || op == '-')
+        return 1;
+    if (op == '*' || op == '/')
+        return 2;
+    return 0;
+}
+
+
+void Interpreter::addBrecets(parser::toks& expression){
+    std::cout << "addBrecets" << std::endl;
+    std::vector<std::string> result;
+    std::stack<char> operators;
+
+    for (const std::string& token : expression) {
+        if (token.size() == 1 && isOperator(token[0])) {
+            while (!operators.empty() && precedence(operators.top()) >= precedence(token[0]) && operators.top() != '(') {
+                result.push_back(std::string(1, operators.top()));
+                operators.pop();
+            }
+            operators.push(token[0]);
+        } else if (token == "(") {
+            operators.push('(');
+        } else if (token == ")") {
+            while (!operators.empty() && operators.top() != '(') {
+                result.push_back(std::string(1, operators.top()));
+                operators.pop();
+            }
+            operators.pop(); // Remove the '('
+        } else { // Operand
+            result.push_back(token);
+        }
+    }
+
+    while (!operators.empty()) {
+        result.push_back(std::string(1, operators.top()));
+        operators.pop();
+    }
+
+    expression = result;
+    std::cout << std::endl;
 }
 
 Object* Interpreter::evaluateSubExpression(parser::toks& expretion){
+    std::cout << "evaluateSubExpression colled" << std::endl; 
     if (0 > expretion.size()) {
         // Error: Unexpected end of expression
         return nullptr;
@@ -332,6 +376,7 @@ Object* Interpreter::evaluateSubExpression(parser::toks& expretion){
                     if (!left) {
                         return tmp;
                     }
+                    parser::toks& tokens = expretion;
 
                     // Perform the operation based on the binary operator
                     if (expretion[1] == "+") {
@@ -377,16 +422,13 @@ Object* Interpreter::evaluateSubExpression(parser::toks& expretion){
                         return nullptr;
                     }
                 }
-            // } else if (parser::isBinaryOperator(tokens[index])) {
-            //     // If the token is a binary operator, evaluate the expression
-            //     if (index + 1 >= tokens.size()) {
-
-            //         // Error: Missing or invalid operand
-            //         return nullptr;
             }
 
         }
     }
+
+    std::cout << "evaluateSubExpression ended" << std::endl; 
+    return tmp;
 }
 
 
@@ -398,7 +440,7 @@ Object* Interpreter::evaluateExpression(const std::vector<std::string>& tokens, 
         return nullptr;
     }
     parser::toks expretion;
-    while(tokens[index] != "|"){expretion.push_back(tokens[index]);}
+    while(index < tokens.size() && tokens[index] != "|"){expretion.push_back(tokens[index]);++index;}
     ++index;
     addBrecets(expretion);
     
