@@ -672,7 +672,25 @@ void Interpreter::defineFunction(const std::vector<std::string>& tokens, size_t&
     if (index >= tokens.size() || tokens[index] != "(") {
         throw std::runtime_error("Expected '()' after function name");
     }
+
     ++index;
+    std::vector<std::string> arg_names;
+    while(tokens[index] != ")")
+    {
+        if(!parser::isVariableName(tokens[index]))
+        {
+            throw std::runtime_error("not valid name for a parameter " + __LINE__);
+        }
+        arg_names.push_back(tokens[index]);
+        ++index;
+        if(tokens[index] == ",")
+        {
+            ++index;
+        } else if(tokens[index] != ")")
+        {
+            throw std::runtime_error("expected , " + __LINE__);
+        }
+    }
 
     if (index >= tokens.size() || tokens[index] != "{") {
         throw std::runtime_error("Expected '{' to start function body");
@@ -690,7 +708,8 @@ void Interpreter::defineFunction(const std::vector<std::string>& tokens, size_t&
     }
     ++index;
 
-    //functionTable[functionName] = Function(body);
+    Function* newFunction = new Function{&body, &arg_names};
+    symbolTable.setVal(functionName, newFunction);
 }
 
 void Interpreter::callFunction(const std::vector<std::string>& tokens, size_t& index) 
