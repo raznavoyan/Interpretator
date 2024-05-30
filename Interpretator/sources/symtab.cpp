@@ -74,21 +74,3 @@ void symtab::popSpace() {
     }
 }
 
-void symtab::setFunction(std::string name, int start, int end){
-    auto it = functions.find(name);
-    if(it != functions.end()){
-        it->second = point(start, end);
-    }
-
-    functions[name] = point(start,end);
-}
-
-point* symtab::getFunction(std::string name){
-    auto it = functions.find(name);
-    if(it != functions.end()){
-        return &it->second;
-    }
-    return nullptr;
-}
-
-

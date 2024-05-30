@@ -1,5 +1,10 @@
+<<<<<<< HEAD
 def printVar (a) {
     print(a)|
+=======
+loop: a = 5 -> 10 {
+    print a|
+>>>>>>> a2b2183 (tmp3)
 }
 
 a = 1|
