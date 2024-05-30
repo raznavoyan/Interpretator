@@ -344,42 +344,49 @@ void Interpreter::addBrecets(parser::toks& expression){
     std::cout << std::endl;
 }
 
-Object* Interpreter::evaluateSubExpression(parser::toks& expretion){
-    std::cout << "evaluateSubExpression colled" << std::endl; 
-    if (0 > expretion.size()) {
+Object* Interpreter::evaluateSubExpression(parser::toks& expression){
+    std::cout << "evaluateSubExpression called" << std::endl; 
+    if (expression.empty()) {
         // Error: Unexpected end of expression
         return nullptr;
     }
-    Object* tmp = nullptr;
-    while(expretion.size() != 0){
-        if(expretion[0] == "("){
-            expretion.erase(expretion.begin());
-            tmp = evaluateSubExpression(expretion);
-        }else{
-            std::string typeOfFirst = parser::typeOf(expretion[0]);
-            if (typeOfFirst != "undefine") {
-                // If the token represents a known type, create an object accordingly
-                tmp = createObject(expretion[0]);
-                // Store the created object in the symbol table
-                symbolTable.setVal(("___tmp" + std::to_string(index)), tmp);
-            } else if (parser::isVariableName(expretion[0])) {
-                // If the token is a variable
-                if(expretion[1] == "("){//if function
-                    //CALL FUNCTION
-                }else if((tmp = symbolTable.getVal(expretion[0])) != nullptr){
-                    if(!parser::isAKeyword(expretion[1])){
-                        throw std::runtime_error("invalid variable name");
-                    }
-                    
-                    Object* left = evaluateSubExpression(expretion); // Recursively evaluate left operand
-                    ++index;
-                    if (!left) {
-                        return tmp;
-                    }
-                    parser::toks& tokens = expretion;
 
-                    // Perform the operation based on the binary operator
-                    if (expretion[1] == "+") {
+    Object* tmp = nullptr;
+    while (!expression.empty()) {
+        // Handle unary operators
+        if (expression[0] == "-") {
+            // Negation
+            expression.erase(expression.begin());
+            tmp = evaluateSubExpression(expression);
+            if (tmp) {
+                tmp = tmp->__neg__();
+            }
+        } else if (expression[0] == "~") {
+            // Bitwise complement
+            expression.erase(expression.begin());
+            tmp = evaluateSubExpression(expression);
+            if (tmp) {
+                tmp = tmp->__complement__();
+            }
+        } else if (expression[0] == "!") {
+            // Logical negation
+            expression.erase(expression.begin());
+            tmp = evaluateSubExpression(expression);
+            if (tmp) {
+                tmp = tmp->__logical_not__();
+            }
+        } else {
+            // Handle binary operators
+            std::string op = expression[0];
+            expression.erase(expression.begin());
+
+            Object* left = evaluateSubExpression(expression);
+            if (!left) {
+                return nullptr;
+            }
+
+            // Perform binary operation based on the operator
+            if (expression[1] == "+") {
                         tmp = tmp->__add__(left);
                     } else if (tokens[index - 1] == "-") {
                         tmp = tmp->__sub__(left);
@@ -421,15 +428,18 @@ Object* Interpreter::evaluateSubExpression(parser::toks& expretion){
                         // Error: Unsupported binary operator
                         return nullptr;
                     }
-                }
+            // Ensure to handle errors for unsupported operators
+            else {
+                std::cerr << "Error: Unsupported operator '" << op << "'" << std::endl;
+                return nullptr;
             }
-
         }
     }
 
     std::cout << "evaluateSubExpression ended" << std::endl; 
     return tmp;
 }
+
 
 
 Object* Interpreter::evaluateExpression(const std::vector<std::string>& tokens, size_t& index) {
@@ -443,7 +453,8 @@ Object* Interpreter::evaluateExpression(const std::vector<std::string>& tokens, 
     while(index < tokens.size() && tokens[index] != "|"){expretion.push_back(tokens[index]);++index;}
     ++index;
     addBrecets(expretion);
-    
+    for(auto& it : expretion){std::cout << it;}
+    std::cout << std::endl;
     Object* tmp = evaluateSubExpression(expretion);
     // Check if the token represents a known type
     
