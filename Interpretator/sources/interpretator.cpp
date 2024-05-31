@@ -66,6 +66,7 @@ void Interpreter::execute(std::vector<std::string>& tokens) {
         }else if (parser::isVariableName(token)) {
             if (parser::isAssignment(tokens[this->index + 1])) {
                 throw std::runtime_error("wrong operation expected assignment");
+
             }
             executeAssignment(tokens, this->index);
         } else {
@@ -77,6 +78,7 @@ void Interpreter::execute(std::vector<std::string>& tokens) {
 
 void Interpreter::executeAssignment(const std::vector<std::string>& tokens, size_t& index) 
 {
+
     std::cout << "executeAssignment called" << std::endl;
     std::string variableName = tokens[index];
     //index += 2; 
@@ -163,6 +165,7 @@ void Interpreter::executeAssignment(const std::vector<std::string>& tokens, size
             symbolTable.getVal(variableName)->__xor_assign__(value);
         }
     }
+
     std::cout << "executeAssignment ended" << std::endl;
 }
 
@@ -510,6 +513,7 @@ Object* Interpreter::evaluateSubExpression(parser::toks& expression){
                 return nullptr;
             }
             */
+
         }
     }
 
@@ -517,8 +521,8 @@ Object* Interpreter::evaluateSubExpression(parser::toks& expression){
     return tmp;
 }
 
-
 // newArray funcion-i hamar petqa vor evaluateExpression-y minchev storaket exaci value-n veradarcni
+
 Object* Interpreter::evaluateExpression(const std::vector<std::string>& tokens, size_t& index) {
     std::cout << "evaluateExpression started" << std::endl;
     // Handle base cases:
@@ -530,8 +534,10 @@ Object* Interpreter::evaluateExpression(const std::vector<std::string>& tokens, 
     while(index < tokens.size() && tokens[index] != "|"){expretion.push_back(tokens[index]);++index;}
     ++index;
     addBrecets(expretion);
+
     for(auto& it : expretion){std::cout << it;}
     std::cout << std::endl;
+
     Object* tmp = evaluateSubExpression(expretion);
     // Check if the token represents a known type
     

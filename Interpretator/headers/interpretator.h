@@ -14,7 +14,7 @@ class Interpreter {
 public:
     Interpreter(std::vector<std::string> code, std::vector<std::string>* parametrs = nullptr, Object* arguments = nullptr);
     ~Interpreter();
-    
+
     Object* ret;
     symtab symbolTable;
     parser codeParser;
@@ -37,11 +37,13 @@ public:
     void defineFunction(const std::vector<std::string>& tokens, size_t& index);
     void callFunction(const std::vector<std::string>& tokens, size_t& index);
     Object* evaluateExpression(const std::vector<std::string>& tokens, size_t& index);
+
     Object* evaluateSubExpression(parser::toks& expression);
     void print(Object* arg);
     void addBrecets(parser::toks& expr);
 
     Array* newArray(const std::vector<std::string>& tokens, size_t& index);
+
 };
 
 
