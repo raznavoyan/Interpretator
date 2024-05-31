@@ -1,0 +1,3 @@
+/home/razmik/git/Interpretator/Interpretator/build/CMakeFiles/Interpretor.dir
+/home/razmik/git/Interpretator/Interpretator/build/CMakeFiles/edit_cache.dir
+/home/razmik/git/Interpretator/Interpretator/build/CMakeFiles/rebuild_cache.dir
