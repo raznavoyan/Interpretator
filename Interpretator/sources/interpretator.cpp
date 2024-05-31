@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <iostream>
 #include <sstream>
+#include <stack>
 
 
 Interpreter::Interpreter(std::vector<std::string> code, std::vector<std::string>* parameters, Object* arguments)
@@ -25,7 +26,8 @@ Interpreter::~Interpreter()
     std::cout << "Interpreter destroyed." << std::endl;
 }
 
-void Interpreter::execute(std::vector<std::string>& tokens) {
+void Interpreter::execute(std::vector<std::string>& tokens) 
+{
     while (this->index < tokens.size()) {
         const std::string& token = tokens[this->index];
         std::cout << token << std::endl;
@@ -40,15 +42,6 @@ void Interpreter::execute(std::vector<std::string>& tokens) {
             } else if (token == "if") {
                 ++this->index;
                 executeIf(tokens, this->index);
-                
-                if (this->index < tokens.size() && tokens[this->index] == "otherwise if") {
-                    ++this->index;
-                    executeOtherwiseIf(tokens, this->index);
-                }
-                if (this->index < tokens.size() && tokens[this->index] == "otherwise") {
-                    ++this->index;
-                    executeOtherwise(tokens, this->index);
-                }
             } else if (token == "during") {
                 ++this->index;
                 executeDuring(tokens, this->index);
@@ -57,8 +50,8 @@ void Interpreter::execute(std::vector<std::string>& tokens) {
                 std::cout << "\t called" << std::endl;
                 executeLoop(tokens, this->index);
             } else if (token == "disp"){
-                print(evaluateExpression(tokens,index));
-            }else{
+                print(evaluateExpression(tokens, index));
+            } else {
                 throw std::runtime_error("Unknown operation");
             }
         } else if(functionTable.count(token)){
@@ -66,7 +59,6 @@ void Interpreter::execute(std::vector<std::string>& tokens) {
         }else if (parser::isVariableName(token)) {
             if (parser::isAssignment(tokens[this->index + 1])) {
                 throw std::runtime_error("wrong operation expected assignment");
-
             }
             executeAssignment(tokens, this->index);
         } else {
@@ -75,6 +67,7 @@ void Interpreter::execute(std::vector<std::string>& tokens) {
         ++this->index;
     }
 }
+
 
 void Interpreter::executeAssignment(const std::vector<std::string>& tokens, size_t& index) 
 {
@@ -171,50 +164,39 @@ void Interpreter::executeAssignment(const std::vector<std::string>& tokens, size
 
 void Interpreter::executeIf(const std::vector<std::string>& tokens, size_t& index) 
 {
-    if(tokens[index] != ":")
-    {
+    if (tokens[index] != ":") {
         throw std::runtime_error("expected : after if");
     }
-    ++index; 
+    ++index;
 
     Object* condition = evaluateExpression(tokens, index);
     if (*static_cast<bool*>(condition->value)) {
         executeBlock(tokens, index);
     } else {
-        while (tokens[index] != "}") {
+        while (tokens[index] != "}" && index < tokens.size()) {
             ++index;
         }
-        ++index; 
-    }
-}
-
-void Interpreter::executeOtherwiseIf(const std::vector<std::string>& tokens, size_t& index) {
-    ++index; 
-    if (tokens[index] == "if") {
-        if(tokens[++index] != ":")
-        {
-            throw std::runtime_error("expected : after if");
-        }
         ++index;
-        Object* condition = evaluateExpression(tokens, index);
-        if (*static_cast<bool*>(condition->value)) {
-            executeBlock(tokens, index);
-        } else {
-            while (tokens[index] != "}") {
+
+        while (index < tokens.size()) {
+            if (tokens[index] == "otherwise if") {
+                ++index;
+                executeIf(tokens, index);
+                return;
+            } else if (tokens[index] == "otherwise") {
+                ++index;
+                executeOtherwise(tokens, index);
+                return;
+            } else {
                 ++index;
             }
-            ++index; 
         }
-    } else 
-    {
-        executeOtherwise(tokens, index);
     }
 }
 
 void Interpreter::executeOtherwise(const std::vector<std::string>& tokens, size_t& index) 
-{ 
-    if(tokens[index] != "{")
-    {
+{
+    if (tokens[index] != "{") {
         throw std::runtime_error("expected { after otherwise");
     }
     ++index;
