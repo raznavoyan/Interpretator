@@ -133,6 +133,13 @@ bool parser::isAMath(const std::string& tok) {
     return mathOps.count(tok) > 0;
 }
 
+bool parser::isAssignment(const std::string& tok) {
+    static const std::unordered_set<std::string> assignmentOps = {
+      "+=", "-=", "/=", "%=",">>=", "<<=", "^=", "*="
+    };
+    return assignmentOps.count(tok) > 0;
+}
+
 bool parser::isVariableName(const std::string& name) {
   std::regex variable_name_regex(R"([a-zA-Z_][a-zA-Z0-9_]*)");
   return std::regex_match(name, variable_name_regex);
