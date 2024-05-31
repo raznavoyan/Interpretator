@@ -458,7 +458,6 @@ Object* Interpreter::evaluateSubExpression(parser::toks& expression){
             if (!left) {
                 return nullptr;
             }
-
             // Perform binary operation based on the operator
             if (expression[1] == "+") {
                 tmp = tmp->__add__(left);
@@ -510,7 +509,6 @@ Object* Interpreter::evaluateSubExpression(parser::toks& expression){
                 return nullptr;
             }
             */
-
         }
     }
 
@@ -519,6 +517,7 @@ Object* Interpreter::evaluateSubExpression(parser::toks& expression){
 }
 
 // newArray funcion-i hamar petqa vor evaluateExpression-y minchev storaket exaci value-n veradarcni
+
 
 Object* Interpreter::evaluateExpression(const std::vector<std::string>& tokens, size_t& index) {
     std::cout << "evaluateExpression started" << std::endl;
