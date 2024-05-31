@@ -357,7 +357,10 @@ void Interpreter::executeBlock(const std::vector<std::string>& tokens, size_t& i
         ++index;
         while (tokens[index] != "}") {
             std::vector<std::string> subTokens;
-            while (tokens[index] != "|" && tokens[index] != "}") {
+            while (tokens[index] != "|") {
+                if(tokens[index] != "}"){
+                    throw std::runtime_error("expected '|'");
+                }
                 subTokens.push_back(tokens[index++]);
             }
             if (tokens[index] == "|") ++index;
@@ -367,12 +370,6 @@ void Interpreter::executeBlock(const std::vector<std::string>& tokens, size_t& i
     }
     symbolTable.popSpace();
 }
-/*
-void Interpreter::runLine(const std::vector<std::string>& tokens) 
-{
-    execute(tokens);
-}
-*/
 
 bool isOperator(char c) {
     return c == '+' || c == '-' || c == '*' || c == '/';
