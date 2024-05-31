@@ -151,7 +151,7 @@ Object* Object::__and__(Object*)
     throw std::runtime_error("This operation is not supported for this objects " + __LINE__);
 }
 
-Object* Object::__den__()
+Object* Object::__logical_not__()
 {
     throw std::runtime_error("This operation is not supported for this object " + __LINE__);
 }
@@ -166,7 +166,7 @@ Object* Object::__bit_or__(Object*)
     throw std::runtime_error("This operation is not supported for this objects " + __LINE__);
 }
 
-Object* Object::__bit_den__()
+Object* Object::__complement__()
 {
     throw std::runtime_error("This operation is not supported for this objects " + __LINE__);
 }
@@ -493,7 +493,7 @@ Object* Int::__and__(Object* other)
     throw std::invalid_argument("Conversion from this type to int is not supported. " + __LINE__);
 }
 
-Object* Int::__den__()
+Object* Int::__logical_not__()
 {
     bool res = !*(static_cast<bool*>(value));
     Bool* new_obj = new Bool;
@@ -525,7 +525,7 @@ Object* Int::__bit_or__(Object* other)
     throw std::invalid_argument("Conversion from this type to int is not supported. " + __LINE__);
 }
 
-Object* Int::__bit_den__()
+Object* Int::__complement__()
 {
     int res = ~*(static_cast<bool*>(value));
     Int* new_obj = new Int;
@@ -1003,7 +1003,7 @@ Object* Bool::__and__(Object* other)
     throw std::invalid_argument("Conversion from this type to int is not supported. " + __LINE__);
 }
 
-Object* Bool::__den__()
+Object* Bool::__logical_not__()
 {
     bool res = !*(static_cast<bool*>(value));
     Bool* new_obj = new Bool;
@@ -1489,27 +1489,27 @@ Object* Array::__at__(int index)
 {
     std::vector<Object*>* vec = static_cast<std::vector<Object*>*>(value);
     Object* obs = vec->at(index);
+    Object* ans;
     if(obs->name == "int")
     {
-        Int* ans = new Int(*static_cast<int*>(obs->value));
-        return ans;
+        ans = new Int(*static_cast<int*>(obs->value));
     } else if(obs->name == "double")
     {
-        Double* ans = new Double(*static_cast<double*>(obs->value));
-        return ans;
+        ans = new Double(*static_cast<double*>(obs->value));
     } else if(obs->name == "bool")
     {
-        Bool* ans = new Bool(*static_cast<bool*>(obs->value));
-        return ans;
+        ans = new Bool(*static_cast<bool*>(obs->value));
     } else if(obs->name == "string")
     {
-        String* ans = new String(*static_cast<std::string*>(obs->value));
-        return ans;
+        ans = new String(*static_cast<std::string*>(obs->value));
     } else if(obs->name == "array")
     {
-        Array* ans = new Array(*static_cast<std::vector<Object*>*>(obs->value));
-        return ans;
+        ans = new Array(*static_cast<std::vector<Object*>*>(obs->value));
+    } else 
+    {
+        std::invalid_argument("in line  " + __LINE__);
     }
+    return ans;
 }
 
 Object* Array::clone()
