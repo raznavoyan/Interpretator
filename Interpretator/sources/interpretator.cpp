@@ -33,22 +33,12 @@ void Interpreter::execute(std::vector<std::string>& tokens) {
             ++this->index;
             continue;
         }
-
         if (parser::isAKeyword(token)) {
             if (token == "def") {
                 defineFunction(tokens, this->index);
             } else if (token == "if") {
                 ++this->index;
                 executeIf(tokens, this->index);
-                
-                if (this->index < tokens.size() && tokens[this->index] == "otherwise if") {
-                    ++this->index;
-                    executeOtherwiseIf(tokens, this->index);
-                }
-                if (this->index < tokens.size() && tokens[this->index] == "otherwise") {
-                    ++this->index;
-                    executeOtherwise(tokens, this->index);
-                }
             } else if (token == "during") {
                 ++this->index;
                 executeDuring(tokens, this->index);
@@ -57,8 +47,8 @@ void Interpreter::execute(std::vector<std::string>& tokens) {
                 std::cout << "\t called" << std::endl;
                 executeLoop(tokens, this->index);
             } else if (token == "disp"){
-                print(evaluateExpression(tokens,index));
-            }else{
+                print(evaluateExpression(tokens, index));
+            } else {
                 throw std::runtime_error("Unknown operation");
             }
         } else if(functionTable.count(token)){
@@ -66,7 +56,6 @@ void Interpreter::execute(std::vector<std::string>& tokens) {
         }else if (parser::isVariableName(token)) {
             if (parser::isAssignment(tokens[this->index + 1])) {
                 throw std::runtime_error("wrong operation expected assignment");
-
             }
             executeAssignment(tokens, this->index);
         } else {
