@@ -1,0 +1,6 @@
+a = 0|
+c = 10|
+loop : i = 0 -> 4 {
+    disp(array[i])|
+}
+

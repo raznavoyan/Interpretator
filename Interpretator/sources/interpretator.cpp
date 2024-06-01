@@ -172,16 +172,29 @@ void Interpreter::executeIf(const std::vector<std::string>& tokens, size_t& inde
         const size_t Start = index; 
         executeBlock(tokens, index);
         index = Start;
-        while(tokens[index] != "}"){++index;}
+        while (tokens[index] != "}" && index < tokens.size()) {
+            std::cout << tokens[index] << " ";
+            ++index;
+        }
+        std::cout << std::endl;
+        ++index;
+
+        while (tokens[index] == "otherwise" && index < tokens.size()) {
+            while (tokens[index] != "}" && index < tokens.size()) {
+                ++index;
+            }
+            ++index;
+        }
+        
     } else {
         while (tokens[index] != "}" && index < tokens.size()) {
             ++index;
         }
-        // ++index;
-        // while (index < tokens.size()) {
+        ++index;
         if (tokens[index] == "otherwise") {
             ++index;
             if(tokens[index] == "if"){
+                ++index;
                 executeIf(tokens, index);
             }else{
                 const size_t Start = index; 
@@ -206,6 +219,7 @@ void Interpreter::executeOtherwise(const std::vector<std::string>& tokens, size_
 void Interpreter::executeDuring(const std::vector<std::string>& tokens, size_t& index) 
 {
     //Ex: during : c == true {
+    symbolTable.pushSpace();
     std::cout << "during stsrted" << std::endl;
     if(tokens[index] != ":")
     {
@@ -214,12 +228,13 @@ void Interpreter::executeDuring(const std::vector<std::string>& tokens, size_t& 
     ++index;
     const size_t conditionStart = index; 
     Object* condition = evaluateExpression(tokens, index);
+
     // std::cout << tokens[index] << std::endl;
     if (tokens[index] == "{") {
         while (*static_cast<bool*>(condition->value)) {
             executeBlock(tokens, index);
             index = conditionStart; 
-            Object* condition = evaluateExpression(tokens, index);
+            condition = evaluateExpression(tokens, index);
             ++index;
         }
         
@@ -232,14 +247,12 @@ void Interpreter::executeDuring(const std::vector<std::string>& tokens, size_t& 
     }
     ++index; 
     std::cout << "during ended" << std::endl;
-
+    symbolTable.popSpace();
 }
 
 void Interpreter::executeLoop(const std::vector<std::string>& tokens, size_t& index) 
 {
     std::cout << "loop started" << std::endl;
-   
-
     //Ex: loop : a = 5 -> 10{}
     symbolTable.pushSpace();
     std::cout << "push space" << std::endl;
@@ -271,7 +284,6 @@ void Interpreter::executeLoop(const std::vector<std::string>& tokens, size_t& in
     }else{
         std::runtime_error("expected: value");
     }
-    std::cout << "start: " << start << std::endl;
     ++index;
     if(tokens[index] != "->")
     {
@@ -288,7 +300,6 @@ void Interpreter::executeLoop(const std::vector<std::string>& tokens, size_t& in
     }else {
         std::runtime_error("expected: value");
     }
-    std::cout << "end: " << end << std::endl;
 
     ++index;
     Object* step = nullptr;
@@ -305,12 +316,21 @@ void Interpreter::executeLoop(const std::vector<std::string>& tokens, size_t& in
         step = createObject("1");
         symbolTable.setVal("step" + std::to_string(index), step);
     }
-    std::cout << "start loop" << std::endl;
-    if (tokens[index] == "{") {
-        ++index;
+
+    std::cout << "start: " << start << " " << start->__str__() << std::endl;
+    std::cout << "end: "   << end   << " " << end->__str__()   << std::endl;
+    std::cout << "step: "  << step  << " " << step->__str__()  << std::endl;
+
+    std::cout << "start loop "<< index << " " << tokens.size() << std::endl;
+    std::cout << "with token "<< tokens[index] << std::endl;
+    if (tokens.size() < index && tokens[index] == "{") {
+        std::cout << "checkpoint1" << std::endl;
         size_t blockStart = index;
+        std::cout << "checkpoint1" << std::endl;
         std::cout << start->__str__() << '\t' << end->__str__() << std::endl;
         std::cout << (start->__equal__(end))->__str__() << std::endl;
+        std::cout << "checkpoint2" << std::endl;
+
         while ((start->__equal__(end))->__str__() == "false") {
                 ///////////////////////////////////////////
             std::cout << "for sycl:\t" << startName << '\t' << start->__str__() << std::endl;
@@ -512,10 +532,10 @@ Object* Interpreter::evaluateExpression(const std::vector<std::string>& tokens, 
     }
     ++index;
     addBrecets(expression);
-    // for(auto it: expression){
-    //     std::cout << it << ' ' ;
-    // }
-    // std::cout << std::endl;
+    for(auto it: expression){
+        std::cout << it << ' ' ;
+    }
+    std::cout << std::endl;
     Object* tmp = nullptr;
     std::vector<Object*> vals;
     size_t i = 0;
@@ -526,7 +546,7 @@ Object* Interpreter::evaluateExpression(const std::vector<std::string>& tokens, 
     //     // std::cout << "i = " << i << std::endl;
     // }
     for(auto& expr : expression) {
-        if(isOperator(expr[0])){
+        if(parser::isAMath(expr)){
             if(vals.size() < 2){
                 throw std::runtime_error("invalit expretion");
             }
@@ -535,18 +555,24 @@ Object* Interpreter::evaluateExpression(const std::vector<std::string>& tokens, 
             Object* arg1 = vals.back();
             vals.pop_back();
             vals.push_back(evaluateSubExpression(arg1,arg2, expr));
+
+            for(auto it : vals){
+                std::cout << it->__str__() << ' ';
+            }
+            std::cout << std::endl;
+
         }else if(symbolTable.are(expr)){
             vals.push_back(symbolTable.getVal(expr));
-            // std::cout << vals.back()->__str__() << std::endl;
+            std::cout << vals.back()->__str__() << std::endl;
 
         }else if(parser::isNumber(expr) || expr == "true" || expr == "false"){
             std::cout << "adding new object by value:  " << expr << std::endl;
             vals.push_back(createObject(expr));
 
-            // for(auto it : vals){
-            //     std::cout << it->__str__() << ' ';
-            // }
-            // std::cout << std::endl;
+            for(auto it : vals){
+                std::cout << it->__str__() << ' ';
+            }
+            std::cout << std::endl;
         }else{
             std::cout << expression[i] << std::endl;
             throw std::runtime_error("unnown token");
@@ -558,7 +584,6 @@ Object* Interpreter::evaluateExpression(const std::vector<std::string>& tokens, 
     }
     Object* newtmp = vals.back();
     vals.pop_back();
-    
     //do{++index;}while(tokens[index] != "|" && tokens[index] != ":" && !(tokens[index] == ")" && tokens[index + 1] == "{"));
     // std::cout << "evaluateExpression ended  " << tokens[index] << std::endl;
     return newtmp;
@@ -634,6 +659,7 @@ Object* Interpreter::createObject(size_t& index) {
 }
 
 Object* Interpreter::createObject(std::string value) {
+    static size_t tmpcount = 0;
     std::string valtype = parser::typeOf(value); // Assuming parser class provides type information
 
     Object* tmp = nullptr;
@@ -670,7 +696,7 @@ Object* Interpreter::createObject(std::string value) {
             throw std::out_of_range("No such type of variable: " + value);
     }
 
-    symbolTable.setVal(("tmp" + std::to_string(index)), tmp);
+    symbolTable.setVal(("tmp" + std::to_string(++tmpcount)), tmp);
     return tmp; 
 }
 
@@ -751,7 +777,7 @@ void Interpreter::callFunction(const std::vector<std::string>& tokens, size_t& i
 void Interpreter::print(Object *arg)
 {
     std::cout << "print is called" << std::endl;
-    std::cout << ">>>>>>>>>>>>>>>>>" << arg->__str__() << std::endl;
+    std::cout << ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>" << arg->__str__() << std::endl;
     ++index;
 }
 

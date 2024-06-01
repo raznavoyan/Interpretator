@@ -11,6 +11,8 @@
 #include "symtab.h"
 #include <unistd.h>
 
+bool DEBAG = true;
+
 using toks = std::vector<std::string>;
 
 int main(int argc, char* argv[]) 
