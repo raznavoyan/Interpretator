@@ -5,11 +5,13 @@ symtab::symtab() {
 }
 
 symtab::~symtab() {
+    std::cout << "deleting symtab" << std::endl;
     for (auto& scope : scopeStack) {
         for (auto& pair : scope) {
             delete pair.second;
         }
     }
+    std::cout << "ended" << std::endl;
 }
 
 void symtab::clearLevel() {

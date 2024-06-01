@@ -33,12 +33,11 @@ public:
     void executeDuring(const std::vector<std::string>& tokens, size_t& index);
     void executeLoop(const std::vector<std::string>& tokens, size_t& index);
     void executeBlock(const std::vector<std::string>& tokens, size_t& index);
-    // void runLine(const std::vector<std::string>& tokens);
     void defineFunction(const std::vector<std::string>& tokens, size_t& index);
     void callFunction(const std::vector<std::string>& tokens, size_t& index);
     Object* evaluateExpression(const std::vector<std::string>& tokens, size_t& index);
 
-    Object* evaluateSubExpression(parser::toks& expression);
+    Object* evaluateSubExpression(Object* r, Object* l, std::string d);
     void print(Object* arg);
     void addBrecets(parser::toks& expr);
 

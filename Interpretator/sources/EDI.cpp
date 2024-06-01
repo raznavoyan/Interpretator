@@ -32,7 +32,7 @@ int main(int argc, char* argv[])
     // }
     Interpreter runInterpretator(tokens);
 
-
+    
     std::cout << "End of program!" << std::endl;
     return 0;
 }

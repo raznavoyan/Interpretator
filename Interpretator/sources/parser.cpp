@@ -135,7 +135,7 @@ bool parser::isAMath(const std::string& tok) {
 
 bool parser::isAssignment(const std::string& tok) {
     static const std::unordered_set<std::string> assignmentOps = {
-      "+=", "-=", "/=", "%=",">>=", "<<=", "^=", "*="
+      "+=", "-=", "/=", "%=",">>=", "<<=", "^=", "*=", "="
     };
     return assignmentOps.count(tok) > 0;
 }
