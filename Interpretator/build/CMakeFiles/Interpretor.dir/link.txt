@@ -1,1 +1,0 @@
-/usr/bin/c++ CMakeFiles/Interpretor.dir/sources/EDI.cpp.o CMakeFiles/Interpretor.dir/sources/object.cpp.o CMakeFiles/Interpretor.dir/sources/interpretator.cpp.o CMakeFiles/Interpretor.dir/sources/parser.cpp.o CMakeFiles/Interpretor.dir/sources/symtab.cpp.o -o Interpretor 

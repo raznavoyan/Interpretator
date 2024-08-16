@@ -6,10 +6,8 @@ symtab::symtab() {
 
 symtab::~symtab() {
     std::cout << "deleting symtab" << std::endl;
-    for (auto& scope : scopeStack) {
-        for (auto& pair : scope) {
-            delete pair.second;
-        }
+    while(this->level > 0) {
+        this->popSpace();
     }
     std::cout << "ended" << std::endl;
 }
@@ -76,3 +74,126 @@ void symtab::popSpace() {
     }
 }
 
+
+
+// // Helper functions for evaluating expressions (implement these as needed):
+// Object* symtab::createObject(std::string value) {
+//     if (index >= code.size()) {
+//         return nullptr;
+//         //throw std::out_of_range("Index out of bounds in createObject");
+//     }
+//     std::string valtype = parser::typeOf(value); // Assuming parser class provides type information
+
+//     Object* tmp = nullptr;
+//     char t = static_cast<char>(valtype[0]);
+    
+//     switch (t) {
+//         case 'i': // INT
+//             try {
+//                 tmp = new Int(std::stoi(value));
+//             } catch (const std::invalid_argument& e) {
+//                 throw std::runtime_error("Invalid integer value: " + value);
+//             }
+//             break;
+//         case 'd': // DOUBLE
+//             try {
+//                 tmp = new Double(std::stod(value));
+//             } catch (const std::invalid_argument& e) {
+//                 throw std::runtime_error("Invalid double value: " + value);
+//             }
+//             break;
+//         case 'b': // BOOL
+//             {
+//                 bool val = (value == "true" ? true : false);
+//                 tmp = new Bool(val);
+//             }
+//             break;
+//         case 's': // STRING
+//             tmp = new String(value);
+//             break;
+//         case 'a':
+//             break;
+//         default:
+//             throw std::out_of_range("No such type of variable: " + value);
+//     }
+
+//     if (t == 'a') {
+//         // ARRAY
+//         // Handle array creation using tokens from the code vector:
+//         if (index + 1 >= code.size() || code[index + 1] != "(") {
+//             throw std::runtime_error("Invalid array syntax: missing opening parenthesis");
+//         }
+
+//         ++index;
+//         std::vector<Object*> elements;
+
+//         // Recursively parse array elements until closing parenthesis:
+//         while (index < code.size() && code[index] != "]") {
+//             elements.push_back(createObject(index));
+//             ++index;
+//         }
+
+//         if (index >= code.size() || code[index] != "]") {
+//             throw std::runtime_error("Invalid array syntax: missing closing parenthesis");
+//         }
+//         ++index;
+//         tmp = new Array(elements);
+//     }
+
+//     return tmp;
+// }
+
+
+Object* symtab::createObject(std::string val, std::string name){
+    Object* tmp = newObject(val);
+    setVal(name, tmp);
+    return tmp;
+}
+
+Object* symtab::createObject(std::string val) {
+    Object* tmp = newObject(val);
+    setVal((std::to_string(++tmpcount)), tmp);
+    return tmp; 
+}
+
+Object *symtab::newObject(std::string value)
+{ 
+    std::string valtype = parser::typeOf(value); // Assuming parser class provides type information
+
+    Object* tmp = nullptr;
+    char t = static_cast<char>(valtype[0]);
+    
+    switch (t) {
+        case 'i': // INT
+            try {
+                tmp = new Int(std::stoi(value));
+                // std::cout << "New Int: " << tmp << std::endl;
+            } catch (const std::invalid_argument& e) {
+                throw std::runtime_error("Invalid integer value: " + value);
+            }
+            break;
+        case 'd': // DOUBLE
+            try {
+                tmp = new Double(std::stod(value));
+            } catch (const std::invalid_argument& e) {
+                throw std::runtime_error("Invalid double value: " + value);
+            }
+            break;
+        case 'b': // BOOL
+            {
+                bool val = (value == "true" ? true : false);
+                tmp = new Bool(val);
+            }
+            break;
+        case 's': // STRING
+            tmp = new String(value);
+            break;
+        case 'a':
+            throw "array not redady now";
+            break;
+        default:
+            throw std::out_of_range("No such type of variable: " + value);
+    }
+
+    return tmp;
+}

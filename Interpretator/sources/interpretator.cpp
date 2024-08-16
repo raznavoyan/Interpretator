@@ -276,7 +276,7 @@ void Interpreter::executeLoop(const std::vector<std::string>& tokens, size_t& in
     ++index;
     Object* start = nullptr;
     if(parser::isNumber(tokens[index])){
-        start = createObject(tokens[index]);
+        start = symbolTable.createObject(tokens[index]);
         symbolTable.setVal(startName, start);
     }else if (symbolTable.are(tokens[index])) {
         *start = *symbolTable.getVal(tokens[index]);
@@ -293,7 +293,7 @@ void Interpreter::executeLoop(const std::vector<std::string>& tokens, size_t& in
 
     Object* end = nullptr;
     if(parser::isNumber(tokens[index])){
-        end = createObject(tokens[index]);
+        end = symbolTable.createObject(tokens[index]);
         symbolTable.setVal("end" + std::to_string(index), end);
     }else if (symbolTable.are(tokens[index])) {
         end = symbolTable.getVal(tokens[index]);
@@ -305,7 +305,7 @@ void Interpreter::executeLoop(const std::vector<std::string>& tokens, size_t& in
     Object* step = nullptr;
     if(tokens[index] == ","){
         if(parser::isNumber(tokens[index])){
-            step = createObject(tokens[index]);
+            step = symbolTable.createObject(tokens[index]);
             symbolTable.setVal("step" + std::to_string(index), step);
         }else if (symbolTable.are(tokens[index])) {
             step = symbolTable.getVal(tokens[index]);
@@ -313,7 +313,7 @@ void Interpreter::executeLoop(const std::vector<std::string>& tokens, size_t& in
             std::runtime_error("expected: value");
         }
     }else{
-        step = createObject("1");
+        step = symbolTable.createObject("1");
         symbolTable.setVal("step" + std::to_string(index), step);
     }
 
@@ -567,7 +567,7 @@ Object* Interpreter::evaluateExpression(const std::vector<std::string>& tokens, 
 
         }else if(parser::isNumber(expr) || expr == "true" || expr == "false"){
             std::cout << "adding new object by value:  " << expr << std::endl;
-            vals.push_back(createObject(expr));
+            vals.push_back(symbolTable.createObject(expr));
 
             for(auto it : vals){
                 std::cout << it->__str__() << ' ';
@@ -587,117 +587,6 @@ Object* Interpreter::evaluateExpression(const std::vector<std::string>& tokens, 
     //do{++index;}while(tokens[index] != "|" && tokens[index] != ":" && !(tokens[index] == ")" && tokens[index + 1] == "{"));
     // std::cout << "evaluateExpression ended  " << tokens[index] << std::endl;
     return newtmp;
-}
-
-// Helper functions for evaluating expressions (implement these as needed):
-Object* Interpreter::createObject(size_t& index) {
-    if (index >= code.size()) {
-        return nullptr;
-        //throw std::out_of_range("Index out of bounds in createObject");
-    }
-
-    std::string value = code[index];
-    std::string valtype = parser::typeOf(value); // Assuming parser class provides type information
-
-    Object* tmp = nullptr;
-    char t = static_cast<char>(valtype[0]);
-    
-    switch (t) {
-        case 'i': // INT
-            try {
-                tmp = new Int(std::stoi(value));
-            } catch (const std::invalid_argument& e) {
-                throw std::runtime_error("Invalid integer value: " + value);
-            }
-            break;
-        case 'd': // DOUBLE
-            try {
-                tmp = new Double(std::stod(value));
-            } catch (const std::invalid_argument& e) {
-                throw std::runtime_error("Invalid double value: " + value);
-            }
-            break;
-        case 'b': // BOOL
-            {
-                bool val = (value == "true" ? true : false);
-                tmp = new Bool(val);
-            }
-            break;
-        case 's': // STRING
-            tmp = new String(value);
-            break;
-        case 'a':
-            break;
-        default:
-            throw std::out_of_range("No such type of variable: " + value);
-    }
-
-    if (t == 'a') {
-        // ARRAY
-        // Handle array creation using tokens from the code vector:
-        if (index + 1 >= code.size() || code[index + 1] != "(") {
-            throw std::runtime_error("Invalid array syntax: missing opening parenthesis");
-        }
-
-        ++index;
-        std::vector<Object*> elements;
-
-        // Recursively parse array elements until closing parenthesis:
-        while (index < code.size() && code[index] != "]") {
-            elements.push_back(createObject(index));
-            ++index;
-        }
-
-        if (index >= code.size() || code[index] != "]") {
-            throw std::runtime_error("Invalid array syntax: missing closing parenthesis");
-        }
-        ++index;
-        tmp = new Array(elements);
-    }
-
-    return tmp;
-}
-
-Object* Interpreter::createObject(std::string value) {
-    static size_t tmpcount = 0;
-    std::string valtype = parser::typeOf(value); // Assuming parser class provides type information
-
-    Object* tmp = nullptr;
-    char t = static_cast<char>(valtype[0]);
-    
-    switch (t) {
-        case 'i': // INT
-            try {
-                tmp = new Int(std::stoi(value));
-                // std::cout << "New Int: " << tmp << std::endl;
-            } catch (const std::invalid_argument& e) {
-                throw std::runtime_error("Invalid integer value: " + value);
-            }
-            break;
-        case 'd': // DOUBLE
-            try {
-                tmp = new Double(std::stod(value));
-            } catch (const std::invalid_argument& e) {
-                throw std::runtime_error("Invalid double value: " + value);
-            }
-            break;
-        case 'b': // BOOL
-            {
-                bool val = (value == "true" ? true : false);
-                tmp = new Bool(val);
-            }
-            break;
-        case 's': // STRING
-            tmp = new String(value);
-            break;
-        case 'a':
-            break;
-        default:
-            throw std::out_of_range("No such type of variable: " + value);
-    }
-
-    symbolTable.setVal(("tmp" + std::to_string(++tmpcount)), tmp);
-    return tmp; 
 }
 
 
@@ -777,7 +666,7 @@ void Interpreter::callFunction(const std::vector<std::string>& tokens, size_t& i
 void Interpreter::print(Object *arg)
 {
     std::cout << "print is called" << std::endl;
-    std::cout << ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>" << arg->__str__() << std::endl;
+    std::cout << arg->__str__() << std::endl;
     ++index;
 }
 

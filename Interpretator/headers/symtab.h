@@ -9,7 +9,7 @@
 
 class symtab {
 private:
-    
+    int tmpcount = 0;
     std::vector<std::unordered_map<std::string, Object*>> scopeStack;
     int level = 0;
 public:
@@ -21,6 +21,14 @@ public:
     Object* getVal(const std::string& name);
     void pushSpace();
     void popSpace();
-};
 
+public: // new objects
+
+    Object* createObject(std::string value, std::string name);
+    Object* createObject(std::string value);
+
+private:
+    Object* newObject(std::string val);
+
+};
 #endif

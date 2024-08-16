@@ -23,8 +23,6 @@ public:
     std::vector<std::string> code;
     std::unordered_map<std::string, Object*> functionTable;
 
-    Object* createObject(size_t&  index);
-    Object* createObject(std::string value);
     void execute(std::vector<std::string>& tokens);
     void executeAssignment(const std::vector<std::string>& tokens, size_t& index);
     void executeIf(const std::vector<std::string>& tokens, size_t& index);
@@ -38,7 +36,7 @@ public:
     Object* evaluateExpression(const std::vector<std::string>& tokens, size_t& index);
 
     Object* evaluateSubExpression(Object* r, Object* l, std::string d);
-    void print(Object* arg);
+    void print(Object* arg); // disp
     void addBrecets(parser::toks& expr);
 
     Array* newArray(const std::vector<std::string>& tokens, size_t& index);
