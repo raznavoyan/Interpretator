@@ -9,7 +9,7 @@
 
 class symtab {
 private:
-    int tmpcount = 0;
+    unsigned long long tmpcount = 0;
     std::vector<std::unordered_map<std::string, Object*>> scopeStack;
     int level = 0;
 public:

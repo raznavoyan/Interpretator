@@ -346,6 +346,7 @@ Int::Int(int val)
 
 Int::~Int()
 {
+    // std::cout << this->name << " deleted" << std::endl;
     delete (static_cast<int*>(value));
 }
 
