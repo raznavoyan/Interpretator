@@ -19,10 +19,12 @@ public:
     static bool isCustomDelimiter(const std::string& c);
     static bool isAKeyword(const std::string& tok);
     static bool isAMath(const std::string& tok);
+    static bool isAUnaryOp(const std::string& tok);
     static bool isVariableName(const std::string& name);
     static bool isNumber(const std::string& str);
     static bool isBinaryOperator(const std::string& token);
     static bool isAssignment(const std::string& token);
+    static bool isOperator(char c);
 };
 
 #endif

@@ -6,5 +6,6 @@
 #include "parser.h"
 #include "symtab.h"
 #include "object.h"
+#include "functionTab.h"
 
 #endif

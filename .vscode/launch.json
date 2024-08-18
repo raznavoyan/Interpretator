@@ -1,0 +1,26 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug Interpretator",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/build/Interpretator",
+      "args": ["<filename>"],  // Add an example filename if needed for testing
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "environment": [],
+      "externalConsole": false,
+      "MIMode": "gdb", // Use "lldb" if on macOS
+      "miDebuggerPath": "/usr/bin/gdb", // Adjust the path to your GDB or LLDB
+      "preLaunchTask": "build",
+      "setupCommands": [
+        {
+          "description": "Enable pretty-printing for gdb",
+          "text": "-enable-pretty-printing",
+          "ignoreFailures": true
+        }
+      ]
+    }
+  ]
+}

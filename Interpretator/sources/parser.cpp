@@ -54,6 +54,11 @@ bool parser::isCustomDelimiter(const std::string& c) {
     return delimiters.count(c) > 0;
 }
 
+bool parser::isOperator(char c) {
+    std::string operators = "+-*/%!<>=&|^~";
+    return operators.find(c) != std::string::npos;
+}
+
 std::vector<std::string> parser::tokenize(const std::string& filename) {
     std::ifstream file(filename);
     std::vector<std::string> tokens;
@@ -120,6 +125,13 @@ std::vector<std::string> parser::tokenize(const std::string& filename) {
     file.close();
    
     return tokens;
+}
+
+bool parser::isAUnaryOp(const std::string& tok) {
+    static const std::unordered_set<std::string> unaryOps = {
+        "!", "~",
+    };
+    return unaryOps.count(tok) > 0;
 }
 
 
