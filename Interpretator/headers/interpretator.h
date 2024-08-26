@@ -1,32 +1,32 @@
 #ifndef INTERPRETER_H
 #define INTERPRETER_H
 
+#include <fstream>
 #include <memory>
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
-
+#include<fstream>
 #include "headers.h"
 
-class Interpreter {
+    class Interpreter {
 public:
     Interpreter(std::vector<std::string> code, std::vector<std::string>* parametrs = nullptr, Object* arguments = nullptr);
     ~Interpreter();
+
+    std::ofstream iout;
 
     // functionTab fTab;
     Object* ret;
     symtab symbolTable;
     parser codeParser;
-    size_t index = 0;
 
     std::vector<std::string> code;
 
-    void execute(std::vector<std::string>& tokens);
+    void execute(std::vector<std::string>& tokens, size_t index);
     void executeAssignment(const std::vector<std::string>& tokens, size_t& index);
     void executeIf(const std::vector<std::string>& tokens, size_t& index);
-    void executeOtherwiseIf(const std::vector<std::string>& tokens, size_t& index);
-    void executeOtherwise(const std::vector<std::string>& tokens, size_t& index);
     void executeDuring(const std::vector<std::string>& tokens, size_t& index);
     void executeLoop(const std::vector<std::string>& tokens, size_t& index);
     void executeBlock(const std::vector<std::string>& tokens, size_t& index);
@@ -44,9 +44,6 @@ public:
 
 private:
     int precedence(std::string op);
-    
 };
-
-
 
 #endif // INTERPRETER_H
