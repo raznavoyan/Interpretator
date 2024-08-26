@@ -6,14 +6,35 @@
       "type": "cppdbg",
       "request": "launch",
       "program": "${workspaceFolder}/build/Interpretator",
-      "args": ["<filename>"],  // Add an example filename if needed for testing
+      "args": [
+        "<filename>"
+      ],
       "stopAtEntry": false,
       "cwd": "${workspaceFolder}",
       "environment": [],
       "externalConsole": false,
-      "MIMode": "gdb", // Use "lldb" if on macOS
-      "miDebuggerPath": "/usr/bin/gdb", // Adjust the path to your GDB or LLDB
+      "MIMode": "gdb",
+      "miDebuggerPath": "/usr/bin/gdb",
       "preLaunchTask": "build",
+      "setupCommands": [
+        {
+          "description": "Enable pretty-printing for gdb",
+          "text": "-enable-pretty-printing",
+          "ignoreFailures": true
+        }
+      ]
+    },
+    {
+      "name": "C/C++ Runner: Debug Session",
+      "type": "cppdbg",
+      "request": "launch",
+      "args": [],
+      "stopAtEntry": false,
+      "externalConsole": false,
+      "cwd": "/home/razmik/git/Interpretator/Interpretator",
+      "program": "/home/razmik/git/Interpretator/Interpretator/build/Debug/outDebug",
+      "MIMode": "gdb",
+      "miDebuggerPath": "gdb",
       "setupCommands": [
         {
           "description": "Enable pretty-printing for gdb",

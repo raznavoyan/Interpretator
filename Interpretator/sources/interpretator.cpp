@@ -12,23 +12,26 @@
 Interpreter::Interpreter(std::vector<std::string> code,
                          std::vector<std::string>* parameters,
                          Object* arguments)
-    : ret{new Object("Null_object", nullptr)} {
+    : ret{new Object("Null_object", nullptr)}, iout("oute.r") {
     std::cout << "Interpreter initialized." << std::endl;
     if (parameters) {
         for (int i = 0; i < parameters->size(); ++i) {
             symbolTable.setVal(parameters->at(i), arguments->__at__(i));
         }
     }
-    execute(code);
+    execute(code, 0);
 }
 
 Interpreter::~Interpreter() {
+    if (iout.is_open()) {
+        iout.close();
+    }
     std::cout << "Interpreter destroyed." << std::endl;
 }
 
-void Interpreter::execute(std::vector<std::string>& tokens) {
-    while (this->index < tokens.size()) {
-        const std::string& token = tokens[this->index];
+void Interpreter::execute(std::vector<std::string>& tokens, size_t index) {
+    while (index < tokens.size()) {
+        const std::string& token = tokens[index];
         std::cout << "\"" << token << "\" in execute function" << std::endl;
         // if (token == "|" || token == "}") {
         //     ++this->index;
@@ -36,20 +39,21 @@ void Interpreter::execute(std::vector<std::string>& tokens) {
         // }
         if (parser::isAKeyword(token)) {
             if (token == "def") {
-                defineFunction(tokens, this->index);
+                defineFunction(tokens, index);
             } else if (token == "if") {
-                ++this->index;
-                executeIf(tokens, this->index);
+                ++index;
+                executeIf(tokens, index);
             } else if (token == "during") {
-                ++this->index;
-                executeDuring(tokens, this->index);
+                ++index;
+                executeDuring(tokens, index);
             } else if (token == "loop") {
-                ++this->index;
+                ++index;
                 std::cout << "\t called" << std::endl;
-                executeLoop(tokens, this->index);
+                executeLoop(tokens, index);
             } else if (token == "disp") {
                 index += 2;
                 print(evaluateExpression(tokens, index));
+                ++index;
             } else {
                 throw std::runtime_error("Unknown operation");
             }
@@ -59,8 +63,8 @@ void Interpreter::execute(std::vector<std::string>& tokens) {
             // if(parser::isAMath(tokens[this->index + 1])){
             //     return evaluateExpression(tokens, index);
             // }else
-            if (parser::isAssignment(tokens[this->index + 1])) {
-                executeAssignment(tokens, this->index);
+            if (parser::isAssignment(tokens[index + 1])) {
+                executeAssignment(tokens, index);
                 // std::cout << tokens[index] << tokens[index + 1] << std::endl;
             } else {
                 throw std::runtime_error("wrong operation expected assignment");
@@ -124,21 +128,27 @@ void Interpreter::executeIf(const std::vector<std::string>& tokens,
     }
     ++index;
     symbolTable.pushSpace();
-    Object* condition = evaluateExpression(tokens, index);
-    if (tokens[index] != "{") {
-        throw std::runtime_error("expected { after expetion in if");
+    parser::toks expr;
+    while (tokens[index] != ":") {
+        expr.push_back(tokens[index]);
+        ++index;
+        if (tokens[index] == "{") {
+            throw std::runtime_error("forget :");
+        }
     }
     ++index;
-    if (*static_cast<bool*>(condition->value)) {
-        // const size_t Start = index;
-        executeBlock(tokens, index);
-        // index = Start;
-        // while (tokens[index] != "}" && index < tokens.size()) {
-        //     // std::cout << tokens[index] << " ";
-        //     ++index;
+    size_t condIndex = 0;
+
+    Object* condition = evaluateExpression(expr, condIndex);
+    if (condition->__str__() == "true") {
+        std::cout << "condition is true" << std::endl;
+        // for (int ind = 0; ind < 5; ++ind) {
+        //     iout << tokens[index + ind] << ' ';
         // }
-        // // std::cout << std::endl;
-        // ++index;
+        // iout << std ::endl;
+        //iout << index << std::endl;
+        executeBlock(tokens, index);
+        //iout << index << std::endl;
 
         while (tokens[index] == "otherwise" && index < tokens.size()) {
             while (tokens[index] != "}" && index < tokens.size()) {
@@ -146,36 +156,24 @@ void Interpreter::executeIf(const std::vector<std::string>& tokens,
             }
             ++index;
         }
-
     } else {
+        std::cout << "condition is false" << std::endl;
         while (tokens[index] != "}" && index < tokens.size()) {
             ++index;
         }
         ++index;
+        
         if (tokens[index] == "otherwise") {
             ++index;
             if (tokens[index] == "if") {
                 ++index;
                 executeIf(tokens, index);
             } else {
-                const size_t Start = index;
                 executeBlock(tokens, index);
-                index = Start;
-                while (tokens[index] != "}") {
-                    ++index;
-                }
             }
         }
     }
     std::cout << "end if" << std::endl;
-}
-
-void Interpreter::executeOtherwise(const std::vector<std::string>& tokens,
-                                   size_t& index) {
-    if (tokens[index] != "{") {
-        throw std::runtime_error("expected { after otherwise");
-    }
-    executeBlock(tokens, index);
 }
 
 void Interpreter::executeDuring(const std::vector<std::string>& tokens,
@@ -310,19 +308,26 @@ void Interpreter::executeLoop(const std::vector<std::string>& tokens,
 void Interpreter::executeBlock(const std::vector<std::string>& tokens,
                                size_t& index) {
     std::cout << "execute block sarted" << std::endl;
-    symbolTable.pushSpace();
-    if (tokens[index] == "{") {
-        ++index;
+
+    if (tokens[index] != "{") {
+        throw std::runtime_error("sintax error\n");
     }
+    ++index;
+    // New scope
+    symbolTable.pushSpace();
 
     std::vector<std::string> subTokens;
     while (tokens[index] != "}") {
         subTokens.push_back(tokens[index]);
         ++index;
     }
+    execute(subTokens, 0);
 
-    execute(subTokens);
     symbolTable.popSpace();
+    if (tokens[index] != "}") {
+        throw std::runtime_error("expected '}' in the end of block");
+    }
+    ++index;
     std::cout << "execute block ended" << std::endl;
 }
 
@@ -395,7 +400,7 @@ void Interpreter::addBrecets(std::vector<std::string>& expression) {
 Object* Interpreter::evaluateSubExpression(Object* left, Object* right,
                                            std::string op) {
     std::cout << "evaluateSubExpression called" << std::endl;
-    std::cout << left->__str__() << " " << right << std::endl;
+    // std::cout << left->__str__() << " " << right << std::endl;
     // std::cout << left->__str__() << "  " << op << "  " << right->__str__() <<
     // std::endl;
     Object* tmp = nullptr;
@@ -629,8 +634,8 @@ void Interpreter::callFunction(const std::vector<std::string>& tokens,
 
 void Interpreter::print(Object* arg) {
     std::cout << "disp is called: ";
-    std::cout << arg->__str__() << std::endl;
-    ++index;
+    // std::cout << arg->__str__() << std::endl;
+    iout << arg->__str__() << std::endl;
 }
 
 Array* Interpreter::newArray(const std::vector<std::string>& tokens,
